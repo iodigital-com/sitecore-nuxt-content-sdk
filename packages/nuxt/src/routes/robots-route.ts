@@ -7,12 +7,28 @@ import { SiteInfo, SiteResolver } from '@sitecore-content-sdk/content/site';
 const { ERROR_MESSAGES } = constants;
 
 /**
- * Route for handling robots.txt requests in a Nuxt application.
+ * Route handler for robots.txt requests in a Nuxt application.
+ * Fetches robots.txt content from Sitecore and serves it as plain text.
+ * Resolves the correct site based on the incoming request hostname.
+ * @example
+ * // server/routes/robots.txt.ts
+ * import { RobotsRoute } from '@sitecore-content-sdk/nuxt/routes';
+ * import { client } from '../lib/sitecore-client';
+ * import sites from '../../.sitecore/sites.json';
+ *
+ * const route = new RobotsRoute(client, sites);
+ *
+ * export default defineEventHandler((event) => route.handle(event));
  * @public
  */
 export class RobotsRoute {
   private siteResolver: SiteResolver;
 
+  /**
+   * @param {SitecoreClient} client - Sitecore client instance used to fetch robots.txt content
+   * @param {SiteInfo[]} sites - List of sites used for site resolution by hostname
+   * @param {number | false} revalidate - Cache revalidation interval in seconds. Pass false to cache indefinitely. Defaults to 60.
+   */
   constructor(
     private client: SitecoreClient,
     sites: SiteInfo[],
@@ -21,6 +37,15 @@ export class RobotsRoute {
     this.siteResolver = new SiteResolver(sites);
   }
 
+  /**
+   * Handles an incoming robots.txt request.
+   * Resolves the site by hostname, fetches the robots.txt content from Sitecore,
+   * and sends it as a plain text response.
+   * Returns 404 with a default disallow rule if no content is found.
+   * Returns 500 if the Sitecore request fails.
+   * @param {H3Event} event - The incoming H3 event
+   * @returns {Promise<void>}
+   */
   async handle(event: H3Event): Promise<void> {
     setHeader(event, 'Content-Type', 'text/plain');
 
