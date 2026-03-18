@@ -9,6 +9,7 @@
     "clean": "del-cli dist types",
     "lint": "eslint \"./src/**/*.ts\"",
     "test": "mocha --require ./test/setup.js \"./src/**/*.test.ts\" --exit",
+    "generate-docs": "npx typedoc --plugin typedoc-plugin-markdown --outputFileStrategy Members --parametersFormat table --readme none --out ../../ref-docs/nuxt --entryPoints src/index.ts --entryPoints src/proxy/index.ts --entryPoints src/routes/index.ts --githubPages false",
     "prepublishOnly": "npm run build",
     "coverage": "nyc npm test"
   },
@@ -32,7 +33,9 @@
     "sinon": "^20.0.0",
     "sinon-chai": "^3.7.0",
     "ts-node": "^10.9.2",
-    "typescript": "~5.8.3"
+    "typescript": "~5.8.3",
+    "typedoc": "^0.27.0",
+    "typedoc-plugin-markdown": "^4.0.0"
   },
   "peerDependencies": {
     "nuxt": "^3.0.0",

@@ -27,13 +27,8 @@ export class RobotsRoute {
   /**
    * @param {SitecoreClient} client - Sitecore client instance used to fetch robots.txt content
    * @param {SiteInfo[]} sites - List of sites used for site resolution by hostname
-   * @param {number | false} revalidate - Cache revalidation interval in seconds. Pass false to cache indefinitely. Defaults to 60.
    */
-  constructor(
-    private client: SitecoreClient,
-    sites: SiteInfo[],
-    private revalidate: number | false = 60
-  ) {
+  constructor(private client: SitecoreClient, sites: SiteInfo[]) {
     this.siteResolver = new SiteResolver(sites);
   }
 
