@@ -11,6 +11,8 @@ export type PreviewProxyConfig = ProxyBaseConfig;
  * Proxy handler for bypassing cache in editing and preview mode.
  * Reads the preview cookie set by EditingRenderRoute and sets cache control
  * headers to prevent cached responses from being served to the Page Builder editor.
+ * NOTE: This middleware has no dependencies on other proxies
+ * and can run at any position in the middleware chain.
  * @example
  * // server/middleware/05.preview.ts
  * import { PreviewProxy } from '@sitecore-content-sdk/nuxt/proxy';
@@ -33,6 +35,7 @@ export class PreviewProxy extends ProxyBase {
    * Handles an incoming request.
    * If the request is a preview request, bypasses the cache.
    * Errors are caught and logged, the request always continues.
+   * @
    * @param {H3Event} event - The incoming H3 event
    * @returns {Promise<void>}
    */
