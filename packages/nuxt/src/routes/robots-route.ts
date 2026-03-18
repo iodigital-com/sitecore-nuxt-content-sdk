@@ -40,6 +40,7 @@ export class RobotsRoute {
    * Returns 500 if the Sitecore request fails.
    * @param {H3Event} event - The incoming H3 event
    * @returns {Promise<void>}
+   * @throws Will throw an error if the event's hostname cannot be found in the site resolver.
    */
   async handle(event: H3Event): Promise<void> {
     setHeader(event, 'Content-Type', 'text/plain');
@@ -50,7 +51,6 @@ export class RobotsRoute {
       'localhost';
 
     const site = this.siteResolver.getByHost(hostName);
-
     try {
       const robotsContent = await this.client.getRobots(site.name);
 

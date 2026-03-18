@@ -6,7 +6,7 @@
 
 # Abstract Class: ProxyBase
 
-Defined in: [proxy/proxy.ts:65](https://github.com/weareyou/sitecore-nuxt-content-sdk/blob/86302afb70ca4607e38cac72430521ce1db7fe2c/packages/nuxt/src/proxy/proxy.ts#L65)
+Defined in: [proxy/proxy.ts:72](https://github.com/weareyou/sitecore-nuxt-content-sdk/blob/239ded8b6f03402ac29d5b608cdbe50e5fc624bf/packages/nuxt/src/proxy/proxy.ts#L72)
 
 Base proxy class with common methods
 
@@ -24,13 +24,13 @@ Base proxy class with common methods
 
 > **new ProxyBase**(`config`): `ProxyBase`
 
-Defined in: [proxy/proxy.ts:69](https://github.com/weareyou/sitecore-nuxt-content-sdk/blob/86302afb70ca4607e38cac72430521ce1db7fe2c/packages/nuxt/src/proxy/proxy.ts#L69)
+Defined in: [proxy/proxy.ts:79](https://github.com/weareyou/sitecore-nuxt-content-sdk/blob/239ded8b6f03402ac29d5b608cdbe50e5fc624bf/packages/nuxt/src/proxy/proxy.ts#L79)
 
 #### Parameters
 
-| Parameter | Type |
-| ------ | ------ |
-| `config` | [`ProxyBaseConfig`](../type-aliases/ProxyBaseConfig.md) |
+| Parameter | Type | Description |
+| ------ | ------ | ------ |
+| `config` | [`ProxyBaseConfig`](../type-aliases/ProxyBaseConfig.md) | Proxy configuration |
 
 #### Returns
 
@@ -46,7 +46,9 @@ Defined in: [proxy/proxy.ts:69](https://github.com/weareyou/sitecore-nuxt-conten
 
 > `protected` **config**: [`ProxyBaseConfig`](../type-aliases/ProxyBaseConfig.md)
 
-Defined in: [proxy/proxy.ts:69](https://github.com/weareyou/sitecore-nuxt-content-sdk/blob/86302afb70ca4607e38cac72430521ce1db7fe2c/packages/nuxt/src/proxy/proxy.ts#L69)
+Defined in: [proxy/proxy.ts:79](https://github.com/weareyou/sitecore-nuxt-content-sdk/blob/239ded8b6f03402ac29d5b608cdbe50e5fc624bf/packages/nuxt/src/proxy/proxy.ts#L79)
+
+Proxy configuration
 
 ***
 
@@ -54,7 +56,7 @@ Defined in: [proxy/proxy.ts:69](https://github.com/weareyou/sitecore-nuxt-conten
 
 > `protected` **defaultHostname**: `string`
 
-Defined in: [proxy/proxy.ts:66](https://github.com/weareyou/sitecore-nuxt-content-sdk/blob/86302afb70ca4607e38cac72430521ce1db7fe2c/packages/nuxt/src/proxy/proxy.ts#L66)
+Defined in: [proxy/proxy.ts:73](https://github.com/weareyou/sitecore-nuxt-content-sdk/blob/239ded8b6f03402ac29d5b608cdbe50e5fc624bf/packages/nuxt/src/proxy/proxy.ts#L73)
 
 ***
 
@@ -62,7 +64,7 @@ Defined in: [proxy/proxy.ts:66](https://github.com/weareyou/sitecore-nuxt-conten
 
 > `protected` **siteResolver**: `SiteResolver`
 
-Defined in: [proxy/proxy.ts:67](https://github.com/weareyou/sitecore-nuxt-content-sdk/blob/86302afb70ca4607e38cac72430521ce1db7fe2c/packages/nuxt/src/proxy/proxy.ts#L67)
+Defined in: [proxy/proxy.ts:74](https://github.com/weareyou/sitecore-nuxt-content-sdk/blob/239ded8b6f03402ac29d5b608cdbe50e5fc624bf/packages/nuxt/src/proxy/proxy.ts#L74)
 
 ## Methods
 
@@ -70,7 +72,7 @@ Defined in: [proxy/proxy.ts:67](https://github.com/weareyou/sitecore-nuxt-conten
 
 > `protected` **disabled**(`event`): `boolean`
 
-Defined in: [proxy/proxy.ts:112](https://github.com/weareyou/sitecore-nuxt-content-sdk/blob/86302afb70ca4607e38cac72430521ce1db7fe2c/packages/nuxt/src/proxy/proxy.ts#L112)
+Defined in: [proxy/proxy.ts:122](https://github.com/weareyou/sitecore-nuxt-content-sdk/blob/239ded8b6f03402ac29d5b608cdbe50e5fc624bf/packages/nuxt/src/proxy/proxy.ts#L122)
 
 Determines if the proxy should be skipped for the current request.
 Returns true for Nuxt internal routes, API routes, Sitecore API routes,
@@ -94,7 +96,7 @@ true if the proxy should be skipped
 
 > `protected` **getClientFactory**(`graphQLOptions`): `GraphQLRequestClientFactory`
 
-Defined in: [proxy/proxy.ts:194](https://github.com/weareyou/sitecore-nuxt-content-sdk/blob/86302afb70ca4607e38cac72430521ce1db7fe2c/packages/nuxt/src/proxy/proxy.ts#L194)
+Defined in: [proxy/proxy.ts:205](https://github.com/weareyou/sitecore-nuxt-content-sdk/blob/239ded8b6f03402ac29d5b608cdbe50e5fc624bf/packages/nuxt/src/proxy/proxy.ts#L205)
 
 Creates a new GraphQLRequestClientFactory instance
 
@@ -116,7 +118,7 @@ GraphQLRequestClientFactory instance
 
 > `protected` **getHostHeader**(`event`): `string` \| `undefined`
 
-Defined in: [proxy/proxy.ts:141](https://github.com/weareyou/sitecore-nuxt-content-sdk/blob/86302afb70ca4607e38cac72430521ce1db7fe2c/packages/nuxt/src/proxy/proxy.ts#L141)
+Defined in: [proxy/proxy.ts:151](https://github.com/weareyou/sitecore-nuxt-content-sdk/blob/239ded8b6f03402ac29d5b608cdbe50e5fc624bf/packages/nuxt/src/proxy/proxy.ts#L151)
 
 Extract 'host' header.
 
@@ -138,7 +140,7 @@ The host header, `undefined` will be returned instead of the default value when 
 
 > `protected` **getLanguage**(`event`): `string`
 
-Defined in: [proxy/proxy.ts:128](https://github.com/weareyou/sitecore-nuxt-content-sdk/blob/86302afb70ca4607e38cac72430521ce1db7fe2c/packages/nuxt/src/proxy/proxy.ts#L128)
+Defined in: [proxy/proxy.ts:138](https://github.com/weareyou/sitecore-nuxt-content-sdk/blob/239ded8b6f03402ac29d5b608cdbe50e5fc624bf/packages/nuxt/src/proxy/proxy.ts#L138)
 
 Provides used language
 
@@ -160,11 +162,11 @@ language
 
 > `protected` **getSite**(`event`): `SiteInfo`
 
-Defined in: [proxy/proxy.ts:154](https://github.com/weareyou/sitecore-nuxt-content-sdk/blob/86302afb70ca4607e38cac72430521ce1db7fe2c/packages/nuxt/src/proxy/proxy.ts#L154)
+Defined in: [proxy/proxy.ts:164](https://github.com/weareyou/sitecore-nuxt-content-sdk/blob/239ded8b6f03402ac29d5b608cdbe50e5fc624bf/packages/nuxt/src/proxy/proxy.ts#L164)
 
 Get site information. If site name is stored in cookie, use it, otherwise resolve by hostname
 - If site can't be resolved by site name cookie use default site info based on provided parameters
-- If site can't be resolved by hostname throw an error
+- If site can't be resolved by hostname, resolves by default hostname
 
 #### Parameters
 
@@ -184,7 +186,7 @@ site information
 
 > `abstract` **handle**(`event`): `Promise`\<`void`\>
 
-Defined in: [proxy/proxy.ts:58](https://github.com/weareyou/sitecore-nuxt-content-sdk/blob/86302afb70ca4607e38cac72430521ce1db7fe2c/packages/nuxt/src/proxy/proxy.ts#L58)
+Defined in: [proxy/proxy.ts:65](https://github.com/weareyou/sitecore-nuxt-content-sdk/blob/239ded8b6f03402ac29d5b608cdbe50e5fc624bf/packages/nuxt/src/proxy/proxy.ts#L65)
 
 Handler method to execute proxy logic
 
@@ -208,7 +210,7 @@ Handler method to execute proxy logic
 
 > `protected` **isPrefetch**(`event`): `boolean`
 
-Defined in: [proxy/proxy.ts:89](https://github.com/weareyou/sitecore-nuxt-content-sdk/blob/86302afb70ca4607e38cac72430521ce1db7fe2c/packages/nuxt/src/proxy/proxy.ts#L89)
+Defined in: [proxy/proxy.ts:99](https://github.com/weareyou/sitecore-nuxt-content-sdk/blob/239ded8b6f03402ac29d5b608cdbe50e5fc624bf/packages/nuxt/src/proxy/proxy.ts#L99)
 
 Determines if the request is a Nuxt prefetch request
 
@@ -230,7 +232,7 @@ is prefetch
 
 > `protected` **isPreview**(`event`): `boolean`
 
-Defined in: [proxy/proxy.ts:80](https://github.com/weareyou/sitecore-nuxt-content-sdk/blob/86302afb70ca4607e38cac72430521ce1db7fe2c/packages/nuxt/src/proxy/proxy.ts#L80)
+Defined in: [proxy/proxy.ts:90](https://github.com/weareyou/sitecore-nuxt-content-sdk/blob/239ded8b6f03402ac29d5b608cdbe50e5fc624bf/packages/nuxt/src/proxy/proxy.ts#L90)
 
 Determines if mode is preview
 
@@ -252,17 +254,17 @@ is preview
 
 > `protected` **rewrite**(`rewritePath`, `event`, `skipHeader?`): `void`
 
-Defined in: [proxy/proxy.ts:180](https://github.com/weareyou/sitecore-nuxt-content-sdk/blob/86302afb70ca4607e38cac72430521ce1db7fe2c/packages/nuxt/src/proxy/proxy.ts#L180)
+Defined in: [proxy/proxy.ts:191](https://github.com/weareyou/sitecore-nuxt-content-sdk/blob/239ded8b6f03402ac29d5b608cdbe50e5fc624bf/packages/nuxt/src/proxy/proxy.ts#L191)
 
-Create a rewrite response
+Rewrites the request path for subsequent handling.
 
 #### Parameters
 
 | Parameter | Type | Description |
 | ------ | ------ | ------ |
-| `rewritePath` | `string` | the destination path |
-| `event` | `H3Event` |  |
-| `skipHeader?` | `boolean` | don't write 'x-sc-rewrite' header |
+| `rewritePath` | `string` | The destination path |
+| `event` | `H3Event` | The incoming H3 event |
+| `skipHeader?` | `boolean` | When true, does not write the x-sc-rewrite header |
 
 #### Returns
 

@@ -14,7 +14,14 @@ import {
 import { GraphQLRequestClientFactory } from '@sitecore-content-sdk/core';
 import { PreviewCookies } from '../editing/utils';
 
+/**
+ * Header name used to share the rewrite path between proxies in the middleware chain.
+ */
 export const REWRITE_HEADER_NAME = 'x-sc-rewrite';
+
+/**
+ *  Header name used by LocaleProxy to share the resolved locale with subsequent proxies.
+ */
 export const LOCALE_HEADER_NAME = 'x-sc-locale';
 
 /**
@@ -66,6 +73,9 @@ export abstract class ProxyBase extends ProxyHandler {
   protected defaultHostname: string;
   protected siteResolver: SiteResolver;
 
+  /**
+   * @param {ProxyBaseConfig} config - Proxy configuration
+   */
   constructor(protected config: ProxyBaseConfig) {
     super();
     this.siteResolver = new SiteResolver(config.sites);
@@ -147,7 +157,7 @@ export abstract class ProxyBase extends ProxyHandler {
   /**
    * Get site information. If site name is stored in cookie, use it, otherwise resolve by hostname
    * - If site can't be resolved by site name cookie use default site info based on provided parameters
-   * - If site can't be resolved by hostname throw an error
+   * - If site can't be resolved by hostname, resolves by default hostname
    * @param {H3Event} event
    * @returns {SiteInfo} site information
    */
@@ -172,10 +182,11 @@ export abstract class ProxyBase extends ProxyHandler {
   }
 
   /**
-   * Create a rewrite response
-   * @param {string} rewritePath the destination path
-   * @param {H3Event} event
-   * @param {boolean} [skipHeader] don't write 'x-sc-rewrite' header
+   * Rewrites the request path for subsequent handling.
+   * @param {string} rewritePath - The destination path
+   * @param {H3Event} event - The incoming H3 event
+   * @param {boolean} [skipHeader] - When true, does not write the x-sc-rewrite header
+   * @returns {void}
    */
   protected rewrite(rewritePath: string, event: H3Event, skipHeader?: boolean): void {
     event.node.req.url = rewritePath;

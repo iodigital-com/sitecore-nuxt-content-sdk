@@ -54,6 +54,8 @@ export class PreviewProxy extends ProxyBase {
    * Sets cache control headers to prevent the response from being cached.
    * This ensures the Page Builder editor always receives the most recent version of a page.
    * @param {H3Event} event - The incoming H3 event
+   * @see {@link https://nitro.build/docs/cache} for Nitro server cache configuration
+   * @internal
    */
   private bypassCache(event: H3Event): void {
     // TODO: Test of these headers are sufficient for Nitro server caching, or if additional headers are needed. See https://nitro.build/docs/cache.
