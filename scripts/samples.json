@@ -1,0 +1,9 @@
+﻿[
+  {
+    "template": "nextjs",
+    "args": {
+      "prerender": "SSG",
+      "silent": false
+    }
+  }
+]

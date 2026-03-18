@@ -1,0 +1,15 @@
+[**@sitecore-content-sdk/nextjs**](../../README.md)
+
+***
+
+[@sitecore-content-sdk/nextjs](../../README.md) / [index](../README.md) / DictionaryPhrases
+
+# Interface: DictionaryPhrases
+
+Defined in: content/types/i18n/dictionary-service.d.ts:28
+
+Object model for Sitecore dictionary phrases
+
+## Indexable
+
+\[`k`: `string`\]: `string`

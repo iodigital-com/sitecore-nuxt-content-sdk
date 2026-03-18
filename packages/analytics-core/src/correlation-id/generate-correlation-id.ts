@@ -1,0 +1,10 @@
+import { generateV4UUID } from '../utils';
+
+/**
+ * Generates a correlation id.
+ * @returns {string} A correlation id string.
+ * @internal
+ */
+export function generateCorrelationId(): string {
+  return generateV4UUID().replace(/-/g, '');
+}
