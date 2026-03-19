@@ -6,7 +6,7 @@
 
 # Class: RobotsRoute
 
-Defined in: [routes/robots-route.ts:26](https://github.com/weareyou/sitecore-nuxt-content-sdk/blob/2e504c51142b20ddf20aade42aa47946b92c08bb/packages/nuxt/src/routes/robots-route.ts#L26)
+Defined in: [routes/robots-route.ts:26](https://github.com/weareyou/sitecore-nuxt-content-sdk/blob/9f27831d38ed4ea4c87bdfb6922610bef950bdc1/packages/nuxt/src/routes/robots-route.ts#L26)
 
 Route handler for robots.txt requests in a Nuxt application.
 Fetches robots.txt content from Sitecore and serves it as plain text.
@@ -23,7 +23,6 @@ import sites from '../../.sitecore/sites.json';
 const route = new RobotsRoute(client, sites);
 
 export default defineEventHandler((event) => route.handle(event));
-@public
 ```
 
 ## Constructors
@@ -32,7 +31,7 @@ export default defineEventHandler((event) => route.handle(event));
 
 > **new RobotsRoute**(`client`, `sites`, `revalidate`): `RobotsRoute`
 
-Defined in: [routes/robots-route.ts:35](https://github.com/weareyou/sitecore-nuxt-content-sdk/blob/2e504c51142b20ddf20aade42aa47946b92c08bb/packages/nuxt/src/routes/robots-route.ts#L35)
+Defined in: [routes/robots-route.ts:35](https://github.com/weareyou/sitecore-nuxt-content-sdk/blob/9f27831d38ed4ea4c87bdfb6922610bef950bdc1/packages/nuxt/src/routes/robots-route.ts#L35)
 
 #### Parameters
 
@@ -52,7 +51,7 @@ Defined in: [routes/robots-route.ts:35](https://github.com/weareyou/sitecore-nux
 
 > **handle**(`event`): `Promise`\<`void`\>
 
-Defined in: [routes/robots-route.ts:53](https://github.com/weareyou/sitecore-nuxt-content-sdk/blob/2e504c51142b20ddf20aade42aa47946b92c08bb/packages/nuxt/src/routes/robots-route.ts#L53)
+Defined in: [routes/robots-route.ts:53](https://github.com/weareyou/sitecore-nuxt-content-sdk/blob/9f27831d38ed4ea4c87bdfb6922610bef950bdc1/packages/nuxt/src/routes/robots-route.ts#L53)
 
 Handles an incoming robots.txt request.
 Resolves the site by hostname, fetches the robots.txt content from Sitecore,

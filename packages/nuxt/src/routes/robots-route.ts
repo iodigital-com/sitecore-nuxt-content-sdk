@@ -12,6 +12,7 @@ const { ERROR_MESSAGES } = constants;
  * Route handler for robots.txt requests in a Nuxt application.
  * Fetches robots.txt content from Sitecore and serves it as plain text.
  * Resolves the correct site based on the incoming request hostname.
+ * @public
  * @example
  * // server/routes/robots.txt.ts
  * import { RobotsRoute } from '@sitecore-content-sdk/nuxt/routes';
@@ -21,7 +22,6 @@ const { ERROR_MESSAGES } = constants;
  * const route = new RobotsRoute(client, sites);
  *
  * export default defineEventHandler((event) => route.handle(event));
- * @public
  */
 export class RobotsRoute {
   private siteResolver: SiteResolver;
