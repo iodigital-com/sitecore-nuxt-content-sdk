@@ -1,0 +1,1 @@
+export { getEditingSecret } from './utils';
