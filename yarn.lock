@@ -3975,6 +3975,7 @@ __metadata:
   dependencies:
     "@sitecore-content-sdk/content": "workspace:*"
     "@sitecore-content-sdk/core": "workspace:*"
+    "@sitecore-content-sdk/vue": "workspace:*"
     "@types/chai": "npm:^5.2.2"
     "@types/mocha": "npm:^10.0.10"
     "@types/node": "npm:^24.10.4"
@@ -4109,7 +4110,7 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@sitecore-content-sdk/vue@workspace:packages/vue":
+"@sitecore-content-sdk/vue@workspace:*, @sitecore-content-sdk/vue@workspace:packages/vue":
   version: 0.0.0-use.local
   resolution: "@sitecore-content-sdk/vue@workspace:packages/vue"
   dependencies:

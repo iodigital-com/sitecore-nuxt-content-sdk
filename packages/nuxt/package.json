@@ -52,6 +52,7 @@
   "dependencies": {
     "@sitecore-content-sdk/content": "workspace:*",
     "@sitecore-content-sdk/core": "workspace:*",
+    "@sitecore-content-sdk/vue": "workspace:*",
     "h3": "^1.0.0",
     "std-env": "^4.0.0"
   },
