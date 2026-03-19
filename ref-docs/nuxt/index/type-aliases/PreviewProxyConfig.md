@@ -8,6 +8,6 @@
 
 > **PreviewProxyConfig** = [`ProxyBaseConfig`](ProxyBaseConfig.md)
 
-Defined in: [proxy/preview-proxy.ts:8](https://github.com/weareyou/sitecore-nuxt-content-sdk/blob/239ded8b6f03402ac29d5b608cdbe50e5fc624bf/packages/nuxt/src/proxy/preview-proxy.ts#L8)
+Defined in: [proxy/preview-proxy.ts:8](https://github.com/weareyou/sitecore-nuxt-content-sdk/blob/2e504c51142b20ddf20aade42aa47946b92c08bb/packages/nuxt/src/proxy/preview-proxy.ts#L8)
 
 Configuration for the PreviewProxy.

@@ -1,8 +1,10 @@
 // src/routes/robots-route.ts
-import { H3Event, setHeader, getRequestHeader, setResponseStatus, send } from 'h3';
+import { H3Event, setResponseHeader, getRequestHeader, setResponseStatus, send } from 'h3';
+import { defineCachedFunction } from 'nitro/cache';
 import { SitecoreClient } from '@sitecore-content-sdk/content/client';
 import { constants } from '@sitecore-content-sdk/core';
 import { SiteInfo, SiteResolver } from '@sitecore-content-sdk/content/site';
+import debug from '../debug';
 
 const { ERROR_MESSAGES } = constants;
 
@@ -23,13 +25,19 @@ const { ERROR_MESSAGES } = constants;
  */
 export class RobotsRoute {
   private siteResolver: SiteResolver;
+  private getRobotsCached: (site: string) => Promise<string | null | undefined>;
 
   /**
    * @param {SitecoreClient} client - Sitecore client instance used to fetch robots.txt content
    * @param {SiteInfo[]} sites - List of sites used for site resolution by hostname
+   * @param {number | false} revalidate - Cache revalidation interval in seconds. Pass false to cache indefinitely. Defaults to 60.
    */
-  constructor(private client: SitecoreClient, sites: SiteInfo[]) {
+  constructor(client: SitecoreClient, sites: SiteInfo[], revalidate: number | false = 60) {
     this.siteResolver = new SiteResolver(sites);
+    this.getRobotsCached = defineCachedFunction(async (site: string) => client.getRobots(site), {
+      maxAge: revalidate === false ? undefined : revalidate,
+      name: 'robots',
+    });
   }
 
   /**
@@ -43,7 +51,7 @@ export class RobotsRoute {
    * @throws Will throw an error if the event's hostname cannot be found in the site resolver.
    */
   async handle(event: H3Event): Promise<void> {
-    setHeader(event, 'Content-Type', 'text/plain');
+    setResponseHeader(event, 'Content-Type', 'text/plain');
 
     const hostName =
       getRequestHeader(event, 'x-forwarded-host') ||
@@ -51,8 +59,12 @@ export class RobotsRoute {
       'localhost';
 
     const site = this.siteResolver.getByHost(hostName);
+
+    const startTimestamp = Date.now();
+    debug.robots('robots route handler start: %o', { hostName, siteName: site.name });
+
     try {
-      const robotsContent = await this.client.getRobots(site.name);
+      const robotsContent = await this.getRobotsCached(site.name);
 
       if (!robotsContent) {
         setResponseStatus(event, 404);
@@ -68,6 +80,8 @@ export class RobotsRoute {
 
       setResponseStatus(event, 500);
       await send(event, `Internal Server Error. ${ERROR_MESSAGES.CONTACT_SUPPORT}`);
+    } finally {
+      debug.robots('robots route handler end in %dms', Date.now() - startTimestamp);
     }
   }
 }

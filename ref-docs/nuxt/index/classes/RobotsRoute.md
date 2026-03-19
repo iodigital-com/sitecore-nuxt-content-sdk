@@ -6,7 +6,7 @@
 
 # Class: RobotsRoute
 
-Defined in: [routes/robots-route.ts:24](https://github.com/weareyou/sitecore-nuxt-content-sdk/blob/239ded8b6f03402ac29d5b608cdbe50e5fc624bf/packages/nuxt/src/routes/robots-route.ts#L24)
+Defined in: [routes/robots-route.ts:26](https://github.com/weareyou/sitecore-nuxt-content-sdk/blob/2e504c51142b20ddf20aade42aa47946b92c08bb/packages/nuxt/src/routes/robots-route.ts#L26)
 
 Route handler for robots.txt requests in a Nuxt application.
 Fetches robots.txt content from Sitecore and serves it as plain text.
@@ -30,16 +30,17 @@ export default defineEventHandler((event) => route.handle(event));
 
 ### Constructor
 
-> **new RobotsRoute**(`client`, `sites`): `RobotsRoute`
+> **new RobotsRoute**(`client`, `sites`, `revalidate`): `RobotsRoute`
 
-Defined in: [routes/robots-route.ts:31](https://github.com/weareyou/sitecore-nuxt-content-sdk/blob/239ded8b6f03402ac29d5b608cdbe50e5fc624bf/packages/nuxt/src/routes/robots-route.ts#L31)
+Defined in: [routes/robots-route.ts:35](https://github.com/weareyou/sitecore-nuxt-content-sdk/blob/2e504c51142b20ddf20aade42aa47946b92c08bb/packages/nuxt/src/routes/robots-route.ts#L35)
 
 #### Parameters
 
-| Parameter | Type | Description |
-| ------ | ------ | ------ |
-| `client` | `SitecoreClient` | Sitecore client instance used to fetch robots.txt content |
-| `sites` | `SiteInfo`[] | List of sites used for site resolution by hostname |
+| Parameter | Type | Default value | Description |
+| ------ | ------ | ------ | ------ |
+| `client` | `SitecoreClient` | `undefined` | Sitecore client instance used to fetch robots.txt content |
+| `sites` | `SiteInfo`[] | `undefined` | List of sites used for site resolution by hostname |
+| `revalidate` | `number` \| `false` | `60` | Cache revalidation interval in seconds. Pass false to cache indefinitely. Defaults to 60. |
 
 #### Returns
 
@@ -51,7 +52,7 @@ Defined in: [routes/robots-route.ts:31](https://github.com/weareyou/sitecore-nux
 
 > **handle**(`event`): `Promise`\<`void`\>
 
-Defined in: [routes/robots-route.ts:45](https://github.com/weareyou/sitecore-nuxt-content-sdk/blob/239ded8b6f03402ac29d5b608cdbe50e5fc624bf/packages/nuxt/src/routes/robots-route.ts#L45)
+Defined in: [routes/robots-route.ts:53](https://github.com/weareyou/sitecore-nuxt-content-sdk/blob/2e504c51142b20ddf20aade42aa47946b92c08bb/packages/nuxt/src/routes/robots-route.ts#L53)
 
 Handles an incoming robots.txt request.
 Resolves the site by hostname, fetches the robots.txt content from Sitecore,

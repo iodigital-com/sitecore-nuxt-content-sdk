@@ -1,6 +1,7 @@
 import chai, { expect } from 'chai';
 import sinon from 'sinon';
 import sinonChai from 'sinon-chai';
+import proxyquire from 'proxyquire';
 import { createEvent } from 'h3';
 import { IncomingMessage, ServerResponse } from 'http';
 import { RobotsRoute } from './robots-route';
@@ -20,6 +21,8 @@ describe('RobotsRoute', () => {
   const sandbox = sinon.createSandbox();
   let sitecoreClientStub: sinon.SinonStubbedInstance<SitecoreClient>;
   let route: RobotsRoute;
+  let defineCachedFunctionStub: sinon.SinonStub;
+  let RobotsRouteModule: any;
   let siteResolverStub = {
     getByHost: sandbox.stub(),
     getByName: sandbox.stub(),
@@ -40,15 +43,29 @@ describe('RobotsRoute', () => {
       getByName: sandbox.stub(),
     };
 
-    route = new RobotsRoute(sitecoreClientStub as unknown as SitecoreClient, sites);
+    defineCachedFunctionStub = sandbox.stub().callsFake((fn) => fn);
+    RobotsRouteModule = proxyquire('./robots-route', {
+      'nitro/cache': { defineCachedFunction: defineCachedFunctionStub },
+    });
+
+    route = new RobotsRouteModule.RobotsRoute(sitecoreClientStub, sites);
     (route as any).siteResolver = siteResolverStub;
-    siteResolverStub.getByHost.callsFake((hostName) =>
+    siteResolverStub.getByHost.callsFake((hostName: string) =>
       sites.find((site) => site.hostName === hostName)
     );
   });
 
   afterEach(() => {
     sandbox.restore();
+  });
+
+  it('should set the content type header to text/plain', async () => {
+    const event = createMockEvent({ host: 'example.com' });
+    sitecoreClientStub.getRobots.resolves('User-agent: *\nDisallow: /');
+
+    await route.handle(event);
+
+    expect(event.node.res.getHeader('Content-Type')).to.equal('text/plain');
   });
 
   it('should call getRobots with the correct siteName', async () => {
@@ -108,5 +125,18 @@ describe('RobotsRoute', () => {
     await route.handle(event);
 
     expect(siteResolverStub.getByHost).to.have.been.calledWith('proxy.forwarded.com');
+  });
+
+  it('should cache the response for default revalidate time', async () => {
+    expect(defineCachedFunctionStub.callCount).to.equal(1);
+    expect(defineCachedFunctionStub.args[0][1].maxAge).to.equal(60);
+  });
+
+  it('should cache the response for custom revalidate time', async () => {
+    defineCachedFunctionStub.resetHistory();
+    route = new RobotsRouteModule.RobotsRoute(sitecoreClientStub, sites, 120);
+
+    expect(defineCachedFunctionStub.callCount).to.equal(1);
+    expect(defineCachedFunctionStub.args[0][1].maxAge).to.equal(120);
   });
 });
