@@ -1,0 +1,68 @@
+{
+  "name": "@sitecore-content-sdk/vue",
+  "version": "1.0.0",
+  "main": "dist/cjs/index.js",
+  "module": "dist/esm/index.js",
+  "sideEffects": false,
+  "scripts": {
+    "build": "npm run clean && tsc -p tsconfig.json && tsc -p tsconfig-esm.json",
+    "clean": "del-cli dist types",
+    "lint": "eslint \"./src/**/*.ts\"",
+    "test": "mocha --require ./test/setup.js \"./src/**/*.test.ts\" --exit",
+    "prepublishOnly": "npm run build",
+    "coverage": "nyc npm test",
+    "generate-docs": "npx typedoc --plugin typedoc-plugin-markdown --outputFileStrategy Members --parametersFormat table --readme none --out ../../ref-docs/vue --entryPoints src/index.ts --githubPages false"
+  },
+  "engines": {
+    "node": ">=24"
+  },
+  "license": "Apache-2.0",
+  "devDependencies": {
+    "@types/chai": "^5.2.2",
+    "@types/mocha": "^10.0.10",
+    "@types/node": "^24.10.4",
+    "@types/sinon": "^17.0.4",
+    "@types/sinon-chai": "^3.2.9",
+    "@typescript-eslint/eslint-plugin": "8.39.0",
+    "@typescript-eslint/parser": "8.39.0",
+    "chai": "^4.4.1",
+    "del-cli": "^6.0.0",
+    "eslint": "^9.32.0",
+    "mocha": "^11.2.2",
+    "nyc": "^17.1.0",
+    "sinon": "^20.0.0",
+    "sinon-chai": "^3.7.0",
+    "ts-node": "^10.9.2",
+    "typedoc": "^0.27.0",
+    "typedoc-plugin-markdown": "^4.0.0",
+    "typescript": "~5.8.3",
+    "vue": "^3.0.0"
+  },
+  "peerDependencies": {
+    "typescript": "^5.4.0",
+    "vue": "^3.0.0"
+  },
+  "peerDependenciesMeta": {
+    "typescript": {
+      "optional": true
+    }
+  },
+  "dependencies": {
+    "@sitecore-content-sdk/content": "workspace:*",
+    "@sitecore-content-sdk/core": "workspace:*"
+  },
+  "exports": {
+    ".": {
+      "import": "./dist/esm/index.js",
+      "require": "./dist/cjs/index.js",
+      "types": "./types/index.d.ts"
+    }
+  },
+  "types": "types/index.d.ts",
+  "files": [
+    "dist",
+    "types",
+    "/*.js",
+    "/*.d.ts"
+  ]
+}
