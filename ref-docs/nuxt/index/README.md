@@ -8,18 +8,22 @@
 
 ## Classes
 
-- [EditingConfigRoute](classes/EditingConfigRoute.md)
 - [PreviewProxy](classes/PreviewProxy.md)
 - [ProxyBase](classes/ProxyBase.md)
 - [ProxyHandler](classes/ProxyHandler.md)
-- [RobotsRoute](classes/RobotsRoute.md)
+
+## Interfaces
+
+- [AllowedQueryParam](interfaces/AllowedQueryParam.md)
+- [GetAllowedQueryParamsResult](interfaces/GetAllowedQueryParamsResult.md)
 
 ## Type Aliases
 
+- [AllowedQueryParams](type-aliases/AllowedQueryParams.md)
+- [AllowedQueryParamsResolver](type-aliases/AllowedQueryParamsResolver.md)
 - [ComponentPropsCollection](type-aliases/ComponentPropsCollection.md)
 - [ComponentPropsError](type-aliases/ComponentPropsError.md)
 - [ComponentPropsFetchFunction](type-aliases/ComponentPropsFetchFunction.md)
-- [EditingConfigRouteConfig](type-aliases/EditingConfigRouteConfig.md)
 - [NuxtContentSdkComponent](type-aliases/NuxtContentSdkComponent.md)
 - [PreviewProxyConfig](type-aliases/PreviewProxyConfig.md)
 - [ProxyBaseConfig](type-aliases/ProxyBaseConfig.md)
@@ -31,4 +35,7 @@
 
 ## Functions
 
+- [createEditingConfigRoute](functions/createEditingConfigRoute.md)
+- [createEditingRenderRoute](functions/createEditingRenderRoute.md)
+- [createRobotsRoute](functions/createRobotsRoute.md)
 - [getEditingSecret](functions/getEditingSecret.md)

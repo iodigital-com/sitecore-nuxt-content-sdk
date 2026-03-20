@@ -1,0 +1,25 @@
+[**@sitecore-content-sdk/nuxt**](../../README.md)
+
+***
+
+[@sitecore-content-sdk/nuxt](../../README.md) / [index](../README.md) / AllowedQueryParamsResolver
+
+# Type Alias: AllowedQueryParamsResolver()
+
+> **AllowedQueryParamsResolver** = (`queryParams`) => ([`AllowedQueryParam`](../interfaces/AllowedQueryParam.md) \| `string`)[]
+
+Defined in: sharedTypes/editing-types.ts:22
+
+Resolver function for allowed query parameters, which can be used to extract additional parameters from the query string beyond the required editing parameters.
+
+## Parameters
+
+| Parameter | Type | Description |
+| ------ | ------ | ------ |
+| `queryParams` | `string`[] | Array of query parameters from incoming URL. |
+
+## Returns
+
+([`AllowedQueryParam`](../interfaces/AllowedQueryParam.md) \| `string`)[]
+
+Allowed query editing parameters.

@@ -8,4 +8,3 @@
 
 - [index](index/README.md)
 - [proxy](proxy/README.md)
-- [routes](routes/README.md)

@@ -8,7 +8,7 @@ import debug from '../debug';
 
 const { ERROR_MESSAGES } = constants;
 
-type RobotsRouteOptions = {
+export type RobotsRouteOptions = {
   /**
    * Sitecore client instance used to fetch robots.txt content.
    */
