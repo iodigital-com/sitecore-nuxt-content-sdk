@@ -37,7 +37,7 @@ const readBody = (event: H3Event): Promise<string> => {
   });
 };
 
-describe('EditingConfigRoute', () => {
+describe('createEditingConfigRoute', () => {
   const sandbox = sinon.createSandbox();
   let EditingConfigRouteModule: any;
   let getEditingSecretStub: sinon.SinonStub;
@@ -76,7 +76,7 @@ describe('EditingConfigRoute', () => {
       '@sitecore-content-sdk/core/tools': { getEnforcedCorsHeaders: getEnforcedCorsHeadersStub },
     });
 
-    route = new EditingConfigRouteModule.EditingConfigRoute({
+    route = EditingConfigRouteModule.createEditingConfigRoute({
       components: componentsMap,
       metadata,
     });
@@ -189,7 +189,7 @@ describe('EditingConfigRoute', () => {
       customComponents.set('Component2', {});
       customComponents.set('Component3', {});
 
-      const customRoute = new EditingConfigRouteModule.EditingConfigRoute({
+      const customRoute = EditingConfigRouteModule.createEditingConfigRoute({
         components: customComponents,
         metadata,
       });
@@ -214,7 +214,7 @@ describe('EditingConfigRoute', () => {
       clientComponentsMap.set('ClientComponent1', {} as NuxtContentSdkComponent);
       clientComponentsMap.set('ClientComponent2', {} as NuxtContentSdkComponent);
 
-      const customRoute = new EditingConfigRouteModule.EditingConfigRoute({
+      const customRoute = EditingConfigRouteModule.createEditingConfigRoute({
         components: componentsMap,
         clientComponents: clientComponentsMap,
         metadata,

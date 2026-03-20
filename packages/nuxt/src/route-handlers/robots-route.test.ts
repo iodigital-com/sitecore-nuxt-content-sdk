@@ -4,7 +4,6 @@ import sinonChai from 'sinon-chai';
 import proxyquire from 'proxyquire';
 import { createEvent } from 'h3';
 import { IncomingMessage, ServerResponse } from 'http';
-import { RobotsRoute } from './robots-route';
 import { SitecoreClient } from '@sitecore-content-sdk/content/client';
 import { SiteInfo } from '@sitecore-content-sdk/content/site';
 
@@ -17,10 +16,10 @@ const createMockEvent = (headers: Record<string, string> = {}) => {
   return createEvent(req, res);
 };
 
-describe('RobotsRoute', () => {
+describe('createRobotsRoute', () => {
   const sandbox = sinon.createSandbox();
   let sitecoreClientStub: sinon.SinonStubbedInstance<SitecoreClient>;
-  let route: RobotsRoute;
+  let route: any;
   let defineCachedFunctionStub: sinon.SinonStub;
   let RobotsRouteModule: any;
   let siteResolverStub = {
@@ -43,16 +42,19 @@ describe('RobotsRoute', () => {
       getByName: sandbox.stub(),
     };
 
-    defineCachedFunctionStub = sandbox.stub().callsFake((fn) => fn);
-    RobotsRouteModule = proxyquire('./robots-route', {
-      'nitro/cache': { defineCachedFunction: defineCachedFunctionStub },
-    });
-
-    route = new RobotsRouteModule.RobotsRoute(sitecoreClientStub, sites);
-    (route as any).siteResolver = siteResolverStub;
     siteResolverStub.getByHost.callsFake((hostName: string) =>
       sites.find((site) => site.hostName === hostName)
     );
+
+    defineCachedFunctionStub = sandbox.stub().callsFake((fn) => fn);
+    RobotsRouteModule = proxyquire('./robots-route', {
+      'nitro/cache': { defineCachedFunction: defineCachedFunctionStub },
+      '@sitecore-content-sdk/content/site': {
+        SiteResolver: sandbox.stub().returns(siteResolverStub),
+      },
+    });
+
+    route = RobotsRouteModule.createRobotsRoute({ client: sitecoreClientStub, sites });
   });
 
   afterEach(() => {
@@ -134,7 +136,11 @@ describe('RobotsRoute', () => {
 
   it('should cache the response for custom revalidate time', async () => {
     defineCachedFunctionStub.resetHistory();
-    route = new RobotsRouteModule.RobotsRoute(sitecoreClientStub, sites, 120);
+    route = RobotsRouteModule.createRobotsRoute({
+      client: sitecoreClientStub,
+      sites,
+      revalidate: 120,
+    });
 
     expect(defineCachedFunctionStub.callCount).to.equal(1);
     expect(defineCachedFunctionStub.args[0][1].maxAge).to.equal(120);

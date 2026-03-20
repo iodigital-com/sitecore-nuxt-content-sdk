@@ -8,37 +8,49 @@ import debug from '../debug';
 
 const { ERROR_MESSAGES } = constants;
 
+type RobotsRouteOptions = {
+  /**
+   * Sitecore client instance used to fetch robots.txt content.
+   */
+  client: SitecoreClient;
+  /**
+   * List of sites used for site resolution by hostname.
+   */
+  sites: SiteInfo[];
+  /**
+   * Cache revalidation interval in seconds.
+   * Pass false to cache indefinitely.
+   * Default is 60 seconds.
+   */
+  revalidate?: number | false;
+};
+
 /**
- * Route handler for robots.txt requests in a Nuxt application.
+ * Creates a route handler to serve the robots.txt file.
  * Fetches robots.txt content from Sitecore and serves it as plain text.
  * Resolves the correct site based on the incoming request hostname.
- * @public
+ * @param {RobotsRouteOptions} options - The options for the route handler.
+ * @returns The route handler object with handle method.
  * @example
  * // server/routes/robots.txt.ts
- * import { RobotsRoute } from '@sitecore-content-sdk/nuxt/routes';
+ * import { createRobotsRoute } from '@sitecore-content-sdk/nuxt/routes';
  * import { client } from '../lib/sitecore-client';
  * import sites from '../../.sitecore/sites.json';
  *
- * const route = new RobotsRoute(client, sites);
+ * const { handle } = createRobotsRoute({ client, sites });
  *
- * export default defineEventHandler((event) => route.handle(event));
+ * export default defineEventHandler(handle);
+ * @public
  */
-export class RobotsRoute {
-  private siteResolver: SiteResolver;
-  private getRobotsCached: (site: string) => Promise<string | null | undefined>;
+export const createRobotsRoute = (options: RobotsRouteOptions) => {
+  const { client, sites, revalidate = 60 } = options;
 
-  /**
-   * @param {SitecoreClient} client - Sitecore client instance used to fetch robots.txt content
-   * @param {SiteInfo[]} sites - List of sites used for site resolution by hostname
-   * @param {number | false} revalidate - Cache revalidation interval in seconds. Pass false to cache indefinitely. Defaults to 60.
-   */
-  constructor(client: SitecoreClient, sites: SiteInfo[], revalidate: number | false = 60) {
-    this.siteResolver = new SiteResolver(sites);
-    this.getRobotsCached = defineCachedFunction(async (site: string) => client.getRobots(site), {
-      maxAge: revalidate === false ? undefined : revalidate,
-      name: 'robots',
-    });
-  }
+  const siteResolver = new SiteResolver(sites);
+
+  const getRobotsCached = defineCachedFunction(async (site: string) => client.getRobots(site), {
+    maxAge: revalidate === false ? undefined : revalidate,
+    name: 'robots',
+  });
 
   /**
    * Handles an incoming robots.txt request.
@@ -50,7 +62,7 @@ export class RobotsRoute {
    * @returns {Promise<void>}
    * @throws Will throw an error if the event's hostname cannot be found in the site resolver.
    */
-  async handle(event: H3Event): Promise<void> {
+  const handle = async (event: H3Event): Promise<void> => {
     setResponseHeader(event, 'Content-Type', 'text/plain');
 
     const hostName =
@@ -58,13 +70,13 @@ export class RobotsRoute {
       getRequestHeader(event, 'host')?.split(':')[0] ||
       'localhost';
 
-    const site = this.siteResolver.getByHost(hostName);
+    const site = siteResolver.getByHost(hostName);
 
     const startTimestamp = Date.now();
     debug.robots('robots route handler start: %o', { hostName, siteName: site.name });
 
     try {
-      const robotsContent = await this.getRobotsCached(site.name);
+      const robotsContent = await getRobotsCached(site.name);
 
       if (!robotsContent) {
         setResponseStatus(event, 404);
@@ -83,5 +95,7 @@ export class RobotsRoute {
     } finally {
       debug.robots('robots route handler end in %dms', Date.now() - startTimestamp);
     }
-  }
-}
+  };
+
+  return { handle };
+};

@@ -12,7 +12,7 @@ import { getEditingSecret } from '../utils/utils';
 import debug from '../debug';
 
 /**
- * Configuration for the EditingConfigRoute.
+ * Configuration for the createEditingConfigRoute factory function.
  * @public
  */
 export type EditingConfigRouteConfig = {
@@ -33,24 +33,59 @@ export type EditingConfigRouteConfig = {
 };
 
 /**
- * Route handler for the editing config API route (e.g. /api/editing/config).
+ * Creates a route handler for the editing config API route (e.g. /api/editing/config).
  * Provides configuration information to determine feature compatibility on the Sitecore Page Builder side.
- * @public
+ * @param {EditingConfigRouteConfig} config - The configuration for the editing config route.
+ * @returns The route handler object with handle method.
  * @example
  * // server/api/editing/config.get.ts
- * import { EditingConfigRoute } from '@sitecore-content-sdk/nuxt/editing';
+ * import { createEditingConfigRoute } from '@sitecore-content-sdk/nuxt/editing';
  * import componentMap from '~/components/component-map';
  * import metadata from '~/package.json';
  *
- * const route = new EditingConfigRoute({ components: componentMap, metadata });
+ * const { handle } = createEditingConfigRoute({ components: componentMap, metadata });
  *
- * export default defineEventHandler((event) => route.handle(event));
+ * export default defineEventHandler(handle);
+ * @public
  */
-export class EditingConfigRoute {
+export const createEditingConfigRoute = (config: EditingConfigRouteConfig) => {
   /**
-   * @param {EditingConfigRouteConfig} config - The configuration for the editing config route
+   * Validates the editing secret from the request query string.
+   * Logs a debug message if the secret is invalid.
+   * @param {H3Event} event - The incoming H3 event
+   * @returns {boolean} true if the secret is valid
    */
-  constructor(protected config: EditingConfigRouteConfig) {}
+  const validateSecret = (event: H3Event): boolean => {
+    const secret = new URL(event.path, 'http://localhost').searchParams.get(
+      QUERY_PARAM_EDITING_SECRET
+    );
+    const editingSecret = getEditingSecret();
+    const isValid = secret === editingSecret;
+
+    if (!isValid) {
+      debug.editing('invalid editing secret - sent "%s"', secret);
+    }
+
+    return isValid;
+  };
+
+  /**
+   * Retrieves enforced CORS headers based on the incoming request origin.
+   * Returns null if the origin is not allowed.
+   * @param {H3Event} event - The incoming H3 event
+   * @returns {Record<string, string> | null} CORS headers or null if origin is not allowed
+   */
+  const getEnforcedCorsHeaders = (event: H3Event): Record<string, string> | null => {
+    return getCorsHeaders({
+      requestMethod: event.method,
+      headers: new Headers({
+        origin: getRequestHeader(event, 'origin') || '',
+        'access-control-allow-origin': getRequestHeader(event, 'access-control-allow-origin') || '',
+      }),
+      presetCorsHeader: undefined,
+      allowedOrigins: EDITING_ALLOWED_ORIGINS,
+    });
+  };
 
   /**
    * Handles an incoming editing config request.
@@ -62,12 +97,12 @@ export class EditingConfigRoute {
    * @param {H3Event} event - The incoming H3 event
    * @returns {Promise<void>}
    */
-  async handle(event: H3Event): Promise<void> {
+  const handle = async (event: H3Event): Promise<void> => {
     const startTimestamp = Date.now();
     debug.editing('editing config route handler start');
 
     try {
-      const corsHeaders = this.getEnforcedCorsHeaders(event);
+      const corsHeaders = getEnforcedCorsHeaders(event);
 
       if (!corsHeaders) {
         debug.editing(
@@ -79,7 +114,7 @@ export class EditingConfigRoute {
         return;
       }
 
-      if (!this.validateSecret(event)) {
+      if (!validateSecret(event)) {
         setResponseStatus(event, 401);
         Object.entries(corsHeaders).forEach(([key, value]) => setResponseHeader(event, key, value));
         setResponseHeader(event, 'Content-Type', 'application/json');
@@ -87,16 +122,16 @@ export class EditingConfigRoute {
         return;
       }
 
-      const componentNames = Array.from(this.config.components.keys());
-      const clientComponentNames = this.config.clientComponents
-        ? Array.from(this.config.clientComponents.keys())
+      const componentNames = Array.from(config.components.keys());
+      const clientComponentNames = config.clientComponents
+        ? Array.from(config.clientComponents.keys())
         : [];
 
       const responseData = {
         framework: 'nuxt',
         components: componentNames,
         clientComponents: clientComponentNames,
-        packages: this.config.metadata.packages,
+        packages: config.metadata.packages,
         editMode: EditMode.Metadata,
       };
 
@@ -113,43 +148,7 @@ export class EditingConfigRoute {
       setResponseStatus(event, 500);
       await send(event, 'Internal Server Error');
     }
-  }
+  };
 
-  /**
-   * Validates the editing secret from the request query string.
-   * Logs a debug message if the secret is invalid.
-   * @param {H3Event} event - The incoming H3 event
-   * @returns {boolean} true if the secret is valid
-   */
-  private validateSecret(event: H3Event): boolean {
-    const secret = new URL(event.path, 'http://localhost').searchParams.get(
-      QUERY_PARAM_EDITING_SECRET
-    );
-    const editingSecret = getEditingSecret();
-    const isValid = secret === editingSecret;
-
-    if (!isValid) {
-      debug.editing('invalid editing secret - sent "%s"', secret);
-    }
-
-    return isValid;
-  }
-
-  /**
-   * Retrieves enforced CORS headers based on the incoming request origin.
-   * Returns null if the origin is not allowed.
-   * @param {H3Event} event - The incoming H3 event
-   * @returns {Record<string, string> | null} CORS headers or null if origin is not allowed
-   */
-  private getEnforcedCorsHeaders(event: H3Event): Record<string, string> | null {
-    return getCorsHeaders({
-      requestMethod: event.method,
-      headers: new Headers({
-        origin: getRequestHeader(event, 'origin') || '',
-        'access-control-allow-origin': getRequestHeader(event, 'access-control-allow-origin') || '',
-      }),
-      presetCorsHeader: undefined,
-      allowedOrigins: EDITING_ALLOWED_ORIGINS,
-    });
-  }
-}
+  return { handle };
+};
