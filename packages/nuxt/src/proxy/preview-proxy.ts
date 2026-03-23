@@ -13,6 +13,7 @@ export type PreviewProxyConfig = ProxyBaseConfig;
  * headers to prevent cached responses from being served to the Page Builder editor.
  * NOTE: This middleware has no dependencies on other proxies
  * and can run at any position in the middleware chain.
+ * @public
  * @example
  * // server/middleware/05.preview.ts
  * import { PreviewProxy } from '@sitecore-content-sdk/nuxt/proxy';
@@ -21,7 +22,6 @@ export type PreviewProxyConfig = ProxyBaseConfig;
  * const proxy = new PreviewProxy({ sites });
  *
  * export default defineEventHandler((event) => proxy.handle(event));
- * @public
  */
 export class PreviewProxy extends ProxyBase {
   /**
