@@ -11,7 +11,9 @@
     "test": "mocha --require ./test/setup.js \"./src/**/*.test.ts\" --exit",
     "generate-docs": "npx typedoc --plugin typedoc-plugin-markdown --outputFileStrategy Members --parametersFormat table --readme none --out ../../ref-docs/nuxt --entryPoints src/index.ts --entryPoints src/proxy/index.ts --entryPoints src/routes/index.ts --githubPages false",
     "prepublishOnly": "npm run build",
-    "coverage": "nyc npm test"
+    "coverage": "nyc npm test",
+    "route-test": "cross-env TS_NODE_PROJECT=test/route-test/tsconfig.test.json mocha --require ts-node/register --timeout 10000 --exit \"test/route-test/**/*.integration.test.ts\"",
+    "route-test:server": "cross-env TS_NODE_PROJECT=test/route-test/tsconfig.test.json ts-node test/route-test/server.ts"
   },
   "engines": {
     "node": ">=24"
@@ -27,6 +29,7 @@
     "@typescript-eslint/eslint-plugin": "8.39.0",
     "@typescript-eslint/parser": "8.39.0",
     "chai": "^4.4.1",
+    "cross-env": "^10.1.0",
     "del-cli": "^6.0.0",
     "eslint": "^9.32.0",
     "mocha": "^11.2.2",
