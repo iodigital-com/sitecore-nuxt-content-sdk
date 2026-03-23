@@ -1,12 +1,12 @@
-[**@sitecore-content-sdk/nuxt**](../../README.md)
+[**@sitecore-content-sdk/nuxt**](../README.md)
 
 ***
 
-[@sitecore-content-sdk/nuxt](../../README.md) / [index](../README.md) / ProxyHandler
+[@sitecore-content-sdk/nuxt](../README.md) / ProxyHandler
 
 # Abstract Class: ProxyHandler
 
-Defined in: [proxy/proxy.ts:60](https://github.com/weareyou/sitecore-nuxt-content-sdk/blob/3e9ab6412a8024198f4f7a02eed2152a06d94ee6/packages/nuxt/src/proxy/proxy.ts#L60)
+Defined in: [proxy/proxy.ts:60](https://github.com/weareyou/sitecore-nuxt-content-sdk/blob/cbeed6fb90db4605b6095a61687601d54c102027/packages/nuxt/src/proxy/proxy.ts#L60)
 
 Proxy handler class to be extended by all proxy implementations
 
@@ -30,7 +30,7 @@ Proxy handler class to be extended by all proxy implementations
 
 > `abstract` **handle**(`event`): `Promise`\<`void`\>
 
-Defined in: [proxy/proxy.ts:65](https://github.com/weareyou/sitecore-nuxt-content-sdk/blob/3e9ab6412a8024198f4f7a02eed2152a06d94ee6/packages/nuxt/src/proxy/proxy.ts#L65)
+Defined in: [proxy/proxy.ts:65](https://github.com/weareyou/sitecore-nuxt-content-sdk/blob/cbeed6fb90db4605b6095a61687601d54c102027/packages/nuxt/src/proxy/proxy.ts#L65)
 
 Handler method to execute proxy logic
 

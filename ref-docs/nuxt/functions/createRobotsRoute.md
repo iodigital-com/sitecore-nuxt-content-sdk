@@ -1,14 +1,14 @@
-[**@sitecore-content-sdk/nuxt**](../../README.md)
+[**@sitecore-content-sdk/nuxt**](../README.md)
 
 ***
 
-[@sitecore-content-sdk/nuxt](../../README.md) / [index](../README.md) / createRobotsRoute
+[@sitecore-content-sdk/nuxt](../README.md) / createRobotsRoute
 
 # Function: createRobotsRoute()
 
 > **createRobotsRoute**(`options`): `object`
 
-Defined in: [route-handlers/robots-route.ts:45](https://github.com/weareyou/sitecore-nuxt-content-sdk/blob/3e9ab6412a8024198f4f7a02eed2152a06d94ee6/packages/nuxt/src/route-handlers/robots-route.ts#L45)
+Defined in: [route-handlers/robots-route.ts:45](https://github.com/weareyou/sitecore-nuxt-content-sdk/blob/cbeed6fb90db4605b6095a61687601d54c102027/packages/nuxt/src/route-handlers/robots-route.ts#L45)
 
 Creates a route handler to serve the robots.txt file.
 Fetches robots.txt content from Sitecore and serves it as plain text.
@@ -18,7 +18,7 @@ Resolves the correct site based on the incoming request hostname.
 
 | Parameter | Type | Description |
 | ------ | ------ | ------ |
-| `options` | `RobotsRouteOptions` | The options for the route handler. |
+| `options` | [`RobotsRouteOptions`](../type-aliases/RobotsRouteOptions.md) | The options for the route handler. |
 
 ## Returns
 

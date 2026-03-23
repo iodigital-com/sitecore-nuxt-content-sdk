@@ -1,3 +1,3 @@
-export { createRobotsRoute } from './robots-route';
-export { createEditingConfigRoute } from './editing-config-route';
-export { createEditingRenderRoute } from './editing-render-route';
+export { createRobotsRoute, RobotsRouteOptions } from './robots-route';
+export { createEditingConfigRoute, EditingConfigRouteConfig } from './editing-config-route';
+export { createEditingRenderRoute, EditingRenderRouteConfig } from './editing-render-route';

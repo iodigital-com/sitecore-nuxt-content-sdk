@@ -1,14 +1,14 @@
-[**@sitecore-content-sdk/nuxt**](../../README.md)
+[**@sitecore-content-sdk/nuxt**](../README.md)
 
 ***
 
-[@sitecore-content-sdk/nuxt](../../README.md) / [index](../README.md) / createEditingConfigRoute
+[@sitecore-content-sdk/nuxt](../README.md) / createEditingConfigRoute
 
 # Function: createEditingConfigRoute()
 
 > **createEditingConfigRoute**(`config`): `object`
 
-Defined in: [route-handlers/editing-config-route.ts:51](https://github.com/weareyou/sitecore-nuxt-content-sdk/blob/3e9ab6412a8024198f4f7a02eed2152a06d94ee6/packages/nuxt/src/route-handlers/editing-config-route.ts#L51)
+Defined in: [route-handlers/editing-config-route.ts:51](https://github.com/weareyou/sitecore-nuxt-content-sdk/blob/cbeed6fb90db4605b6095a61687601d54c102027/packages/nuxt/src/route-handlers/editing-config-route.ts#L51)
 
 Creates a route handler for the editing config API route (e.g. /api/editing/config).
 Provides configuration information to determine feature compatibility on the Sitecore Page Builder side.
@@ -17,7 +17,7 @@ Provides configuration information to determine feature compatibility on the Sit
 
 | Parameter | Type | Description |
 | ------ | ------ | ------ |
-| `config` | `EditingConfigRouteConfig` | The configuration for the editing config route. |
+| `config` | [`EditingConfigRouteConfig`](../type-aliases/EditingConfigRouteConfig.md) | The configuration for the editing config route. |
 
 ## Returns
 

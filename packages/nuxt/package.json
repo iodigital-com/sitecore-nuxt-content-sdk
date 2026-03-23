@@ -9,7 +9,7 @@
     "clean": "del-cli dist types",
     "lint": "eslint \"./src/**/*.ts\"",
     "test": "mocha --require ./test/setup.js \"./src/**/*.test.ts\" --exit",
-    "generate-docs": "npx typedoc --plugin typedoc-plugin-markdown --outputFileStrategy Members --parametersFormat table --readme none --out ../../ref-docs/nuxt --entryPoints src/index.ts --entryPoints src/proxy/index.ts --entryPoints src/routes/index.ts --githubPages false",
+    "generate-docs": "npx typedoc --plugin typedoc-plugin-markdown --outputFileStrategy Members --parametersFormat table --readme none --out ../../ref-docs/nuxt --entryPoints src/index.ts --githubPages false",
     "prepublishOnly": "npm run build",
     "coverage": "nyc npm test",
     "route-test": "cross-env TS_NODE_PROJECT=test/route-test/tsconfig.test.json mocha --require ts-node/register --timeout 10000 --exit \"test/route-test/**/*.integration.test.ts\"",

@@ -1,14 +1,14 @@
-[**@sitecore-content-sdk/nuxt**](../../README.md)
+[**@sitecore-content-sdk/nuxt**](../README.md)
 
 ***
 
-[@sitecore-content-sdk/nuxt](../../README.md) / [index](../README.md) / createEditingRenderRoute
+[@sitecore-content-sdk/nuxt](../README.md) / createEditingRenderRoute
 
 # Function: createEditingRenderRoute()
 
 > **createEditingRenderRoute**(`config`): `object`
 
-Defined in: route-handlers/editing-render-route.ts:71
+Defined in: [route-handlers/editing-render-route.ts:71](https://github.com/weareyou/sitecore-nuxt-content-sdk/blob/cbeed6fb90db4605b6095a61687601d54c102027/packages/nuxt/src/route-handlers/editing-render-route.ts#L71)
 
 Creates a route handler for the editing render API route (e.g. '/api/editing/render').
 Handles GET requests for page rendering and POST requests for server action proxying.
@@ -17,7 +17,7 @@ Handles GET requests for page rendering and POST requests for server action prox
 
 | Parameter | Type | Description |
 | ------ | ------ | ------ |
-| `config` | `EditingRenderRouteConfig` | The configuration for the route handler. |
+| `config` | [`EditingRenderRouteConfig`](../type-aliases/EditingRenderRouteConfig.md) | The configuration for the route handler. |
 
 ## Returns
 

@@ -29,7 +29,7 @@ import {
 import debug from '../debug';
 import type { AllowedQueryParams } from '../sharedTypes/editing-types';
 
-type EditingRenderRouteConfig = {
+export type EditingRenderRouteConfig = {
   /**
    * Function used to determine route/page URL to render.
    * This may be necessary for certain custom Nuxt routing configurations.
