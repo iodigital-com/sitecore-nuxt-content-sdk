@@ -12,7 +12,7 @@ import {
   GraphQLClientOptions,
 } from '@sitecore-content-sdk/content/client';
 import { GraphQLRequestClientFactory } from '@sitecore-content-sdk/core';
-import { PreviewCookies } from '../editing/utils';
+import { PreviewCookies } from '../utils/editing-utils';
 
 /**
  * Header name used to share the rewrite path between proxies in the middleware chain.

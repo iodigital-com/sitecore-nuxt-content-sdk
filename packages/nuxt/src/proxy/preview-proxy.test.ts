@@ -4,7 +4,7 @@ import sinon from 'sinon';
 import { createEvent, H3Event } from 'h3';
 import { IncomingMessage, ServerResponse } from 'http';
 import { PreviewProxy } from './preview-proxy';
-import { PreviewCookies } from '../editing/utils';
+import { PreviewCookies } from '../utils/editing-utils';
 
 chai.use(sinonChai);
 const expect = chai.expect;
