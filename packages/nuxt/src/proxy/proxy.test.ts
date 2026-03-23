@@ -44,6 +44,10 @@ const createMockEvent = (
 };
 
 describe('ProxyBase', () => {
+  /**
+   * SampleProxy is a simple implementation of ProxyBase used for testing the base proxy functionality.
+   * It exposes protected methods of ProxyBase for testing purposes, simply to avoid TypeScript IDE errors when calling protected methods.
+   */
   class SampleProxy extends ProxyBase {
     _defaultHostname = this.defaultHostname;
 
