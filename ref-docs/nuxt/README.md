@@ -38,5 +38,6 @@
 
 - [createEditingConfigRoute](functions/createEditingConfigRoute.md)
 - [createEditingRenderRoute](functions/createEditingRenderRoute.md)
+- [createHealthcheckRoute](functions/createHealthcheckRoute.md)
 - [createRobotsRoute](functions/createRobotsRoute.md)
 - [getEditingSecret](functions/getEditingSecret.md)

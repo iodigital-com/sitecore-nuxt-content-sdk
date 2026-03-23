@@ -8,7 +8,7 @@
 
 > **createEditingRenderRoute**(`config`): `object`
 
-Defined in: [route-handlers/editing-render-route.ts:71](https://github.com/weareyou/sitecore-nuxt-content-sdk/blob/cbeed6fb90db4605b6095a61687601d54c102027/packages/nuxt/src/route-handlers/editing-render-route.ts#L71)
+Defined in: [route-handlers/editing-render-route.ts:71](https://github.com/weareyou/sitecore-nuxt-content-sdk/blob/f80042c2cdb2d6731477308eb241c6154ecb9ef4/packages/nuxt/src/route-handlers/editing-render-route.ts#L71)
 
 Creates a route handler for the editing render API route (e.g. '/api/editing/render').
 Handles GET requests for page rendering and POST requests for server action proxying.
