@@ -8,7 +8,7 @@
 
 > **EditingRenderRouteConfig** = `object`
 
-Defined in: [route-handlers/editing-render-route.ts:32](https://github.com/weareyou/sitecore-nuxt-content-sdk/blob/f585b36b7f1297cd5452a1dd44d8c7ad219f27dc/packages/nuxt/src/route-handlers/editing-render-route.ts#L32)
+Defined in: [route-handlers/editing-render-route.ts:32](https://github.com/weareyou/sitecore-nuxt-content-sdk/blob/2ebe9a4e8989b0dc5e5026e2ba2b8c152837d436/packages/nuxt/src/route-handlers/editing-render-route.ts#L32)
 
 ## Properties
 
@@ -16,7 +16,7 @@ Defined in: [route-handlers/editing-render-route.ts:32](https://github.com/weare
 
 > `optional` **allowedQueryParams**: [`AllowedQueryParams`](AllowedQueryParams.md)
 
-Defined in: [route-handlers/editing-render-route.ts:46](https://github.com/weareyou/sitecore-nuxt-content-sdk/blob/f585b36b7f1297cd5452a1dd44d8c7ad219f27dc/packages/nuxt/src/route-handlers/editing-render-route.ts#L46)
+Defined in: [route-handlers/editing-render-route.ts:46](https://github.com/weareyou/sitecore-nuxt-content-sdk/blob/2ebe9a4e8989b0dc5e5026e2ba2b8c152837d436/packages/nuxt/src/route-handlers/editing-render-route.ts#L46)
 
 Query string parameters to allow and include in the search params.
 - Array: each item is a parameter name (string) or an object `{ name, required? }`.
@@ -28,7 +28,7 @@ Query string parameters to allow and include in the search params.
 
 > `optional` **resolvePageUrl**: (`itemPath`) => `string`
 
-Defined in: [route-handlers/editing-render-route.ts:40](https://github.com/weareyou/sitecore-nuxt-content-sdk/blob/f585b36b7f1297cd5452a1dd44d8c7ad219f27dc/packages/nuxt/src/route-handlers/editing-render-route.ts#L40)
+Defined in: [route-handlers/editing-render-route.ts:40](https://github.com/weareyou/sitecore-nuxt-content-sdk/blob/2ebe9a4e8989b0dc5e5026e2ba2b8c152837d436/packages/nuxt/src/route-handlers/editing-render-route.ts#L40)
 
 Function used to determine route/page URL to render.
 This may be necessary for certain custom Nuxt routing configurations.

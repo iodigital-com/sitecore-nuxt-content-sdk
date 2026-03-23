@@ -8,7 +8,7 @@
 
 > **ProxyBaseConfig** = `object`
 
-Defined in: [proxy/proxy.ts:31](https://github.com/weareyou/sitecore-nuxt-content-sdk/blob/f585b36b7f1297cd5452a1dd44d8c7ad219f27dc/packages/nuxt/src/proxy/proxy.ts#L31)
+Defined in: [proxy/proxy.ts:31](https://github.com/weareyou/sitecore-nuxt-content-sdk/blob/2ebe9a4e8989b0dc5e5026e2ba2b8c152837d436/packages/nuxt/src/proxy/proxy.ts#L31)
 
 The interface for the Proxy configuration
 
@@ -18,7 +18,7 @@ The interface for the Proxy configuration
 
 > `optional` **defaultHostname**: `string`
 
-Defined in: [proxy/proxy.ts:42](https://github.com/weareyou/sitecore-nuxt-content-sdk/blob/f585b36b7f1297cd5452a1dd44d8c7ad219f27dc/packages/nuxt/src/proxy/proxy.ts#L42)
+Defined in: [proxy/proxy.ts:42](https://github.com/weareyou/sitecore-nuxt-content-sdk/blob/2ebe9a4e8989b0dc5e5026e2ba2b8c152837d436/packages/nuxt/src/proxy/proxy.ts#L42)
 
 Fallback hostname in case `host` header is not present
 
@@ -34,7 +34,7 @@ localhost
 
 > `optional` **defaultLanguage**: `string`
 
-Defined in: [proxy/proxy.ts:48](https://github.com/weareyou/sitecore-nuxt-content-sdk/blob/f585b36b7f1297cd5452a1dd44d8c7ad219f27dc/packages/nuxt/src/proxy/proxy.ts#L48)
+Defined in: [proxy/proxy.ts:48](https://github.com/weareyou/sitecore-nuxt-content-sdk/blob/2ebe9a4e8989b0dc5e5026e2ba2b8c152837d436/packages/nuxt/src/proxy/proxy.ts#L48)
 
 Fallback language in locale cannot be extracted from request URL
 
@@ -50,7 +50,7 @@ Fallback language in locale cannot be extracted from request URL
 
 > **sites**: `SiteInfo`[]
 
-Defined in: [proxy/proxy.ts:53](https://github.com/weareyou/sitecore-nuxt-content-sdk/blob/f585b36b7f1297cd5452a1dd44d8c7ad219f27dc/packages/nuxt/src/proxy/proxy.ts#L53)
+Defined in: [proxy/proxy.ts:53](https://github.com/weareyou/sitecore-nuxt-content-sdk/blob/2ebe9a4e8989b0dc5e5026e2ba2b8c152837d436/packages/nuxt/src/proxy/proxy.ts#L53)
 
 Site resolution implementation by name/hostname
 
@@ -60,7 +60,7 @@ Site resolution implementation by name/hostname
 
 > `optional` **skip**: (`event`) => `boolean`
 
-Defined in: [proxy/proxy.ts:36](https://github.com/weareyou/sitecore-nuxt-content-sdk/blob/f585b36b7f1297cd5452a1dd44d8c7ad219f27dc/packages/nuxt/src/proxy/proxy.ts#L36)
+Defined in: [proxy/proxy.ts:36](https://github.com/weareyou/sitecore-nuxt-content-sdk/blob/2ebe9a4e8989b0dc5e5026e2ba2b8c152837d436/packages/nuxt/src/proxy/proxy.ts#L36)
 
 function, determines if the proxy execution should be skipped, based on cookie, header, or other considerations
 
