@@ -4008,7 +4008,7 @@ __metadata:
     typedoc-plugin-markdown: "npm:^4.0.0"
     typescript: "npm:~5.8.3"
   peerDependencies:
-    nuxt: ^3.0.0
+    nuxt: ^4.0.0
     typescript: ^5.4.0
   peerDependenciesMeta:
     typescript:
