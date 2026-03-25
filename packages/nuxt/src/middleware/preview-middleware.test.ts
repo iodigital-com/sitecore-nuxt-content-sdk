@@ -3,7 +3,7 @@ import sinonChai from 'sinon-chai';
 import sinon from 'sinon';
 import { createEvent, H3Event } from 'h3';
 import { IncomingMessage, ServerResponse } from 'http';
-import { PreviewProxy } from './preview-proxy';
+import { PreviewMiddleware } from './preview-middleware';
 import { PreviewCookies } from '../utils/editing-utils';
 
 chai.use(sinonChai);
@@ -28,7 +28,7 @@ const createMockEvent = (
   return createEvent(req, res);
 };
 
-describe('PreviewProxy', () => {
+describe('PreviewMiddleware', () => {
   const sandbox = sinon.createSandbox();
 
   afterEach(() => {
@@ -36,61 +36,61 @@ describe('PreviewProxy', () => {
   });
 
   it('should bypass cache when preview cookie is present', async () => {
-    const proxy = new PreviewProxy({ sites: [] });
+    const middleware = new PreviewMiddleware({ sites: [] });
     const event = createMockEvent({}, { [PreviewCookies.PREVIEW]: 'true' });
 
-    await proxy.handle(event);
+    await middleware.handle(event);
 
     expect(event.node.res.getHeader('Cache-Control')).to.equal('no-store, must-revalidate');
   });
 
   it('should not bypass cache when preview cookie is absent', async () => {
-    const proxy = new PreviewProxy({ sites: [] });
+    const middleware = new PreviewMiddleware({ sites: [] });
     const event = createMockEvent();
 
-    await proxy.handle(event);
+    await middleware.handle(event);
 
     expect(event.node.res.getHeader('Cache-Control')).to.equal(undefined);
   });
 
   it('should skip when path is an API route', async () => {
-    const proxy = new PreviewProxy({ sites: [] });
+    const middleware = new PreviewMiddleware({ sites: [] });
     const event = createMockEvent({}, { [PreviewCookies.PREVIEW]: 'true' }, '/api/editing/config');
 
-    await proxy.handle(event);
+    await middleware.handle(event);
 
     expect(event.node.res.getHeader('Cache-Control')).to.equal(undefined);
   });
 
   it('should skip when path is a Nuxt internal route', async () => {
-    const proxy = new PreviewProxy({ sites: [] });
+    const middleware = new PreviewMiddleware({ sites: [] });
     const event = createMockEvent({}, { [PreviewCookies.PREVIEW]: 'true' }, '/_nuxt/webpack');
 
-    await proxy.handle(event);
+    await middleware.handle(event);
 
     expect(event.node.res.getHeader('Cache-Control')).to.equal(undefined);
   });
 
   it('should skip when custom skip function returns true', async () => {
-    const proxy = new PreviewProxy({
+    const middleware = new PreviewMiddleware({
       sites: [],
       skip: (event: H3Event) => event.path === '/skip-me',
     });
     const event = createMockEvent({}, { [PreviewCookies.PREVIEW]: 'true' }, '/skip-me');
 
-    await proxy.handle(event);
+    await middleware.handle(event);
 
     expect(event.node.res.getHeader('Cache-Control')).to.equal(undefined);
   });
 
   it('should catch errors and log them without throwing', async () => {
-    const proxy = new PreviewProxy({ sites: [] });
+    const middleware = new PreviewMiddleware({ sites: [] });
     const consoleErrorStub = sandbox.stub(console, 'error');
     const event = createMockEvent({}, { [PreviewCookies.PREVIEW]: 'true' });
 
-    sandbox.stub(proxy as any, 'bypassCache').throws(new Error('Unexpected failure'));
+    sandbox.stub(middleware as any, 'bypassCache').throws(new Error('Unexpected failure'));
 
-    await proxy.handle(event);
+    await middleware.handle(event);
 
     expect(consoleErrorStub.called).to.equal(true);
   });

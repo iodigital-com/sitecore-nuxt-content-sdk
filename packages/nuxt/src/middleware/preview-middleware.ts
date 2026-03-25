@@ -1,11 +1,11 @@
 import { H3Event, setResponseHeader } from 'h3';
-import { ProxyBase, ProxyBaseConfig } from './proxy';
+import { MiddlewareBase, MiddlewareBaseConfig } from './middleware';
 
 /**
- * Configuration for the PreviewProxy.
+ * Configuration for the PreviewMiddleware.
  * @public
  */
-export type PreviewProxyConfig = ProxyBaseConfig;
+export type PreviewMiddlewareConfig = MiddlewareBaseConfig;
 
 /**
  * Proxy handler for bypassing cache in editing and preview mode.
@@ -16,18 +16,18 @@ export type PreviewProxyConfig = ProxyBaseConfig;
  * @public
  * @example
  * // server/middleware/05.preview.ts
- * import { PreviewProxy } from '@sitecore-content-sdk/nuxt/proxy';
+ * import { PreviewMiddleware } from '@sitecore-content-sdk/nuxt/proxy';
  * import sites from '../../.sitecore/sites.json';
  *
- * const proxy = new PreviewProxy({ sites });
+ * const middleware = new PreviewMiddleware({ sites });
  *
- * export default defineEventHandler((event) => proxy.handle(event));
+ * export default defineEventHandler((event) => middleware.handle(event));
  */
-export class PreviewProxy extends ProxyBase {
+export class PreviewMiddleware extends MiddlewareBase {
   /**
-   * @param {PreviewProxyConfig} config Preview proxy configuration
+   * @param {PreviewMiddlewareConfig} config Preview middleware configuration
    */
-  constructor(protected config: PreviewProxyConfig) {
+  constructor(protected config: PreviewMiddlewareConfig) {
     super(config);
   }
 

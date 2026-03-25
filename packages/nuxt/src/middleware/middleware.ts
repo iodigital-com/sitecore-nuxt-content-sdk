@@ -20,18 +20,18 @@ import { PreviewCookies } from '../utils/editing-utils';
 export const REWRITE_HEADER_NAME = 'x-sc-rewrite';
 
 /**
- *  Header name used by LocaleProxy to share the resolved locale with subsequent proxies.
+ *  Header name used by LocaleMiddleware to share the resolved locale with subsequent proxies.
  */
 export const LOCALE_HEADER_NAME = 'x-sc-locale';
 
 /**
- * The interface for the Proxy configuration
+ * The interface for the Middleware configuration
  * @public
  */
-export type ProxyBaseConfig = {
+export type MiddlewareBaseConfig = {
   /**
-   * function, determines if the proxy execution should be skipped, based on cookie, header, or other considerations
-   * @param {H3Event} event event object from proxy handler
+   * function, determines if the middleware execution should be skipped, based on cookie, header, or other considerations
+   * @param {H3Event} event event object from middleware handler
    */
   skip?: (event: H3Event) => boolean;
 
@@ -54,29 +54,29 @@ export type ProxyBaseConfig = {
 };
 
 /**
- * Proxy handler class to be extended by all proxy implementations
+ * Middleware handler class to be extended by all middleware implementations
  * @public
  */
-export abstract class ProxyHandler {
+export abstract class MiddlewareHandler {
   /**
-   * Handler method to execute proxy logic
+   * Handler method to execute middleware logic
    * @param {H3Event} event
    */
   abstract handle(event: H3Event): Promise<void>;
 }
 
 /**
- * Base proxy class with common methods
+ * Base middleware class with common methods
  * @public
  */
-export abstract class ProxyBase extends ProxyHandler {
+export abstract class MiddlewareBase extends MiddlewareHandler {
   protected defaultHostname: string;
   protected siteResolver: SiteResolver;
 
   /**
-   * @param {ProxyBaseConfig} config - Proxy configuration
+   * @param {MiddlewareBaseConfig} config - Middleware configuration
    */
-  constructor(protected config: ProxyBaseConfig) {
+  constructor(protected config: MiddlewareBaseConfig) {
     super();
     this.siteResolver = new SiteResolver(config.sites);
     this.defaultHostname = config.defaultHostname || 'localhost';

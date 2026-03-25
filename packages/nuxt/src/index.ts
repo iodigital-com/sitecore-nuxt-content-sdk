@@ -1,4 +1,4 @@
-export * from './proxy';
+export * from './middleware';
 export * from './route-handlers';
 export * from './sharedTypes/component-props';
 export * from './sharedTypes/editing-types';
