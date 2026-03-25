@@ -117,7 +117,7 @@ describe('createRobotsRoute', () => {
 
   it('should use x-forwarded-host header when present', async () => {
     const event = createMockEvent({
-      'x-forwarded-host': 'proxy.forwarded.com',
+      'x-forwarded-host': 'middleware.forwarded.com',
       host: 'localhost:3000',
     });
 
@@ -126,7 +126,7 @@ describe('createRobotsRoute', () => {
 
     await route.handle(event);
 
-    expect(siteResolverStub.getByHost).to.have.been.calledWith('proxy.forwarded.com');
+    expect(siteResolverStub.getByHost).to.have.been.calledWith('middleware.forwarded.com');
   });
 
   it('should cache the response for default revalidate time', async () => {

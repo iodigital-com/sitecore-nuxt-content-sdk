@@ -6,9 +6,9 @@
 
 ## Classes
 
-- [PreviewProxy](classes/PreviewProxy.md)
-- [ProxyBase](classes/ProxyBase.md)
-- [ProxyHandler](classes/ProxyHandler.md)
+- [MiddlewareBase](classes/MiddlewareBase.md)
+- [MiddlewareHandler](classes/MiddlewareHandler.md)
+- [PreviewMiddleware](classes/PreviewMiddleware.md)
 
 ## Interfaces
 
@@ -24,9 +24,9 @@
 - [ComponentPropsFetchFunction](type-aliases/ComponentPropsFetchFunction.md)
 - [EditingConfigRouteConfig](type-aliases/EditingConfigRouteConfig.md)
 - [EditingRenderRouteConfig](type-aliases/EditingRenderRouteConfig.md)
+- [MiddlewareBaseConfig](type-aliases/MiddlewareBaseConfig.md)
 - [NuxtContentSdkComponent](type-aliases/NuxtContentSdkComponent.md)
-- [PreviewProxyConfig](type-aliases/PreviewProxyConfig.md)
-- [ProxyBaseConfig](type-aliases/ProxyBaseConfig.md)
+- [PreviewMiddlewareConfig](type-aliases/PreviewMiddlewareConfig.md)
 - [RobotsRouteOptions](type-aliases/RobotsRouteOptions.md)
 
 ## Variables

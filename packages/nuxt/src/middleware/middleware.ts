@@ -113,11 +113,11 @@ export abstract class MiddlewareBase extends MiddlewareHandler {
   }
 
   /**
-   * Determines if the proxy should be skipped for the current request.
+   * Determines if the middleware should be skipped for the current request.
    * Returns true for Nuxt internal routes, API routes, Sitecore API routes,
    * or when the custom skip function returns true.
    * @param {H3Event} event
-   * @returns {boolean} true if the proxy should be skipped
+   * @returns {boolean} true if the middleware should be skipped
    */
   protected disabled(event: H3Event): boolean {
     const pathname = getRequestURL(event).pathname;

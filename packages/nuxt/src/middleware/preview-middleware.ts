@@ -8,7 +8,7 @@ import { MiddlewareBase, MiddlewareBaseConfig } from './middleware';
 export type PreviewMiddlewareConfig = MiddlewareBaseConfig;
 
 /**
- * Proxy handler for bypassing cache in editing and preview mode.
+ * Middleware handler for bypassing cache in editing and preview mode.
  * Reads the preview cookie set by EditingRenderRoute and sets cache control
  * headers to prevent cached responses from being served to the Page Builder editor.
  * NOTE: This middleware has no dependencies on other proxies
@@ -16,7 +16,7 @@ export type PreviewMiddlewareConfig = MiddlewareBaseConfig;
  * @public
  * @example
  * // server/middleware/05.preview.ts
- * import { PreviewMiddleware } from '@sitecore-content-sdk/nuxt/proxy';
+ * import { PreviewMiddleware } from '@sitecore-content-sdk/nuxt/middleware';
  * import sites from '../../.sitecore/sites.json';
  *
  * const middleware = new PreviewMiddleware({ sites });
@@ -49,7 +49,10 @@ export class PreviewMiddleware extends MiddlewareBase {
         this.bypassCache(event);
       }
     } catch (error) {
-      console.error('PreviewProxy failed:', error instanceof Error ? error.message : String(error));
+      console.error(
+        'PreviewMiddleware failed:',
+        error instanceof Error ? error.message : String(error)
+      );
     }
   }
 

@@ -105,7 +105,7 @@ export const getRequiredEditingParamsList = (mode: EditingRenderQueryParams['mod
 
 /**
  * Gets the preview cookies to enable preview mode.
- * Sets the site cookie and preview cookie on the internal request so the PreviewProxy
+ * Sets the site cookie and preview cookie on the internal request so the ProxyMiddleware
  * can read them and bypass the cache.
  * @param {string} site current site name
  * @returns {string[]} list of cookies to set
