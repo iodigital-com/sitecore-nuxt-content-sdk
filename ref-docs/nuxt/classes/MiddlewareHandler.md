@@ -6,7 +6,7 @@
 
 # Abstract Class: MiddlewareHandler
 
-Defined in: [middleware/middleware.ts:60](https://github.com/weareyou/sitecore-nuxt-content-sdk/blob/687cd21a1a19d11600207468f41db199d3c9f00b/packages/nuxt/src/middleware/middleware.ts#L60)
+Defined in: [middleware/middleware.ts:60](https://github.com/weareyou/sitecore-nuxt-content-sdk/blob/da1d006b8bfc42633b1a2946103c3bd212874990/packages/nuxt/src/middleware/middleware.ts#L60)
 
 Middleware handler class to be extended by all middleware implementations
 
@@ -30,7 +30,7 @@ Middleware handler class to be extended by all middleware implementations
 
 > `abstract` **handle**(`event`): `Promise`\<`void`\>
 
-Defined in: [middleware/middleware.ts:65](https://github.com/weareyou/sitecore-nuxt-content-sdk/blob/687cd21a1a19d11600207468f41db199d3c9f00b/packages/nuxt/src/middleware/middleware.ts#L65)
+Defined in: [middleware/middleware.ts:65](https://github.com/weareyou/sitecore-nuxt-content-sdk/blob/da1d006b8bfc42633b1a2946103c3bd212874990/packages/nuxt/src/middleware/middleware.ts#L65)
 
 Handler method to execute middleware logic
 

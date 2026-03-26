@@ -8,7 +8,7 @@
 
 > **createRobotsRoute**(`options`): `object`
 
-Defined in: [route-handlers/robots-route.ts:45](https://github.com/weareyou/sitecore-nuxt-content-sdk/blob/687cd21a1a19d11600207468f41db199d3c9f00b/packages/nuxt/src/route-handlers/robots-route.ts#L45)
+Defined in: [route-handlers/robots-route.ts:45](https://github.com/weareyou/sitecore-nuxt-content-sdk/blob/da1d006b8bfc42633b1a2946103c3bd212874990/packages/nuxt/src/route-handlers/robots-route.ts#L45)
 
 Creates a route handler to serve the robots.txt file.
 Fetches robots.txt content from Sitecore and serves it as plain text.

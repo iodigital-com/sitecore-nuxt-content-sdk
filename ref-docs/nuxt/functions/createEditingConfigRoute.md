@@ -8,7 +8,7 @@
 
 > **createEditingConfigRoute**(`config`): `object`
 
-Defined in: [route-handlers/editing-config-route.ts:51](https://github.com/weareyou/sitecore-nuxt-content-sdk/blob/687cd21a1a19d11600207468f41db199d3c9f00b/packages/nuxt/src/route-handlers/editing-config-route.ts#L51)
+Defined in: [route-handlers/editing-config-route.ts:51](https://github.com/weareyou/sitecore-nuxt-content-sdk/blob/da1d006b8bfc42633b1a2946103c3bd212874990/packages/nuxt/src/route-handlers/editing-config-route.ts#L51)
 
 Creates a route handler for the editing config API route (e.g. /api/editing/config).
 Provides configuration information to determine feature compatibility on the Sitecore Page Builder side.
