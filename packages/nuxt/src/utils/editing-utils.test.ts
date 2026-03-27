@@ -1,7 +1,5 @@
-/* eslint-disable no-unused-expressions */
-import chai, { expect } from 'chai';
 import sinon from 'sinon';
-import sinonChai from 'sinon-chai';
+import { describe, it, expect, beforeEach, afterEach } from 'vitest';
 import { createEvent } from 'h3';
 import { IncomingMessage, ServerResponse } from 'http';
 import { DesignLibraryMode, PREVIEW_KEY } from '@sitecore-content-sdk/content/editing';
@@ -20,8 +18,6 @@ import {
   getCSPHeader,
 } from './editing-utils';
 import { LayoutServicePageState } from '@sitecore-content-sdk/content/layout';
-
-chai.use(sinonChai);
 
 const createMockEvent = (headers: Record<string, string> = {}) => {
   const req = new IncomingMessage(null as any);
@@ -58,7 +54,7 @@ describe('editing-utils', () => {
 
       const params = mapEditingParams(query);
 
-      expect(params).to.deep.equal({
+      expect(params).toEqual({
         itemId: 'item-123',
         componentUid: 'component-uid',
         renderingId: 'rendering-456',
@@ -86,7 +82,7 @@ describe('editing-utils', () => {
 
       const params = mapEditingParams(query);
 
-      expect(params).to.deep.equal({
+      expect(params).toEqual({
         itemId: 'item-123',
         componentUid: 'component-uid',
         renderingId: 'rendering-456',
@@ -112,7 +108,7 @@ describe('editing-utils', () => {
 
       const params = mapEditingParams(query);
 
-      expect(params).to.deep.equal({
+      expect(params).toEqual({
         site: 'test-site',
         itemId: 'item-123',
         language: 'en',
@@ -133,7 +129,7 @@ describe('editing-utils', () => {
 
       const params = mapEditingParams(query);
 
-      expect(params.variantIds).to.equal(DEFAULT_VARIANT);
+      expect(params.variantIds).toBe(DEFAULT_VARIANT);
     });
 
     it('should handle empty variant string', () => {
@@ -147,7 +143,7 @@ describe('editing-utils', () => {
 
       const params = mapEditingParams(query);
 
-      expect(params.variantIds).to.equal(DEFAULT_VARIANT);
+      expect(params.variantIds).toBe(DEFAULT_VARIANT);
     });
 
     it('should handle undefined values gracefully', () => {
@@ -160,9 +156,9 @@ describe('editing-utils', () => {
 
       const params = mapEditingParams(query);
 
-      expect(params).to.have.property('site', undefined);
-      expect(params).to.have.property('itemId', undefined);
-      expect(params).to.have.property('language', undefined);
+      expect(params.site).toBe(undefined);
+      expect(params.itemId).toBe(undefined);
+      expect(params.language).toBe(undefined);
     });
   });
 
@@ -172,10 +168,7 @@ describe('editing-utils', () => {
 
       const result = getAllowedQueryParams(queryParams);
 
-      expect(result).to.deep.equal({
-        missingAllowedParams: [],
-        allowedQueryParams: {},
-      });
+      expect(result).toEqual({ missingAllowedParams: [], allowedQueryParams: {} });
     });
 
     it('should return empty results when allowedParams is an empty array', () => {
@@ -183,28 +176,18 @@ describe('editing-utils', () => {
 
       const result = getAllowedQueryParams(queryParams, []);
 
-      expect(result).to.deep.equal({
-        missingAllowedParams: [],
-        allowedQueryParams: {},
-      });
+      expect(result).toEqual({ missingAllowedParams: [], allowedQueryParams: {} });
     });
 
     it('should extract allowed parameters when they exist in queryParams', () => {
-      const queryParams = {
-        param1: 'value1',
-        param2: 'value2',
-        param3: 'value3',
-      };
+      const queryParams = { param1: 'value1', param2: 'value2', param3: 'value3' };
       const allowedParams = [{ name: 'param1' }, { name: 'param3' }];
 
       const result = getAllowedQueryParams(queryParams, allowedParams);
 
-      expect(result).to.deep.equal({
+      expect(result).toEqual({
         missingAllowedParams: [],
-        allowedQueryParams: {
-          param1: 'value1',
-          param3: 'value3',
-        },
+        allowedQueryParams: { param1: 'value1', param3: 'value3' },
       });
     });
 
@@ -218,11 +201,9 @@ describe('editing-utils', () => {
 
       const result = getAllowedQueryParams(queryParams, allowedParams);
 
-      expect(result).to.deep.equal({
+      expect(result).toEqual({
         missingAllowedParams: ['param2', 'param3'],
-        allowedQueryParams: {
-          param1: 'value1',
-        },
+        allowedQueryParams: { param1: 'value1' },
       });
     });
 
@@ -236,19 +217,14 @@ describe('editing-utils', () => {
 
       const result = getAllowedQueryParams(queryParams, allowedParams);
 
-      expect(result).to.deep.equal({
+      expect(result).toEqual({
         missingAllowedParams: [],
-        allowedQueryParams: {
-          param1: 'value1',
-        },
+        allowedQueryParams: { param1: 'value1' },
       });
     });
 
     it('should handle mixed required and optional parameters', () => {
-      const queryParams = {
-        requiredParam1: 'value1',
-        optionalParam1: 'value2',
-      };
+      const queryParams = { requiredParam1: 'value1', optionalParam1: 'value2' };
       const allowedParams = [
         { name: 'requiredParam1', required: true },
         { name: 'requiredParam2', required: true },
@@ -258,35 +234,25 @@ describe('editing-utils', () => {
 
       const result = getAllowedQueryParams(queryParams, allowedParams);
 
-      expect(result).to.deep.equal({
+      expect(result).toEqual({
         missingAllowedParams: ['requiredParam2'],
-        allowedQueryParams: {
-          requiredParam1: 'value1',
-          optionalParam1: 'value2',
-        },
+        allowedQueryParams: { requiredParam1: 'value1', optionalParam1: 'value2' },
       });
     });
 
     it('should call resolver function with query parameter keys', () => {
-      const queryParams = {
-        param1: 'value1',
-        param2: 'value2',
-        param3: 'value3',
-      };
+      const queryParams = { param1: 'value1', param2: 'value2', param3: 'value3' };
       const resolver = sandbox
         .stub()
         .returns([{ name: 'param1', required: true }, { name: 'param2' }]);
 
       const result = getAllowedQueryParams(queryParams, resolver);
 
-      expect(resolver).to.have.been.calledOnce;
-      expect(resolver).to.have.been.calledWith(['param1', 'param2', 'param3']);
-      expect(result).to.deep.equal({
+      sinon.assert.calledOnce(resolver);
+      sinon.assert.calledWith(resolver, ['param1', 'param2', 'param3']);
+      expect(result).toEqual({
         missingAllowedParams: [],
-        allowedQueryParams: {
-          param1: 'value1',
-          param2: 'value2',
-        },
+        allowedQueryParams: { param1: 'value1', param2: 'value2' },
       });
     });
 
@@ -296,11 +262,8 @@ describe('editing-utils', () => {
 
       const result = getAllowedQueryParams(queryParams, resolver);
 
-      expect(resolver).to.have.been.calledOnce;
-      expect(result).to.deep.equal({
-        missingAllowedParams: [],
-        allowedQueryParams: {},
-      });
+      sinon.assert.calledOnce(resolver);
+      expect(result).toEqual({ missingAllowedParams: [], allowedQueryParams: {} });
     });
 
     it('should handle resolver function with missing required parameters', () => {
@@ -312,20 +275,14 @@ describe('editing-utils', () => {
 
       const result = getAllowedQueryParams(queryParams, resolver);
 
-      expect(result).to.deep.equal({
+      expect(result).toEqual({
         missingAllowedParams: ['param2'],
-        allowedQueryParams: {
-          param1: 'value1',
-        },
+        allowedQueryParams: { param1: 'value1' },
       });
     });
 
     it('should handle undefined query parameter values correctly', () => {
-      const queryParams = {
-        param1: 'value1',
-        param2: undefined,
-        param3: 'value3',
-      };
+      const queryParams = { param1: 'value1', param2: undefined, param3: 'value3' };
       const allowedParams = [
         { name: 'param1' },
         { name: 'param2', required: true },
@@ -334,12 +291,9 @@ describe('editing-utils', () => {
 
       const result = getAllowedQueryParams(queryParams, allowedParams);
 
-      expect(result).to.deep.equal({
+      expect(result).toEqual({
         missingAllowedParams: ['param2'],
-        allowedQueryParams: {
-          param1: 'value1',
-          param3: 'value3',
-        },
+        allowedQueryParams: { param1: 'value1', param3: 'value3' },
       });
     });
 
@@ -361,7 +315,7 @@ describe('editing-utils', () => {
 
       const result = getAllowedQueryParams(queryParams, allowedParams);
 
-      expect(result).to.deep.equal({
+      expect(result).toEqual({
         missingAllowedParams: [],
         allowedQueryParams: {
           stringParam: 'string-value',
@@ -379,7 +333,7 @@ describe('editing-utils', () => {
 
       const result = getAllowedQueryParams(queryParams, allowedParams);
 
-      expect(result).to.deep.equal({
+      expect(result).toEqual({
         missingAllowedParams: ['param1'],
         allowedQueryParams: {},
       });
@@ -401,7 +355,7 @@ describe('editing-utils', () => {
 
       const result = getAllowedQueryParams(queryParams, allowedParams);
 
-      expect(result).to.deep.equal({
+      expect(result).toEqual({
         missingAllowedParams: [],
         allowedQueryParams: {
           nullParam: null,
@@ -413,21 +367,14 @@ describe('editing-utils', () => {
     });
 
     it('should handle array with string parameters (optional by default)', () => {
-      const queryParams = {
-        param1: 'value1',
-        param2: 'value2',
-        param3: 'value3',
-      };
+      const queryParams = { param1: 'value1', param2: 'value2', param3: 'value3' };
       const allowedParams = ['param1', 'param2', 'missingParam'];
 
       const result = getAllowedQueryParams(queryParams, allowedParams);
 
-      expect(result).to.deep.equal({
+      expect(result).toEqual({
         missingAllowedParams: [],
-        allowedQueryParams: {
-          param1: 'value1',
-          param2: 'value2',
-        },
+        allowedQueryParams: { param1: 'value1', param2: 'value2' },
       });
     });
 
@@ -449,7 +396,7 @@ describe('editing-utils', () => {
 
       const result = getAllowedQueryParams(queryParams, allowedParams);
 
-      expect(result).to.deep.equal({
+      expect(result).toEqual({
         missingAllowedParams: ['missingRequiredParam'],
         allowedQueryParams: {
           stringParam1: 'value1',
@@ -470,13 +417,10 @@ describe('editing-utils', () => {
 
       const result = getAllowedQueryParams(queryParams, resolver);
 
-      expect(resolver).to.have.been.calledOnce;
-      expect(result).to.deep.equal({
+      sinon.assert.calledOnce(resolver);
+      expect(result).toEqual({
         missingAllowedParams: [],
-        allowedQueryParams: {
-          prefixedParam1: 'value1',
-          prefixedParam2: 'value2',
-        },
+        allowedQueryParams: { prefixedParam1: 'value1', prefixedParam2: 'value2' },
       });
     });
 
@@ -499,8 +443,8 @@ describe('editing-utils', () => {
 
       const result = getAllowedQueryParams(queryParams, resolver);
 
-      expect(resolver).to.have.been.calledOnce;
-      expect(result).to.deep.equal({
+      sinon.assert.calledOnce(resolver);
+      expect(result).toEqual({
         missingAllowedParams: ['missingRequiredParam'],
         allowedQueryParams: {
           stringParam1: 'value1',
@@ -514,29 +458,25 @@ describe('editing-utils', () => {
 
   describe('getPreviewCookies', () => {
     it('should generate correct preview cookies for a site', () => {
-      const siteName = 'test-site';
+      const cookies = getPreviewCookies('test-site');
 
-      const cookies = getPreviewCookies(siteName);
-
-      expect(cookies).to.have.length(2);
-      expect(cookies[0]).to.equal(`${SITE_KEY}=test-site; Path=/; HttpOnly; SameSite=None; Secure`);
-      expect(cookies[1]).to.equal(`${PREVIEW_KEY}=true; Path=/; HttpOnly; SameSite=None; Secure`);
+      expect(cookies).toHaveLength(2);
+      expect(cookies[0]).toBe(`${SITE_KEY}=test-site; Path=/; HttpOnly; SameSite=None; Secure`);
+      expect(cookies[1]).toBe(`${PREVIEW_KEY}=true; Path=/; HttpOnly; SameSite=None; Secure`);
     });
 
     it('should handle empty site name', () => {
       const cookies = getPreviewCookies('');
 
-      expect(cookies).to.have.length(2);
-      expect(cookies[0]).to.equal(`${SITE_KEY}=; Path=/; HttpOnly; SameSite=None; Secure`);
-      expect(cookies[1]).to.equal(`${PREVIEW_KEY}=true; Path=/; HttpOnly; SameSite=None; Secure`);
+      expect(cookies).toHaveLength(2);
+      expect(cookies[0]).toBe(`${SITE_KEY}=; Path=/; HttpOnly; SameSite=None; Secure`);
+      expect(cookies[1]).toBe(`${PREVIEW_KEY}=true; Path=/; HttpOnly; SameSite=None; Secure`);
     });
 
     it('should handle site name with special characters', () => {
-      const siteName = 'test-site-with_special.chars';
+      const cookies = getPreviewCookies('test-site-with_special.chars');
 
-      const cookies = getPreviewCookies(siteName);
-
-      expect(cookies[0]).to.equal(
+      expect(cookies[0]).toBe(
         `${SITE_KEY}=test-site-with_special.chars; Path=/; HttpOnly; SameSite=None; Secure`
       );
     });
@@ -544,9 +484,7 @@ describe('editing-utils', () => {
 
   describe('getRequiredEditingParamsList', () => {
     it('should return component required params for design library mode', () => {
-      const params = getRequiredEditingParamsList(DesignLibraryMode.Normal);
-
-      expect(params).to.deep.equal([
+      expect(getRequiredEditingParamsList(DesignLibraryMode.Normal)).toEqual([
         'sc_site',
         'sc_itemid',
         'sc_renderingId',
@@ -557,9 +495,7 @@ describe('editing-utils', () => {
     });
 
     it('should return component required params for library metadata mode', () => {
-      const params = getRequiredEditingParamsList(DesignLibraryMode.Metadata);
-
-      expect(params).to.deep.equal([
+      expect(getRequiredEditingParamsList(DesignLibraryMode.Metadata)).toEqual([
         'sc_site',
         'sc_itemid',
         'sc_renderingId',
@@ -570,21 +506,33 @@ describe('editing-utils', () => {
     });
 
     it('should return editing required params for edit mode', () => {
-      const params = getRequiredEditingParamsList(LayoutServicePageState.Edit);
-
-      expect(params).to.deep.equal(['sc_site', 'sc_itemid', 'sc_lang', 'route', 'mode']);
+      expect(getRequiredEditingParamsList(LayoutServicePageState.Edit)).toEqual([
+        'sc_site',
+        'sc_itemid',
+        'sc_lang',
+        'route',
+        'mode',
+      ]);
     });
 
     it('should return editing required params for preview mode', () => {
-      const params = getRequiredEditingParamsList(LayoutServicePageState.Preview);
-
-      expect(params).to.deep.equal(['sc_site', 'sc_itemid', 'sc_lang', 'route', 'mode']);
+      expect(getRequiredEditingParamsList(LayoutServicePageState.Preview)).toEqual([
+        'sc_site',
+        'sc_itemid',
+        'sc_lang',
+        'route',
+        'mode',
+      ]);
     });
 
     it('should return editing required params for undefined mode', () => {
-      const params = getRequiredEditingParamsList(undefined as any);
-
-      expect(params).to.deep.equal(['sc_site', 'sc_itemid', 'sc_lang', 'route', 'mode']);
+      expect(getRequiredEditingParamsList(undefined as any)).toEqual([
+        'sc_site',
+        'sc_itemid',
+        'sc_lang',
+        'route',
+        'mode',
+      ]);
     });
   });
 
@@ -596,9 +544,7 @@ describe('editing-utils', () => {
       headers.set('content-type', 'application/json');
       headers.set('user-agent', 'Mozilla/5.0');
 
-      const result = getHeadersForPropagation(headers);
-
-      expect(result).to.deep.equal({
+      expect(getHeadersForPropagation(headers)).toEqual({
         authorization: 'Bearer token123',
         cookie: 'session=abc123',
       });
@@ -609,23 +555,15 @@ describe('editing-utils', () => {
       headers.set('content-type', 'application/json');
       headers.set('user-agent', 'Mozilla/5.0');
 
-      const result = getHeadersForPropagation(headers);
-
-      expect(result).to.deep.equal({});
+      expect(getHeadersForPropagation(headers)).toEqual({});
     });
 
     it('should handle empty headers object', () => {
-      const result = getHeadersForPropagation(new Headers());
-
-      expect(result).to.deep.equal({});
+      expect(getHeadersForPropagation(new Headers())).toEqual({});
     });
 
     it('should ignore headers with null values', () => {
-      const headers = new Headers();
-      // Headers API ignores null/undefined so we test with missing headers
-      const result = getHeadersForPropagation(headers);
-
-      expect(result).to.deep.equal({});
+      expect(getHeadersForPropagation(new Headers())).toEqual({});
     });
   });
 
@@ -640,127 +578,89 @@ describe('editing-utils', () => {
 
     it('should successfully fetch and return HTML', async () => {
       const mockHtml = '<html><body>Content</body></html>';
-
       mockDataFetcher.get.resolves({ data: mockHtml } as any);
-
-      const propagatedQsParams = { param1: 'value1' };
-      const propagatedHeaders = { authorization: 'Bearer token' };
-      const cookies = ['session=abc123', 'other=xyz789'];
 
       const result = await getEditingRequestHtml(
         requestUrl,
-        propagatedQsParams,
-        propagatedHeaders,
-        cookies,
+        { param1: 'value1' },
+        { authorization: 'Bearer token' },
+        ['session=abc123', 'other=xyz789'],
         mockDataFetcher as any
       );
 
-      expect(result).to.equal(mockHtml);
-      expect(mockDataFetcher.get).to.have.been.calledOnce;
+      expect(result).toBe(mockHtml);
+      sinon.assert.calledOnce(mockDataFetcher.get);
 
       const calledUrl = mockDataFetcher.get.firstCall.args[0];
-      expect(calledUrl).to.include('param1=value1');
-      expect(calledUrl).to.include('timestamp=');
+      expect(calledUrl).toContain('param1=value1');
+      expect(calledUrl).toContain('timestamp=');
 
       const calledOptions = mockDataFetcher.get.firstCall.args[1] as any;
-      expect(calledOptions.headers.cookie).to.equal('session=abc123;other=xyz789');
-      expect(calledOptions.credentials).to.equal('include');
+      expect(calledOptions.headers.cookie).toBe('session=abc123;other=xyz789');
+      expect(calledOptions.credentials).toBe('include');
     });
 
     it('should append cookies to existing cookie header', async () => {
-      const mockHtml = '<html><body>Content</body></html>';
-
-      mockDataFetcher.get.resolves({ data: mockHtml } as any);
-
-      const propagatedHeaders = {
-        authorization: 'Bearer token',
-        cookie: 'existing=cookie',
-      };
-      const cookies = ['session=abc123'];
+      mockDataFetcher.get.resolves({ data: '<html><body>Content</body></html>' } as any);
 
       await getEditingRequestHtml(
         requestUrl,
         {},
-        propagatedHeaders,
-        cookies,
+        { authorization: 'Bearer token', cookie: 'existing=cookie' },
+        ['session=abc123'],
         mockDataFetcher as any
       );
 
       const calledOptions = mockDataFetcher.get.firstCall.args[1] as any;
-      expect(calledOptions.headers.cookie).to.equal('existing=cookie;session=abc123');
+      expect(calledOptions.headers.cookie).toBe('existing=cookie;session=abc123');
     });
 
     it('should set __content_sdk_preview header', async () => {
-      const mockHtml = '<html><body>Content</body></html>';
-      mockDataFetcher.get.resolves({ data: mockHtml } as any);
+      mockDataFetcher.get.resolves({ data: '<html><body>Content</body></html>' } as any);
 
       await getEditingRequestHtml(requestUrl, {}, {}, [], mockDataFetcher as any);
 
       const calledOptions = mockDataFetcher.get.firstCall.args[1] as any;
-      expect(calledOptions.headers.__content_sdk_preview).to.equal('1');
+      expect(calledOptions.headers.__content_sdk_preview).toBe('1');
     });
 
     it('should handle 404 response without throwing', async () => {
-      const mock404Response = {
-        data: '<html><body>404 Not Found</body></html>',
-      };
-
-      const error = {
-        response: {
-          status: 404,
-          ...mock404Response,
-        },
-      };
-
-      mockDataFetcher.get.rejects(error);
+      mockDataFetcher.get.rejects({
+        response: { status: 404, data: '<html><body>404 Not Found</body></html>' },
+      });
 
       const result = await getEditingRequestHtml(requestUrl, {}, {}, [], mockDataFetcher as any);
 
-      expect(result).to.equal('<html><body>404 Not Found</body></html>');
+      expect(result).toBe('<html><body>404 Not Found</body></html>');
     });
 
     it('should throw error for non-404 fetch failures', async () => {
-      const error = {
-        response: {
-          status: 500,
-        },
-      };
-
+      const error = { response: { status: 500 } };
       mockDataFetcher.get.rejects(error);
 
-      try {
-        await getEditingRequestHtml(requestUrl, {}, {}, [], mockDataFetcher as any);
-        expect.fail('Should have thrown an error');
-      } catch (err) {
-        expect(err).to.equal(error);
-      }
+      await expect(
+        getEditingRequestHtml(requestUrl, {}, {}, [], mockDataFetcher as any)
+      ).rejects.toEqual(error);
     });
 
     it('should throw error when HTML is empty', async () => {
       mockDataFetcher.get.resolves({ data: '' } as any);
 
-      try {
-        await getEditingRequestHtml(requestUrl, {}, {}, [], mockDataFetcher as any);
-        expect.fail('Should have thrown an error');
-      } catch (err) {
-        expect((err as Error).message).to.include('Failed to render html for');
-      }
+      await expect(
+        getEditingRequestHtml(requestUrl, {}, {}, [], mockDataFetcher as any)
+      ).rejects.toThrow('Failed to render html for');
     });
 
     it('should throw error when HTML is null', async () => {
       mockDataFetcher.get.resolves({ data: null } as any);
 
-      try {
-        await getEditingRequestHtml(requestUrl, {}, {}, [], mockDataFetcher as any);
-        expect.fail('Should have thrown an error');
-      } catch (err) {
-        expect((err as Error).message).to.include('Failed to render html for');
-      }
+      await expect(
+        getEditingRequestHtml(requestUrl, {}, {}, [], mockDataFetcher as any)
+      ).rejects.toThrow('Failed to render html for');
     });
 
     it('should add timestamp to URL', async () => {
-      const mockHtml = '<html><body>Content</body></html>';
-      mockDataFetcher.get.resolves({ data: mockHtml } as any);
+      mockDataFetcher.get.resolves({ data: '<html><body>Content</body></html>' } as any);
 
       const beforeTime = Date.now();
       await getEditingRequestHtml(requestUrl, {}, {}, [], mockDataFetcher as any);
@@ -769,152 +669,139 @@ describe('editing-utils', () => {
       const calledUrl = mockDataFetcher.get.firstCall.args[0];
       const url = new URL(calledUrl);
       const timestamp = parseInt(url.searchParams.get('timestamp') || '0', 10);
-      expect(timestamp).to.be.at.least(beforeTime);
-      expect(timestamp).to.be.at.most(afterTime);
+      expect(timestamp).toBeGreaterThanOrEqual(beforeTime);
+      expect(timestamp).toBeLessThanOrEqual(afterTime);
     });
   });
 
   describe('isDesignLibraryPreviewData', () => {
     it('should return true for valid design library preview data', () => {
-      const data = { mode: DesignLibraryMode.Normal, otherProp: 'value' };
-      expect(isDesignLibraryPreviewData(data)).to.be.true;
+      expect(isDesignLibraryPreviewData({ mode: DesignLibraryMode.Normal })).toBe(true);
     });
 
     it('should return true for library metadata mode', () => {
-      const data = { mode: DesignLibraryMode.Metadata, otherProp: 'value' };
-      expect(isDesignLibraryPreviewData(data)).to.be.true;
+      expect(isDesignLibraryPreviewData({ mode: DesignLibraryMode.Metadata })).toBe(true);
     });
 
     it('should return false for non-design library mode', () => {
-      const data = { mode: 'edit', otherProp: 'value' };
-      expect(isDesignLibraryPreviewData(data)).to.be.false;
+      expect(isDesignLibraryPreviewData({ mode: 'edit' })).toBe(false);
     });
 
     it('should return false for null data', () => {
-      expect(isDesignLibraryPreviewData(null)).to.be.false;
+      expect(isDesignLibraryPreviewData(null)).toBe(false);
     });
 
     it('should return false for undefined data', () => {
-      expect(isDesignLibraryPreviewData(undefined)).to.be.false;
+      expect(isDesignLibraryPreviewData(undefined)).toBe(false);
     });
 
     it('should return false for non-object data', () => {
-      expect(isDesignLibraryPreviewData('string')).to.be.false;
+      expect(isDesignLibraryPreviewData('string')).toBe(false);
     });
 
     it('should return false for object without mode property', () => {
-      expect(isDesignLibraryPreviewData({ otherProp: 'value' })).to.be.false;
+      expect(isDesignLibraryPreviewData({ otherProp: 'value' })).toBe(false);
     });
 
     it('should return false for empty object', () => {
-      expect(isDesignLibraryPreviewData({})).to.be.false;
+      expect(isDesignLibraryPreviewData({})).toBe(false);
     });
   });
 
   describe('resolveServerUrl', () => {
     it('should return SITECORE_INTERNAL_EDITING_HOST_URL when set', () => {
       process.env.SITECORE_INTERNAL_EDITING_HOST_URL = 'https://custom-host.com';
-      const event = createMockEvent({ host: 'example.com' });
-
-      expect(resolveServerUrl(event)).to.equal('https://custom-host.com');
+      expect(resolveServerUrl(createMockEvent({ host: 'example.com' }))).toBe(
+        'https://custom-host.com'
+      );
     });
 
     it('should return localhost:3000 for XM Cloud deployments', () => {
       process.env.SITECORE = 'true';
-      const event = createMockEvent({ host: 'example.com' });
-
-      expect(resolveServerUrl(event)).to.equal('http://localhost:3000');
+      expect(resolveServerUrl(createMockEvent({ host: 'example.com' }))).toBe(
+        'http://localhost:3000'
+      );
     });
 
     it('should use https for Vercel deployment', () => {
       process.env.VERCEL = 'true';
-      const event = createMockEvent({ host: 'vercel-app.vercel.app' });
-
-      expect(resolveServerUrl(event)).to.equal('https://vercel-app.vercel.app');
+      expect(resolveServerUrl(createMockEvent({ host: 'vercel-app.vercel.app' }))).toBe(
+        'https://vercel-app.vercel.app'
+      );
     });
 
     it('should use https for Netlify deployment', () => {
       process.env.NETLIFY = 'true';
-      const event = createMockEvent({ host: 'netlify-app.netlify.app' });
-
-      expect(resolveServerUrl(event)).to.equal('https://netlify-app.netlify.app');
+      expect(resolveServerUrl(createMockEvent({ host: 'netlify-app.netlify.app' }))).toBe(
+        'https://netlify-app.netlify.app'
+      );
     });
 
     it('should use http for local development', () => {
-      const event = createMockEvent({ host: 'localhost:3000' });
-
-      expect(resolveServerUrl(event)).to.equal('http://localhost:3000');
+      expect(resolveServerUrl(createMockEvent({ host: 'localhost:3000' }))).toBe(
+        'http://localhost:3000'
+      );
     });
 
     it('should prioritize SITECORE_INTERNAL_EDITING_HOST_URL over environment flags', () => {
       process.env.SITECORE_INTERNAL_EDITING_HOST_URL = 'https://priority-host.com';
       process.env.VERCEL = 'true';
       process.env.SITECORE = 'true';
-      const event = createMockEvent({ host: 'example.com' });
-
-      expect(resolveServerUrl(event)).to.equal('https://priority-host.com');
+      expect(resolveServerUrl(createMockEvent({ host: 'example.com' }))).toBe(
+        'https://priority-host.com'
+      );
     });
 
     it('should prioritize SITECORE over hosting platform flags', () => {
       process.env.SITECORE = 'true';
       process.env.VERCEL = 'true';
       process.env.NETLIFY = 'true';
-      const event = createMockEvent({ host: 'example.com' });
-
-      expect(resolveServerUrl(event)).to.equal('http://localhost:3000');
+      expect(resolveServerUrl(createMockEvent({ host: 'example.com' }))).toBe(
+        'http://localhost:3000'
+      );
     });
 
     it('should prioritize x-forwarded-host over host header', () => {
-      const event = createMockEvent({
-        'x-forwarded-host': 'forwarded.com',
-        host: 'localhost:3000',
-      });
-
-      expect(resolveServerUrl(event)).to.equal('http://forwarded.com');
+      expect(
+        resolveServerUrl(
+          createMockEvent({ 'x-forwarded-host': 'forwarded.com', host: 'localhost:3000' })
+        )
+      ).toBe('http://forwarded.com');
     });
 
     it('should handle missing host header gracefully', () => {
-      const event = createMockEvent({});
-
-      expect(resolveServerUrl(event)).to.equal('http://undefined');
+      expect(resolveServerUrl(createMockEvent({}))).toBe('http://undefined');
     });
   });
 
   describe('getCSPHeader', () => {
     it('should return CSP header with default allowed origins', () => {
       const result = getCSPHeader();
-
-      expect(result).to.include("frame-ancestors 'self'");
-      expect(result).to.include('https://pages.sitecorecloud.io');
+      expect(result).toContain("frame-ancestors 'self'");
+      expect(result).toContain('https://pages.sitecorecloud.io');
     });
 
     it('should include custom allowed origins from environment', () => {
       process.env.JSS_ALLOWED_ORIGINS = 'https://custom1.com,https://custom2.com';
-
       const result = getCSPHeader();
-
-      expect(result).to.include("frame-ancestors 'self'");
-      expect(result).to.include('https://custom1.com');
-      expect(result).to.include('https://custom2.com');
-      expect(result).to.include('https://pages.sitecorecloud.io');
+      expect(result).toContain("frame-ancestors 'self'");
+      expect(result).toContain('https://custom1.com');
+      expect(result).toContain('https://custom2.com');
+      expect(result).toContain('https://pages.sitecorecloud.io');
     });
 
     it('should handle empty JSS_ALLOWED_ORIGINS', () => {
       process.env.JSS_ALLOWED_ORIGINS = '';
-
       const result = getCSPHeader();
-
-      expect(result).to.include("frame-ancestors 'self'");
-      expect(result).to.include('https://pages.sitecorecloud.io');
+      expect(result).toContain("frame-ancestors 'self'");
+      expect(result).toContain('https://pages.sitecorecloud.io');
     });
 
     it('should handle JSS_ALLOWED_ORIGINS with spaces', () => {
       process.env.JSS_ALLOWED_ORIGINS = ' https://custom1.com , https://custom2.com ';
-
       const result = getCSPHeader();
-
-      expect(result).to.include('https://custom1.com');
-      expect(result).to.include('https://custom2.com');
+      expect(result).toContain('https://custom1.com');
+      expect(result).toContain('https://custom2.com');
     });
 
     it('should include origins from both env and defaults even if duplicated', () => {
@@ -923,8 +810,8 @@ describe('editing-utils', () => {
       const result = getCSPHeader();
 
       const matches = (result.match(/https:\/\/pages\.sitecorecloud\.io/g) || []).length;
-      expect(matches).to.be.at.least(1);
-      expect(result).to.include('https://custom.com');
+      expect(matches).toBeGreaterThanOrEqual(1);
+      expect(result).toContain('https://custom.com');
     });
   });
 });

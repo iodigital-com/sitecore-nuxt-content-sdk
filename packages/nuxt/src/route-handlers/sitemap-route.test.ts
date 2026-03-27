@@ -1,8 +1,5 @@
-/* eslint-disable no-unused-expressions */
-import chai, { expect } from 'chai';
 import sinon from 'sinon';
-import sinonChai from 'sinon-chai';
-import proxyquire from 'proxyquire';
+import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest';
 import { createEvent } from 'h3';
 import { IncomingMessage, ServerResponse } from 'http';
 import { SitecoreClient } from '@sitecore-content-sdk/content/client';
@@ -11,7 +8,17 @@ import { constants } from '@sitecore-content-sdk/core';
 
 const { ERROR_MESSAGES } = constants;
 
-chai.use(sinonChai);
+vi.mock('nitro/cache', () => ({ defineCachedFunction: vi.fn() }));
+vi.mock('@sitecore-content-sdk/content/site', async (importOriginal) => {
+  const actual = await importOriginal<typeof import('@sitecore-content-sdk/content/site')>();
+  return { ...actual, SiteResolver: vi.fn() };
+});
+
+// @ts-ignore - nitro/cache uses ESM-only exports (.mjs) incompatible with CommonJS moduleResolution.
+// Resolved via vitest.config.ts alias at test runtime.
+import { defineCachedFunction } from 'nitro/cache';
+import { SiteResolver } from '@sitecore-content-sdk/content/site';
+import { createSitemapRoute } from './sitemap-route';
 
 const createMockEvent = (headers: Record<string, string> = {}, path: string = '/') => {
   const req = new IncomingMessage(null as any);
@@ -41,8 +48,6 @@ const readBody = (event: ReturnType<typeof createMockEvent>): Promise<string> =>
 describe('createSitemapRoute', () => {
   const sandbox = sinon.createSandbox();
   let sitecoreClientStub: sinon.SinonStubbedInstance<SitecoreClient>;
-  let sitemapRouteModule: any;
-  let defineCachedFunctionStub: sinon.SinonStub;
   let siteResolverStub: { getByHost: sinon.SinonStub; getByName: sinon.SinonStub };
   let route: any;
 
@@ -62,16 +67,12 @@ describe('createSitemapRoute', () => {
       (hostName: string) => sites.find((site) => site.hostName === hostName) || sites[1]
     );
 
-    defineCachedFunctionStub = sandbox.stub().callsFake((fn) => fn);
+    vi.mocked(defineCachedFunction).mockImplementation(
+      (fn: (...args: unknown[]) => Promise<unknown>) => fn
+    );
+    vi.mocked(SiteResolver).mockReturnValue(siteResolverStub as any);
 
-    sitemapRouteModule = proxyquire('./sitemap-route', {
-      'nitro/cache': { defineCachedFunction: defineCachedFunctionStub },
-      '@sitecore-content-sdk/content/site': {
-        SiteResolver: sandbox.stub().returns(siteResolverStub),
-      },
-    });
-
-    route = sitemapRouteModule.createSitemapRoute({
+    route = createSitemapRoute({
       client: sitecoreClientStub as unknown as SitecoreClient,
       sites,
     });
@@ -79,6 +80,7 @@ describe('createSitemapRoute', () => {
 
   afterEach(() => {
     sandbox.restore();
+    vi.clearAllMocks();
   });
 
   describe('handle', () => {
@@ -95,15 +97,15 @@ describe('createSitemapRoute', () => {
       await route.handle(event);
       const body = await bodyPromise;
 
-      expect(sitecoreClientStub.getSiteMap).to.have.been.calledOnce;
-      expect(sitecoreClientStub.getSiteMap.firstCall.args[0]).to.deep.include({
+      sinon.assert.calledOnce(sitecoreClientStub.getSiteMap);
+      expect(sitecoreClientStub.getSiteMap.firstCall.args[0]).toMatchObject({
         reqHost: 'example.com',
         reqProtocol: 'https',
         id: '',
         siteName: 'test-site',
       });
-      expect(event.node.res.getHeader('Content-Type')).to.equal('text/xml;charset=utf-8');
-      expect(body).to.equal(xmlContent);
+      expect(event.node.res.getHeader('Content-Type')).toBe('text/xml;charset=utf-8');
+      expect(body).toBe(xmlContent);
     });
 
     it('should handle sitemap request with specific id parameter', async () => {
@@ -120,13 +122,13 @@ describe('createSitemapRoute', () => {
       await route.handle(event);
       const body = await bodyPromise;
 
-      expect(sitecoreClientStub.getSiteMap.firstCall.args[0]).to.deep.include({
+      expect(sitecoreClientStub.getSiteMap.firstCall.args[0]).toMatchObject({
         reqHost: 'example.com',
         reqProtocol: 'https',
         id: sitemapId,
         siteName: 'test-site',
       });
-      expect(body).to.equal(xmlContent);
+      expect(body).toBe(xmlContent);
     });
 
     it('should default to https protocol when x-forwarded-proto header is missing', async () => {
@@ -139,7 +141,7 @@ describe('createSitemapRoute', () => {
       await route.handle(event);
       await bodyPromise;
 
-      expect(sitecoreClientStub.getSiteMap.firstCall.args[0]).to.deep.include({
+      expect(sitecoreClientStub.getSiteMap.firstCall.args[0]).toMatchObject({
         reqHost: 'example.com',
         reqProtocol: 'https',
         siteName: 'test-site',
@@ -158,7 +160,7 @@ describe('createSitemapRoute', () => {
       await route.handle(event);
       await bodyPromise;
 
-      expect(sitecoreClientStub.getSiteMap).to.have.been.calledWithMatch({
+      sinon.assert.calledWithMatch(sitecoreClientStub.getSiteMap, {
         reqHost: 'example.com',
         siteName: 'test-site',
       });
@@ -174,28 +176,28 @@ describe('createSitemapRoute', () => {
       await route.handle(event);
       await bodyPromise;
 
-      expect(sitecoreClientStub.getSiteMap.firstCall.args[0]).to.deep.include({
+      expect(sitecoreClientStub.getSiteMap.firstCall.args[0]).toMatchObject({
         reqHost: '',
         reqProtocol: 'https',
       });
     });
 
     it('should cache the response for default revalidate time', async () => {
-      expect(defineCachedFunctionStub.callCount).to.equal(1);
-      expect(defineCachedFunctionStub.args[0][1].maxAge).to.equal(60);
+      expect(vi.mocked(defineCachedFunction)).toHaveBeenCalledOnce();
+      expect(vi.mocked(defineCachedFunction).mock.calls[0][1].maxAge).toBe(60);
     });
 
     it('should cache the response for custom revalidate time', async () => {
-      defineCachedFunctionStub.resetHistory();
+      vi.mocked(defineCachedFunction).mockClear();
 
-      route = sitemapRouteModule.createSitemapRoute({
+      route = createSitemapRoute({
         client: sitecoreClientStub,
         sites,
         revalidate: 10,
       });
 
-      expect(defineCachedFunctionStub.callCount).to.equal(1);
-      expect(defineCachedFunctionStub.args[0][1].maxAge).to.equal(10);
+      expect(vi.mocked(defineCachedFunction)).toHaveBeenCalledOnce();
+      expect(vi.mocked(defineCachedFunction).mock.calls[0][1].maxAge).toBe(10);
     });
 
     it('should return 404 when REDIRECT_404 error is thrown', async () => {
@@ -210,8 +212,8 @@ describe('createSitemapRoute', () => {
       await route.handle(event);
       const body = await bodyPromise;
 
-      expect(event.node.res.statusCode).to.equal(404);
-      expect(body).to.equal('Not Found');
+      expect(event.node.res.statusCode).toBe(404);
+      expect(body).toBe('Not Found');
     });
 
     it('should return 500 when any other error occurs', async () => {
@@ -226,8 +228,8 @@ describe('createSitemapRoute', () => {
       await route.handle(event);
       const body = await bodyPromise;
 
-      expect(event.node.res.statusCode).to.equal(500);
-      expect(body).to.equal(`Internal Server Error.  ${ERROR_MESSAGES.CONTACT_SUPPORT}`);
+      expect(event.node.res.statusCode).toBe(500);
+      expect(body).toBe(`Internal Server Error.  ${ERROR_MESSAGES.CONTACT_SUPPORT}`);
     });
   });
 });

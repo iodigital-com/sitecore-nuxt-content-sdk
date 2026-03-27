@@ -1,0 +1,69 @@
+<script setup lang="ts">
+import { computed, useSlots } from 'vue';
+import { isFieldValueEmpty } from '@sitecore-content-sdk/content/layout';
+
+defineOptions({
+  name: 'File',
+});
+
+export interface FileFieldValue {
+  [propName: string]: unknown;
+  src?: string;
+  title?: string;
+  displayName?: string;
+}
+
+/**
+ * The interface for the File field.
+ * @public
+ */
+export interface FileField {
+  value: FileFieldValue;
+}
+
+const props = defineProps<{
+  /** The file field data. */
+  field: FileFieldValue | FileField;
+}>();
+
+const slots = useSlots();
+
+const dynamicField = computed<FileFieldValue | FileField>(() => props.field);
+
+const isEmpty = computed(() => isFieldValueEmpty(dynamicField.value as any));
+
+const file = computed<FileFieldValue | null>(() => {
+  if (isEmpty.value) {
+    return null;
+  }
+
+  const df = dynamicField.value as FileFieldValue | FileField;
+
+  // handle link directly on field for forgetful devs
+  const candidate =
+    (df as FileFieldValue).src != null ? (df as FileFieldValue) : (df as FileField).value;
+
+  return candidate ?? null;
+});
+
+const linkText = computed(() => {
+  if (!file.value) return '';
+  return (file.value.title || file.value.displayName || '') as string;
+});
+
+const hasDefaultSlot = computed(() => !!slots.default);
+</script>
+
+<template>
+  <!-- Render nothing if field is empty or no file resolved -->
+  <template v-if="file && file.src">
+    <a :href="file.src" v-bind="$attrs">
+      <!-- Als er geen slot is, toon title/displayName als linktekst -->
+      <template v-if="!hasDefaultSlot && linkText">
+        {{ linkText }}
+      </template>
+      <!-- Kind-content equivalent van React's children -->
+      <slot></slot>
+    </a>
+  </template>
+</template>

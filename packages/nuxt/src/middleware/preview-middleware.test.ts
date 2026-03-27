@@ -1,13 +1,9 @@
-import chai from 'chai';
-import sinonChai from 'sinon-chai';
 import sinon from 'sinon';
+import { describe, it, expect, afterEach } from 'vitest';
 import { createEvent, H3Event } from 'h3';
 import { IncomingMessage, ServerResponse } from 'http';
 import { PreviewMiddleware } from './preview-middleware';
 import { PreviewCookies } from '../utils/editing-utils';
-
-chai.use(sinonChai);
-const expect = chai.expect;
 
 const createMockEvent = (
   headers: Record<string, string> = {},
@@ -41,7 +37,7 @@ describe('PreviewMiddleware', () => {
 
     await middleware.handle(event);
 
-    expect(event.node.res.getHeader('Cache-Control')).to.equal('no-store, must-revalidate');
+    expect(event.node.res.getHeader('Cache-Control')).toBe('no-store, must-revalidate');
   });
 
   it('should not bypass cache when preview cookie is absent', async () => {
@@ -50,7 +46,7 @@ describe('PreviewMiddleware', () => {
 
     await middleware.handle(event);
 
-    expect(event.node.res.getHeader('Cache-Control')).to.equal(undefined);
+    expect(event.node.res.getHeader('Cache-Control')).toBe(undefined);
   });
 
   it('should skip when path is an API route', async () => {
@@ -59,7 +55,7 @@ describe('PreviewMiddleware', () => {
 
     await middleware.handle(event);
 
-    expect(event.node.res.getHeader('Cache-Control')).to.equal(undefined);
+    expect(event.node.res.getHeader('Cache-Control')).toBe(undefined);
   });
 
   it('should skip when path is a Nuxt internal route', async () => {
@@ -68,7 +64,7 @@ describe('PreviewMiddleware', () => {
 
     await middleware.handle(event);
 
-    expect(event.node.res.getHeader('Cache-Control')).to.equal(undefined);
+    expect(event.node.res.getHeader('Cache-Control')).toBe(undefined);
   });
 
   it('should skip when custom skip function returns true', async () => {
@@ -80,7 +76,7 @@ describe('PreviewMiddleware', () => {
 
     await middleware.handle(event);
 
-    expect(event.node.res.getHeader('Cache-Control')).to.equal(undefined);
+    expect(event.node.res.getHeader('Cache-Control')).toBe(undefined);
   });
 
   it('should catch errors and log them without throwing', async () => {
@@ -92,6 +88,6 @@ describe('PreviewMiddleware', () => {
 
     await middleware.handle(event);
 
-    expect(consoleErrorStub.called).to.equal(true);
+    expect(consoleErrorStub.called).toBe(true);
   });
 });

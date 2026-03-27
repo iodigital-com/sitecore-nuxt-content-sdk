@@ -8,12 +8,12 @@
     "build": "npm run clean && tsc -p tsconfig.json && tsc -p tsconfig-esm.json",
     "clean": "del-cli dist types",
     "lint": "eslint \"./src/**/*.ts\"",
-    "test": "mocha --require ./test/setup.js \"./src/**/*.test.ts\" --exit",
+    "test": "vitest run",
     "generate-docs": "npx typedoc --plugin typedoc-plugin-markdown --outputFileStrategy Members --parametersFormat table --readme none --out ../../ref-docs/nuxt --entryPoints src/index.ts --githubPages false",
     "prepublishOnly": "npm run build",
-    "coverage": "nyc npm test",
-    "route-test": "cross-env TS_NODE_PROJECT=test/route-test/tsconfig.test.json mocha --require ts-node/register --timeout 10000 --exit \"test/route-test/**/*.integration.test.ts\"",
-    "route-test:server": "cross-env TS_NODE_PROJECT=test/route-test/tsconfig.test.json ts-node test/route-test/server.ts"
+    "coverage": "vitest run --coverage",
+    "route-test": "vitest run test/route-test",
+    "route-test:server": "tsx test/route-test/server.ts"
   },
   "engines": {
     "node": ">=24"
@@ -21,27 +21,27 @@
   "license": "Apache-2.0",
   "devDependencies": {
     "@types/chai": "^5.2.2",
-    "@types/mocha": "^10.0.10",
     "@types/node": "^24.10.4",
     "@types/proxyquire": "^1.3.31",
     "@types/sinon": "^17.0.4",
     "@types/sinon-chai": "^3.2.9",
     "@typescript-eslint/eslint-plugin": "8.39.0",
     "@typescript-eslint/parser": "8.39.0",
-    "chai": "^4.4.1",
+    "@vitejs/plugin-vue": "^5.0.0",
+    "@vitest/coverage-v8": "2.1.9",
     "cross-env": "^10.1.0",
     "del-cli": "^6.0.0",
     "eslint": "^9.32.0",
-    "mocha": "^11.2.2",
     "nitro": "^3.0.260311-beta",
-    "nyc": "^17.1.0",
     "proxyquire": "^2.1.3",
     "sinon": "^20.0.0",
-    "sinon-chai": "^3.7.0",
     "ts-node": "^10.9.2",
+    "tsx": "^4.21.0",
     "typedoc": "^0.27.0",
     "typedoc-plugin-markdown": "^4.0.0",
-    "typescript": "~5.8.3"
+    "typescript": "~5.8.3",
+    "vite": "^5.0.0",
+    "vitest": "^2.0.0"
   },
   "peerDependencies": {
     "nuxt": "^4.0.0",

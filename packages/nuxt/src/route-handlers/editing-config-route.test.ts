@@ -1,15 +1,17 @@
-/* eslint-disable no-unused-expressions */
-import chai, { expect } from 'chai';
 import sinon from 'sinon';
-import sinonChai from 'sinon-chai';
-import proxyquire from 'proxyquire';
+import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest';
 import { createEvent, H3Event } from 'h3';
 import { IncomingMessage, ServerResponse } from 'http';
 import { QUERY_PARAM_EDITING_SECRET } from '@sitecore-content-sdk/content/editing';
 import { NuxtContentSdkComponent } from '../sharedTypes/component-props';
 import { ComponentMap } from '@sitecore-content-sdk/vue';
 
-chai.use(sinonChai);
+vi.mock('../utils/utils', () => ({ getEditingSecret: vi.fn() }));
+vi.mock('@sitecore-content-sdk/core/tools', () => ({ getEnforcedCorsHeaders: vi.fn() }));
+
+import { getEditingSecret } from '../utils/utils';
+import { getEnforcedCorsHeaders } from '@sitecore-content-sdk/core/tools';
+import { createEditingConfigRoute } from './editing-config-route';
 
 const createMockEvent = (headers: Record<string, string> = {}, path: string = '/'): H3Event => {
   const req = new IncomingMessage(null as any);
@@ -39,9 +41,6 @@ const readBody = (event: H3Event): Promise<string> => {
 
 describe('createEditingConfigRoute', () => {
   const sandbox = sinon.createSandbox();
-  let EditingConfigRouteModule: any;
-  let getEditingSecretStub: sinon.SinonStub;
-  let getEnforcedCorsHeadersStub: sinon.SinonStub;
   let route: any;
 
   const allowedOrigin = 'https://allowed.com';
@@ -68,27 +67,20 @@ describe('createEditingConfigRoute', () => {
   };
 
   beforeEach(() => {
-    getEditingSecretStub = sandbox.stub().returns(secret);
-    getEnforcedCorsHeadersStub = sandbox.stub().returns(corsHeaders);
+    vi.mocked(getEditingSecret).mockReturnValue(secret);
+    vi.mocked(getEnforcedCorsHeaders).mockReturnValue(corsHeaders);
 
-    EditingConfigRouteModule = proxyquire('./editing-config-route', {
-      '../utils/utils': { getEditingSecret: getEditingSecretStub },
-      '@sitecore-content-sdk/core/tools': { getEnforcedCorsHeaders: getEnforcedCorsHeadersStub },
-    });
-
-    route = EditingConfigRouteModule.createEditingConfigRoute({
-      components: componentsMap,
-      metadata,
-    });
+    route = createEditingConfigRoute({ components: componentsMap, metadata });
   });
 
   afterEach(() => {
     sandbox.restore();
+    vi.clearAllMocks();
   });
 
   describe('GET handler', () => {
     it('should return 401 for invalid origin', async () => {
-      getEnforcedCorsHeadersStub.returns(null);
+      vi.mocked(getEnforcedCorsHeaders).mockReturnValue(null);
       const event = createMockEvent(
         { origin: allowedOrigin },
         `/?${QUERY_PARAM_EDITING_SECRET}=${secret}`
@@ -98,9 +90,9 @@ describe('createEditingConfigRoute', () => {
       await route.handle(event);
       const body = await bodyPromise;
 
-      expect(event.node.res.statusCode).to.equal(401);
-      expect(body).to.equal(JSON.stringify({ message: 'Invalid origin' }));
-      expect(event.node.res.getHeader('Content-Type')).to.equal('application/json');
+      expect(event.node.res.statusCode).toBe(401);
+      expect(body).toBe(JSON.stringify({ message: 'Invalid origin' }));
+      expect(event.node.res.getHeader('Content-Type')).toBe('application/json');
     });
 
     it('should return 401 for missing editing secret', async () => {
@@ -110,9 +102,9 @@ describe('createEditingConfigRoute', () => {
       await route.handle(event);
       const body = await bodyPromise;
 
-      expect(event.node.res.statusCode).to.equal(401);
-      expect(body).to.equal(JSON.stringify({ message: 'Missing or invalid editing secret' }));
-      expect(event.node.res.getHeader('Content-Type')).to.equal('application/json');
+      expect(event.node.res.statusCode).toBe(401);
+      expect(body).toBe(JSON.stringify({ message: 'Missing or invalid editing secret' }));
+      expect(event.node.res.getHeader('Content-Type')).toBe('application/json');
     });
 
     it('should return 401 for invalid editing secret', async () => {
@@ -125,9 +117,9 @@ describe('createEditingConfigRoute', () => {
       await route.handle(event);
       const body = await bodyPromise;
 
-      expect(event.node.res.statusCode).to.equal(401);
-      expect(body).to.equal(JSON.stringify({ message: 'Missing or invalid editing secret' }));
-      expect(event.node.res.getHeader('Content-Type')).to.equal('application/json');
+      expect(event.node.res.statusCode).toBe(401);
+      expect(body).toBe(JSON.stringify({ message: 'Missing or invalid editing secret' }));
+      expect(event.node.res.getHeader('Content-Type')).toBe('application/json');
     });
 
     it('should return 200 with config data for valid request', async () => {
@@ -140,14 +132,14 @@ describe('createEditingConfigRoute', () => {
       await route.handle(event);
       const body = await bodyPromise;
 
-      expect(event.node.res.statusCode).to.equal(200);
-      expect(body).to.equal(JSON.stringify(expectedResult));
-      expect(event.node.res.getHeader('Content-Type')).to.equal('application/json');
-      expect(event.node.res.getHeader('Access-Control-Allow-Origin')).to.equal(allowedOrigin);
-      expect(event.node.res.getHeader('Access-Control-Allow-Methods')).to.equal(
+      expect(event.node.res.statusCode).toBe(200);
+      expect(body).toBe(JSON.stringify(expectedResult));
+      expect(event.node.res.getHeader('Content-Type')).toBe('application/json');
+      expect(event.node.res.getHeader('Access-Control-Allow-Origin')).toBe(allowedOrigin);
+      expect(event.node.res.getHeader('Access-Control-Allow-Methods')).toBe(
         corsHeaders['Access-Control-Allow-Methods']
       );
-      expect(event.node.res.getHeader('Access-Control-Allow-Headers')).to.equal(
+      expect(event.node.res.getHeader('Access-Control-Allow-Headers')).toBe(
         corsHeaders['Access-Control-Allow-Headers']
       );
     });
@@ -160,14 +152,16 @@ describe('createEditingConfigRoute', () => {
 
       await route.handle(event);
 
-      expect(getEnforcedCorsHeadersStub).to.have.been.calledOnce;
-      const args = getEnforcedCorsHeadersStub.firstCall.args[0];
-      expect(args.requestMethod).to.equal('GET');
-      expect(args.headers.get('origin')).to.equal(allowedOrigin);
+      expect(vi.mocked(getEnforcedCorsHeaders)).toHaveBeenCalledOnce();
+      const args = vi.mocked(getEnforcedCorsHeaders).mock.calls[0][0];
+      expect(args.requestMethod).toBe('GET');
+      expect((args.headers as Headers).get('origin')).toBe(allowedOrigin);
     });
 
     it('should return 500 for unexpected errors', async () => {
-      getEditingSecretStub.throws(new Error('Unexpected error'));
+      vi.mocked(getEditingSecret).mockImplementation(() => {
+        throw new Error('Unexpected error');
+      });
       const event = createMockEvent(
         { origin: allowedOrigin },
         `/?${QUERY_PARAM_EDITING_SECRET}=${secret}`
@@ -177,8 +171,8 @@ describe('createEditingConfigRoute', () => {
       await route.handle(event);
       const body = await bodyPromise;
 
-      expect(event.node.res.statusCode).to.equal(500);
-      expect(body).to.equal('Internal Server Error');
+      expect(event.node.res.statusCode).toBe(500);
+      expect(body).toBe('Internal Server Error');
     });
   });
 
@@ -189,10 +183,7 @@ describe('createEditingConfigRoute', () => {
       customComponents.set('Component2', {});
       customComponents.set('Component3', {});
 
-      const customRoute = EditingConfigRouteModule.createEditingConfigRoute({
-        components: customComponents,
-        metadata,
-      });
+      const customRoute = createEditingConfigRoute({ components: customComponents, metadata });
 
       const event = createMockEvent(
         { origin: allowedOrigin },
@@ -203,10 +194,10 @@ describe('createEditingConfigRoute', () => {
       await customRoute.handle(event);
       const body = JSON.parse(await bodyPromise);
 
-      expect(event.node.res.statusCode).to.equal(200);
-      expect(body.components).to.deep.equal(['Component1', 'Component2', 'Component3']);
-      expect(body.framework).to.equal('nuxt');
-      expect(body.clientComponents).to.deep.equal([]);
+      expect(event.node.res.statusCode).toBe(200);
+      expect(body.components).toEqual(['Component1', 'Component2', 'Component3']);
+      expect(body.framework).toBe('nuxt');
+      expect(body.clientComponents).toEqual([]);
     });
 
     it('should include clientComponents in response when provided', async () => {
@@ -214,7 +205,7 @@ describe('createEditingConfigRoute', () => {
       clientComponentsMap.set('ClientComponent1', {} as NuxtContentSdkComponent);
       clientComponentsMap.set('ClientComponent2', {} as NuxtContentSdkComponent);
 
-      const customRoute = EditingConfigRouteModule.createEditingConfigRoute({
+      const customRoute = createEditingConfigRoute({
         components: componentsMap,
         clientComponents: clientComponentsMap,
         metadata,
@@ -229,9 +220,9 @@ describe('createEditingConfigRoute', () => {
       await customRoute.handle(event);
       const body = JSON.parse(await bodyPromise);
 
-      expect(event.node.res.statusCode).to.equal(200);
-      expect(body.framework).to.equal('nuxt');
-      expect(body.clientComponents).to.deep.equal(['ClientComponent1', 'ClientComponent2']);
+      expect(event.node.res.statusCode).toBe(200);
+      expect(body.framework).toBe('nuxt');
+      expect(body.clientComponents).toEqual(['ClientComponent1', 'ClientComponent2']);
     });
 
     it('should return empty clientComponents array when not provided', async () => {
@@ -244,9 +235,9 @@ describe('createEditingConfigRoute', () => {
       await route.handle(event);
       const body = JSON.parse(await bodyPromise);
 
-      expect(event.node.res.statusCode).to.equal(200);
-      expect(body.framework).to.equal('nuxt');
-      expect(body.clientComponents).to.deep.equal([]);
+      expect(event.node.res.statusCode).toBe(200);
+      expect(body.framework).toBe('nuxt');
+      expect(body.clientComponents).toEqual([]);
     });
   });
 });
