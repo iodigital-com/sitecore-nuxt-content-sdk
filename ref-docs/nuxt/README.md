@@ -28,6 +28,7 @@
 - [NuxtContentSdkComponent](type-aliases/NuxtContentSdkComponent.md)
 - [PreviewMiddlewareConfig](type-aliases/PreviewMiddlewareConfig.md)
 - [RobotsRouteOptions](type-aliases/RobotsRouteOptions.md)
+- [SitemapRouteOptions](type-aliases/SitemapRouteOptions.md)
 
 ## Variables
 
@@ -40,4 +41,5 @@
 - [createEditingRenderRoute](functions/createEditingRenderRoute.md)
 - [createHealthcheckRoute](functions/createHealthcheckRoute.md)
 - [createRobotsRoute](functions/createRobotsRoute.md)
+- [createSitemapRoute](functions/createSitemapRoute.md)
 - [getEditingSecret](functions/getEditingSecret.md)

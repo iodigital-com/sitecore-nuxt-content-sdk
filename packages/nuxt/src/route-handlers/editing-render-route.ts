@@ -44,6 +44,15 @@ export type EditingRenderRouteConfig = {
    * - Function: receives the request's query parameter names and returns the list of allowed parameters.
    */
   allowedQueryParams?: AllowedQueryParams;
+
+  /**
+   * Optional URL for the internal host of the Sitecore editing environment, used for CORS validation.
+   * If not provided, the route handler will attempt to resolve the internal host URL from the incoming request.
+   * This is necessary in environments where the internal editing host URL cannot be reliably determined from the request (e.g. certain containerized setups).
+   * In such cases, providing this URL explicitly can ensure CORS validation works correctly for requests coming from the Sitecore editing environment.
+   * The URL should include the protocol and port (e.g. 'http://editing-host:9000').
+   */
+  sitecoreInternalEditingHostUrl?: string;
 };
 
 /**
@@ -190,7 +199,7 @@ export const createEditingRenderRoute = (config: EditingRenderRouteConfig = {}) 
     const encodedRoute = encodeURI(query.route);
     const route = config?.resolvePageUrl?.(encodedRoute) || encodedRoute;
 
-    const base = resolveServerUrl(event);
+    const base = config.sitecoreInternalEditingHostUrl || resolveServerUrl(event);
     const requestUrl = new URL(route, base);
 
     setResponseHeader(event, 'Content-Security-Policy', getCSPHeader());
@@ -289,7 +298,7 @@ export const createEditingRenderRoute = (config: EditingRenderRouteConfig = {}) 
       }),
     };
 
-    const base = resolveServerUrl(event);
+    const base = config.sitecoreInternalEditingHostUrl || resolveServerUrl(event);
     const targetUrl = new URL('/', base);
 
     for (const key in propagatedQsParams) {

@@ -1,27 +1,25 @@
-import { expect } from 'chai';
+import { describe, it, expect, afterAll } from 'vitest';
 import { getEditingSecret } from './utils';
 
 describe('utils', () => {
   describe('getEditingSecret', () => {
-    after(() => {
+    afterAll(() => {
       delete process.env.SITECORE_EDITING_SECRET;
     });
 
     it('should throw if env variable missing', () => {
-      expect(() => getEditingSecret()).to.throw();
+      expect(() => getEditingSecret()).toThrow();
     });
 
     it('should throw if env variable is empty', () => {
-      const secret = '';
-      process.env.SITECORE_EDITING_SECRET = secret;
-      expect(() => getEditingSecret()).to.throw();
+      process.env.SITECORE_EDITING_SECRET = '';
+      expect(() => getEditingSecret()).toThrow();
     });
 
     it('should return env variable', () => {
       const secret = '1234abcd';
       process.env.SITECORE_EDITING_SECRET = secret;
-      const result = getEditingSecret();
-      expect(result).to.equal(secret);
+      expect(getEditingSecret()).toBe(secret);
     });
   });
 });

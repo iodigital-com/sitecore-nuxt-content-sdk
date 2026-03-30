@@ -1,9 +1,5 @@
 /* eslint-disable no-unused-vars */
-/* eslint-disable no-unused-expressions */
-import chai, { expect } from 'chai';
-import sinon from 'sinon';
-import sinonChai from 'sinon-chai';
-import proxyquire from 'proxyquire';
+import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest';
 import { createEvent, H3Event } from 'h3';
 import { IncomingMessage, ServerResponse } from 'http';
 import {
@@ -15,7 +11,44 @@ import {
 } from '@sitecore-content-sdk/content/editing';
 import { SITE_KEY } from '@sitecore-content-sdk/content/site';
 
-chai.use(sinonChai);
+vi.mock('../utils/utils', () => ({ getEditingSecret: vi.fn() }));
+vi.mock('@sitecore-content-sdk/core/tools', () => ({ getEnforcedCorsHeaders: vi.fn() }));
+vi.mock('../utils/editing-utils', () => ({
+  getEditingRequestHtml: vi.fn(),
+  getHeadersForPropagation: vi.fn(),
+  getRequiredEditingParamsList: vi.fn(),
+  getCSPHeader: vi.fn(),
+  resolveServerUrl: vi.fn(),
+  getAllowedQueryParams: vi.fn(),
+  getPreviewCookies: vi.fn(),
+  mapEditingParams: vi.fn(),
+}));
+vi.mock('@sitecore-content-sdk/core', async (importOriginal) => {
+  const actual = await importOriginal<typeof import('@sitecore-content-sdk/core')>();
+  return {
+    ...actual,
+    NativeDataFetcher: vi.fn().mockReturnValue({}),
+  };
+});
+vi.mock('h3', async () => {
+  const actual = await vi.importActual<typeof import('h3')>('h3');
+  return { ...actual, proxyRequest: vi.fn() };
+});
+
+import { getEditingSecret } from '../utils/utils';
+import { getEnforcedCorsHeaders } from '@sitecore-content-sdk/core/tools';
+import {
+  getEditingRequestHtml,
+  getHeadersForPropagation,
+  getRequiredEditingParamsList,
+  getCSPHeader,
+  resolveServerUrl,
+  getAllowedQueryParams,
+  getPreviewCookies,
+  mapEditingParams,
+} from '../utils/editing-utils';
+import { proxyRequest } from 'h3';
+import { createEditingRenderRoute } from './editing-render-route';
 
 const createMockEvent = (headers: Record<string, string> = {}, path: string = '/'): H3Event => {
   const req = new IncomingMessage(null as any);
@@ -49,19 +82,6 @@ const buildPath = (params: Record<string, string>) => {
 };
 
 describe('createEditingRenderRoute', () => {
-  const sandbox = sinon.createSandbox();
-  let editingRenderRouteModule: any;
-  let getEditingSecretStub: sinon.SinonStub;
-  let getEnforcedCorsHeadersStub: sinon.SinonStub;
-  let getEditingRequestHtmlStub: sinon.SinonStub;
-  let resolveServerUrlStub: sinon.SinonStub;
-  let getHeadersForPropagationStub: sinon.SinonStub;
-  let getRequiredQueryParamsStub: sinon.SinonStub;
-  let getCSPHeaderStub: sinon.SinonStub;
-  let getAllowedQueryParamsStub: sinon.SinonStub;
-  let getPreviewCookiesStub: sinon.SinonStub;
-  let mapEditingParamsStub: sinon.SinonStub;
-  let proxyRequestStub: sinon.SinonStub;
   let handlers: any;
 
   const allowedOrigin = 'https://allowed.com';
@@ -86,26 +106,29 @@ describe('createEditingRenderRoute', () => {
   };
 
   beforeEach(() => {
-    getEditingSecretStub = sandbox.stub().returns(secret);
-    getEnforcedCorsHeadersStub = sandbox.stub().returns(corsHeaders);
-    getEditingRequestHtmlStub = sandbox.stub().resolves('<div>some html</div>');
-    resolveServerUrlStub = sandbox.stub().returns('http://localhost:3000');
-    getHeadersForPropagationStub = sandbox.stub().returns({});
-    getRequiredQueryParamsStub = sandbox.stub().returns(['sc_itemid', 'sc_lang', 'route', 'mode']);
-    getCSPHeaderStub = sandbox
-      .stub()
-      .returns(`frame-ancestors 'self' ${allowedOrigin} ${EDITING_ALLOWED_ORIGINS.join(' ')}`);
-    getAllowedQueryParamsStub = sandbox.stub().returns({
+    vi.mocked(getEditingSecret).mockReturnValue(secret);
+    vi.mocked(getEnforcedCorsHeaders).mockReturnValue(corsHeaders);
+    vi.mocked(getEditingRequestHtml).mockResolvedValue('<div>some html</div>');
+    vi.mocked(resolveServerUrl).mockReturnValue('http://localhost:3000');
+    vi.mocked(getHeadersForPropagation).mockReturnValue({});
+    vi.mocked(getRequiredEditingParamsList).mockReturnValue([
+      'sc_itemid',
+      'sc_lang',
+      'route',
+      'mode',
+    ]);
+    vi.mocked(getCSPHeader).mockReturnValue(
+      `frame-ancestors 'self' $${allowedOrigin} $${EDITING_ALLOWED_ORIGINS.join(' ')}`
+    );
+    vi.mocked(getAllowedQueryParams).mockReturnValue({
       missingAllowedParams: [],
       allowedQueryParams: {},
     });
-    getPreviewCookiesStub = sandbox
-      .stub()
-      .returns([
-        `${SITE_KEY}=website; Path=/; HttpOnly; SameSite=None; Secure`,
-        `${PREVIEW_KEY}=true; Path=/; HttpOnly; SameSite=None; Secure`,
-      ]);
-    mapEditingParamsStub = sandbox.stub().callsFake((query: any) => ({
+    vi.mocked(getPreviewCookies).mockReturnValue([
+      `${SITE_KEY}=website; Path=/; HttpOnly; SameSite=None; Secure`,
+      `${PREVIEW_KEY}=true; Path=/; HttpOnly; SameSite=None; Secure`,
+    ]);
+    vi.mocked(mapEditingParams).mockImplementation((query: any) => ({
       itemId: query.sc_itemid,
       language: query.sc_lang,
       site: query.sc_site,
@@ -114,50 +137,29 @@ describe('createEditingRenderRoute', () => {
       version: query.sc_version,
       layoutKind: query.sc_layoutKind,
     }));
-    proxyRequestStub = sandbox.stub().callsFake(async (event: H3Event) => {
+    vi.mocked(proxyRequest).mockImplementation(async (event: H3Event) => {
       event.node.res.end('');
     });
 
-    editingRenderRouteModule = proxyquire('./editing-render-route', {
-      '../utils/utils': { getEditingSecret: getEditingSecretStub },
-      '@sitecore-content-sdk/core/tools': { getEnforcedCorsHeaders: getEnforcedCorsHeadersStub },
-      '../utils/editing-utils': {
-        getEditingRequestHtml: getEditingRequestHtmlStub,
-        getHeadersForPropagation: getHeadersForPropagationStub,
-        getRequiredEditingParamsList: getRequiredQueryParamsStub,
-        getCSPHeader: getCSPHeaderStub,
-        resolveServerUrl: resolveServerUrlStub,
-        getAllowedQueryParams: getAllowedQueryParamsStub,
-        getPreviewCookies: getPreviewCookiesStub,
-        mapEditingParams: mapEditingParamsStub,
-      },
-      '@sitecore-content-sdk/core': {
-        NativeDataFetcher: sandbox.stub().returns({}),
-      },
-      h3: {
-        ...require('h3'),
-        proxyRequest: proxyRequestStub,
-      },
-    });
-
-    handlers = editingRenderRouteModule.createEditingRenderRoute({});
+    handlers = createEditingRenderRoute({});
   });
 
   afterEach(() => {
-    sandbox.restore();
+    vi.clearAllMocks();
+    delete process.env.JSS_ALLOWED_ORIGINS;
   });
 
   describe('GET handler', () => {
     it('should return 401 for invalid origin', async () => {
-      getEnforcedCorsHeadersStub.returns(null);
+      vi.mocked(getEnforcedCorsHeaders).mockReturnValue(null);
       const event = createMockEvent({ origin: allowedOrigin }, buildPath(defaultQuery));
       const bodyPromise = readBody(event);
 
       await handlers.handleGet(event);
       const body = await bodyPromise;
 
-      expect(event.node.res.statusCode).to.equal(401);
-      expect(body).to.include('not allowed');
+      expect(event.node.res.statusCode).toBe(401);
+      expect(body).toContain('not allowed');
     });
 
     it('should return 401 for invalid editing secret', async () => {
@@ -170,8 +172,8 @@ describe('createEditingRenderRoute', () => {
       await handlers.handleGet(event);
       const body = await bodyPromise;
 
-      expect(event.node.res.statusCode).to.equal(401);
-      expect(JSON.parse(body).html).to.equal(INVALID_SECRET_HTML_MESSAGE);
+      expect(event.node.res.statusCode).toBe(401);
+      expect(JSON.parse(body).html).toBe(INVALID_SECRET_HTML_MESSAGE);
     });
 
     it('should return 401 for missing editing secret', async () => {
@@ -182,8 +184,8 @@ describe('createEditingRenderRoute', () => {
       await handlers.handleGet(event);
       const body = await bodyPromise;
 
-      expect(event.node.res.statusCode).to.equal(401);
-      expect(JSON.parse(body).html).to.equal(INVALID_SECRET_HTML_MESSAGE);
+      expect(event.node.res.statusCode).toBe(401);
+      expect(JSON.parse(body).html).toBe(INVALID_SECRET_HTML_MESSAGE);
     });
 
     it('should return 400 for missing required query parameters', async () => {
@@ -196,8 +198,8 @@ describe('createEditingRenderRoute', () => {
       await handlers.handleGet(event);
       const body = await bodyPromise;
 
-      expect(event.node.res.statusCode).to.equal(400);
-      expect(JSON.parse(body).html).to.equal(
+      expect(event.node.res.statusCode).toBe(400);
+      expect(JSON.parse(body).html).toBe(
         '<html><body>Missing required query parameters: sc_itemid, sc_lang, route, mode</body></html>'
       );
     });
@@ -205,7 +207,7 @@ describe('createEditingRenderRoute', () => {
     it('should handle successful request', async () => {
       const mockHtml =
         '<html><head><title>Test Page</title></head><body><div>some html content</div></body></html>';
-      getEditingRequestHtmlStub.resolves(mockHtml);
+      vi.mocked(getEditingRequestHtml).mockResolvedValue(mockHtml);
 
       const event = createMockEvent({ origin: allowedOrigin }, buildPath(defaultQuery));
       const bodyPromise = readBody(event);
@@ -213,34 +215,34 @@ describe('createEditingRenderRoute', () => {
       await handlers.handleGet(event);
       const body = await bodyPromise;
 
-      expect(event.node.res.statusCode).to.equal(200);
-      expect(body).to.equal(mockHtml);
-      expect(event.node.res.getHeader('Content-Type')).to.equal('text/html; charset=utf-8');
-      expect(event.node.res.getHeader('Content-Security-Policy')).to.include('frame-ancestors');
+      expect(event.node.res.statusCode).toBe(200);
+      expect(body).toBe(mockHtml);
+      expect(event.node.res.getHeader('Content-Type')).toBe('text/html; charset=utf-8');
+      expect(event.node.res.getHeader('Content-Security-Policy')).toContain('frame-ancestors');
     });
 
     it('should launch internal request and pass preview data as search params', async () => {
-      const event = createMockEvent({ origin: allowedOrigin }, buildPath(defaultQuery));
-      const bodyPromise = readBody(event);
-
-      getHeadersForPropagationStub.returns({
+      vi.mocked(getHeadersForPropagation).mockReturnValue({
         authorization: 'Bearer token123',
         cookie: 'test=value',
       });
 
+      const event = createMockEvent({ origin: allowedOrigin }, buildPath(defaultQuery));
+      const bodyPromise = readBody(event);
+
       await handlers.handleGet(event);
       await bodyPromise;
 
-      expect(getEditingRequestHtmlStub).to.have.been.calledOnce;
+      expect(vi.mocked(getEditingRequestHtml)).toHaveBeenCalledOnce();
 
       const [requestUrl, propagatedQsParams, propagatedHeaders] =
-        getEditingRequestHtmlStub.firstCall.args;
+        vi.mocked(getEditingRequestHtml).mock.calls[0];
 
-      expect(requestUrl).to.be.instanceOf(URL);
-      expect(requestUrl.pathname).to.equal('/styleguide');
-      expect(requestUrl.origin).to.equal('http://localhost:3000');
+      expect(requestUrl).toBeInstanceOf(URL);
+      expect((requestUrl as URL).pathname).toBe('/styleguide');
+      expect((requestUrl as URL).origin).toBe('http://localhost:3000');
 
-      expect(propagatedQsParams).to.deep.include({
+      expect(propagatedQsParams).toMatchObject({
         itemId: defaultQuery.sc_itemid,
         language: defaultQuery.sc_lang,
         site: defaultQuery.sc_site,
@@ -250,7 +252,7 @@ describe('createEditingRenderRoute', () => {
         layoutKind: defaultQuery.sc_layoutKind,
       });
 
-      expect(propagatedHeaders).to.deep.equal({
+      expect(propagatedHeaders).toEqual({
         authorization: 'Bearer token123',
         cookie: 'test=value',
       });
@@ -258,7 +260,7 @@ describe('createEditingRenderRoute', () => {
 
     it('should construct request URL with route for internal request', async () => {
       const testRoute = '/products/category/item';
-      resolveServerUrlStub.returns('https://my-app.example.com:8080');
+      vi.mocked(resolveServerUrl).mockReturnValue('https://my-app.example.com:8080');
 
       const event = createMockEvent(
         { origin: allowedOrigin },
@@ -269,18 +271,18 @@ describe('createEditingRenderRoute', () => {
       await handlers.handleGet(event);
       await bodyPromise;
 
-      const [requestUrl] = getEditingRequestHtmlStub.firstCall.args;
-      expect(requestUrl.toString()).to.equal(
+      const [requestUrl] = vi.mocked(getEditingRequestHtml).mock.calls[0];
+      expect((requestUrl as URL).toString()).toBe(
         'https://my-app.example.com:8080/products/category/item'
       );
-      expect(requestUrl.protocol).to.equal('https:');
-      expect(requestUrl.hostname).to.equal('my-app.example.com');
-      expect(requestUrl.port).to.equal('8080');
-      expect(requestUrl.pathname).to.equal(testRoute);
+      expect((requestUrl as URL).protocol).toBe('https:');
+      expect((requestUrl as URL).hostname).toBe('my-app.example.com');
+      expect((requestUrl as URL).port).toBe('8080');
+      expect((requestUrl as URL).pathname).toBe(testRoute);
     });
 
     it('should use custom resolvePageUrl', async () => {
-      handlers = editingRenderRouteModule.createEditingRenderRoute({
+      handlers = createEditingRenderRoute({
         resolvePageUrl: (itemPath: string) => `/custom/path${itemPath}`,
       });
 
@@ -290,8 +292,8 @@ describe('createEditingRenderRoute', () => {
       await handlers.handleGet(event);
       await bodyPromise;
 
-      const [requestUrl] = getEditingRequestHtmlStub.firstCall.args;
-      expect(requestUrl.pathname).to.equal('/custom/path/styleguide');
+      const [requestUrl] = vi.mocked(getEditingRequestHtml).mock.calls[0];
+      expect((requestUrl as URL).pathname).toBe('/custom/path/styleguide');
     });
 
     it('should handle request with special characters in route', async () => {
@@ -304,9 +306,9 @@ describe('createEditingRenderRoute', () => {
       await handlers.handleGet(event);
       await bodyPromise;
 
-      expect(event.node.res.statusCode).to.equal(200);
-      const [requestUrl] = getEditingRequestHtmlStub.firstCall.args;
-      expect(requestUrl.pathname).to.equal('/%C3%85bout');
+      expect(event.node.res.statusCode).toBe(200);
+      const [requestUrl] = vi.mocked(getEditingRequestHtml).mock.calls[0];
+      expect((requestUrl as URL).pathname).toBe('/%C3%85bout');
     });
 
     it('should set preview cookies for preview mode', async () => {
@@ -319,12 +321,12 @@ describe('createEditingRenderRoute', () => {
       await handlers.handleGet(event);
       await bodyPromise;
 
-      expect(event.node.res.statusCode).to.equal(200);
-      expect(getPreviewCookiesStub).to.have.been.calledWith('website');
+      expect(event.node.res.statusCode).toBe(200);
+      expect(vi.mocked(getPreviewCookies)).toHaveBeenCalledWith('website');
 
-      const [, , , cookies] = getEditingRequestHtmlStub.firstCall.args;
-      expect(cookies).to.include(`${PREVIEW_KEY}=true; Path=/; HttpOnly; SameSite=None; Secure`);
-      expect(cookies).to.include(`${SITE_KEY}=website; Path=/; HttpOnly; SameSite=None; Secure`);
+      const [, , , cookies] = vi.mocked(getEditingRequestHtml).mock.calls[0];
+      expect(cookies).toContain(`${PREVIEW_KEY}=true; Path=/; HttpOnly; SameSite=None; Secure`);
+      expect(cookies).toContain(`${SITE_KEY}=website; Path=/; HttpOnly; SameSite=None; Secure`);
     });
 
     it('should not set preview cookies for non-preview mode', async () => {
@@ -334,11 +336,11 @@ describe('createEditingRenderRoute', () => {
       await handlers.handleGet(event);
       await bodyPromise;
 
-      expect(getPreviewCookiesStub).to.not.have.been.called;
+      expect(vi.mocked(getPreviewCookies)).not.toHaveBeenCalled();
     });
 
     it('should handle request failure with redirect fallback', async () => {
-      getEditingRequestHtmlStub.rejects(new Error('Request failed'));
+      vi.mocked(getEditingRequestHtml).mockRejectedValue(new Error('Request failed'));
 
       const event = createMockEvent({ origin: allowedOrigin }, buildPath(defaultQuery));
       const bodyPromise = readBody(event);
@@ -346,8 +348,8 @@ describe('createEditingRenderRoute', () => {
       await handlers.handleGet(event);
       await bodyPromise;
 
-      expect(event.node.res.statusCode).to.equal(307);
-      expect(event.node.res.getHeader('Location')).to.equal('/styleguide');
+      expect(event.node.res.statusCode).toBe(307);
+      expect(event.node.res.getHeader('Location')).toBe('/styleguide');
     });
 
     it('should set Content-Security-Policy header', async () => {
@@ -357,9 +359,9 @@ describe('createEditingRenderRoute', () => {
       await handlers.handleGet(event);
       await bodyPromise;
 
-      expect(getCSPHeaderStub).to.have.been.calledOnce;
-      expect(event.node.res.getHeader('Content-Security-Policy')).to.equal(
-        `frame-ancestors 'self' ${allowedOrigin} ${EDITING_ALLOWED_ORIGINS.join(' ')}`
+      expect(vi.mocked(getCSPHeader)).toHaveBeenCalledOnce();
+      expect(event.node.res.getHeader('Content-Security-Policy')).toBe(
+        `frame-ancestors 'self' $${allowedOrigin} $${EDITING_ALLOWED_ORIGINS.join(' ')}`
       );
     });
 
@@ -370,11 +372,11 @@ describe('createEditingRenderRoute', () => {
       await handlers.handleGet(event);
       await bodyPromise;
 
-      expect(event.node.res.getHeader('Access-Control-Allow-Origin')).to.equal(allowedOrigin);
-      expect(event.node.res.getHeader('Access-Control-Allow-Methods')).to.equal(
+      expect(event.node.res.getHeader('Access-Control-Allow-Origin')).toBe(allowedOrigin);
+      expect(event.node.res.getHeader('Access-Control-Allow-Methods')).toBe(
         corsHeaders['Access-Control-Allow-Methods']
       );
-      expect(event.node.res.getHeader('Access-Control-Allow-Headers')).to.equal(
+      expect(event.node.res.getHeader('Access-Control-Allow-Headers')).toBe(
         corsHeaders['Access-Control-Allow-Headers']
       );
     });
@@ -386,16 +388,16 @@ describe('createEditingRenderRoute', () => {
       await handlers.handleGet(event);
       await bodyPromise;
 
-      expect(getEnforcedCorsHeadersStub).to.have.been.calledOnce;
-      const args = getEnforcedCorsHeadersStub.firstCall.args[0];
-      expect(args.requestMethod).to.equal('GET');
-      expect(args.headers.get('origin')).to.equal(allowedOrigin);
-      expect(args.allowedOrigins).to.deep.equal(EDITING_ALLOWED_ORIGINS);
+      expect(vi.mocked(getEnforcedCorsHeaders)).toHaveBeenCalledOnce();
+      const args = vi.mocked(getEnforcedCorsHeaders).mock.calls[0][0];
+      expect(args.requestMethod).toBe('GET');
+      expect((args.headers as Headers).get('origin')).toBe(allowedOrigin);
+      expect(args.allowedOrigins).toEqual(EDITING_ALLOWED_ORIGINS);
     });
 
     describe('allowedQueryParams configuration', () => {
       it('should not include additional query params when allowedQueryParams is not configured', async () => {
-        getAllowedQueryParamsStub.returns({
+        vi.mocked(getAllowedQueryParams).mockReturnValue({
           missingAllowedParams: [],
           allowedQueryParams: {},
         });
@@ -409,16 +411,16 @@ describe('createEditingRenderRoute', () => {
         await handlers.handleGet(event);
         await bodyPromise;
 
-        expect(event.node.res.statusCode).to.equal(200);
-        expect(getAllowedQueryParamsStub).to.have.been.called;
+        expect(event.node.res.statusCode).toBe(200);
+        expect(vi.mocked(getAllowedQueryParams)).toHaveBeenCalled();
       });
 
       it('should include allowed query params when configured as array', async () => {
-        handlers = editingRenderRouteModule.createEditingRenderRoute({
+        handlers = createEditingRenderRoute({
           allowedQueryParams: [{ name: 'customParam1' }, { name: 'customParam2' }, 'stringParam'],
         });
 
-        getAllowedQueryParamsStub.returns({
+        vi.mocked(getAllowedQueryParams).mockReturnValue({
           missingAllowedParams: [],
           allowedQueryParams: {
             customParam1: 'value1',
@@ -436,19 +438,19 @@ describe('createEditingRenderRoute', () => {
         await handlers.handleGet(event);
         await bodyPromise;
 
-        expect(event.node.res.statusCode).to.equal(200);
-        expect(getAllowedQueryParamsStub).to.have.been.calledWith(
-          sinon.match.any,
-          sinon.match.array
+        expect(event.node.res.statusCode).toBe(200);
+        expect(vi.mocked(getAllowedQueryParams)).toHaveBeenCalledWith(
+          expect.anything(),
+          expect.any(Array)
         );
       });
 
       it('should return 400 when required allowed query param is missing', async () => {
-        handlers = editingRenderRouteModule.createEditingRenderRoute({
+        handlers = createEditingRenderRoute({
           allowedQueryParams: [{ name: 'customParam1', required: true }],
         });
 
-        getAllowedQueryParamsStub.returns({
+        vi.mocked(getAllowedQueryParams).mockReturnValue({
           missingAllowedParams: ['customParam1'],
           allowedQueryParams: {},
         });
@@ -459,18 +461,18 @@ describe('createEditingRenderRoute', () => {
         await handlers.handleGet(event);
         const body = await bodyPromise;
 
-        expect(event.node.res.statusCode).to.equal(400);
-        expect(JSON.parse(body).html).to.equal(
+        expect(event.node.res.statusCode).toBe(400);
+        expect(JSON.parse(body).html).toBe(
           '<html><body>Missing required query parameters: customParam1</body></html>'
         );
       });
 
       it('should combine missing required editing params and missing required allowed params in error message', async () => {
-        handlers = editingRenderRouteModule.createEditingRenderRoute({
+        handlers = createEditingRenderRoute({
           allowedQueryParams: [{ name: 'requiredAllowedParam', required: true }],
         });
 
-        getAllowedQueryParamsStub.returns({
+        vi.mocked(getAllowedQueryParams).mockReturnValue({
           missingAllowedParams: ['requiredAllowedParam'],
           allowedQueryParams: {},
         });
@@ -484,21 +486,21 @@ describe('createEditingRenderRoute', () => {
         await handlers.handleGet(event);
         const body = await bodyPromise;
 
-        expect(event.node.res.statusCode).to.equal(400);
+        expect(event.node.res.statusCode).toBe(400);
         const responseBody = JSON.parse(body);
-        expect(responseBody.html).to.include('sc_itemid');
-        expect(responseBody.html).to.include('sc_lang');
-        expect(responseBody.html).to.include('route');
-        expect(responseBody.html).to.include('mode');
-        expect(responseBody.html).to.include('requiredAllowedParam');
+        expect(responseBody.html).toContain('sc_itemid');
+        expect(responseBody.html).toContain('sc_lang');
+        expect(responseBody.html).toContain('route');
+        expect(responseBody.html).toContain('mode');
+        expect(responseBody.html).toContain('requiredAllowedParam');
       });
 
       it('should pass allowed query params to getEditingRequestHtml', async () => {
-        handlers = editingRenderRouteModule.createEditingRenderRoute({
+        handlers = createEditingRenderRoute({
           allowedQueryParams: [{ name: 'customParam1' }, { name: 'customParam2' }],
         });
 
-        getAllowedQueryParamsStub.returns({
+        vi.mocked(getAllowedQueryParams).mockReturnValue({
           missingAllowedParams: [],
           allowedQueryParams: {
             customParam1: 'value1',
@@ -515,19 +517,19 @@ describe('createEditingRenderRoute', () => {
         await handlers.handleGet(event);
         await bodyPromise;
 
-        const [, propagatedQsParams] = getEditingRequestHtmlStub.firstCall.args;
-        expect(propagatedQsParams).to.include({
+        const [, propagatedQsParams] = vi.mocked(getEditingRequestHtml).mock.calls[0];
+        expect(propagatedQsParams).toMatchObject({
           customParam1: 'value1',
           customParam2: 'value2',
         });
       });
 
       it('should use resolver function for allowedQueryParams', async () => {
-        handlers = editingRenderRouteModule.createEditingRenderRoute({
+        handlers = createEditingRenderRoute({
           allowedQueryParams: (keys: string[]) => keys.filter((k) => k.startsWith('prefixed')),
         });
 
-        getAllowedQueryParamsStub.returns({
+        vi.mocked(getAllowedQueryParams).mockReturnValue({
           missingAllowedParams: [],
           allowedQueryParams: { prefixedParam1: 'value1' },
         });
@@ -541,9 +543,9 @@ describe('createEditingRenderRoute', () => {
         await handlers.handleGet(event);
         await bodyPromise;
 
-        expect(getAllowedQueryParamsStub).to.have.been.calledWith(
-          sinon.match.any,
-          sinon.match.func
+        expect(vi.mocked(getAllowedQueryParams)).toHaveBeenCalledWith(
+          expect.anything(),
+          expect.any(Function)
         );
       });
     });
@@ -552,7 +554,7 @@ describe('createEditingRenderRoute', () => {
       it('should handle request with mode=library', async () => {
         const mockLibraryHtml =
           '<html><head><title>Design Library</title></head><body><div class="component-library">Library Content</div></body></html>';
-        getEditingRequestHtmlStub.resolves(mockLibraryHtml);
+        vi.mocked(getEditingRequestHtml).mockResolvedValue(mockLibraryHtml);
 
         const event = createMockEvent(
           { origin: allowedOrigin },
@@ -572,16 +574,16 @@ describe('createEditingRenderRoute', () => {
         await handlers.handleGet(event);
         const body = await bodyPromise;
 
-        expect(event.node.res.statusCode).to.equal(200);
-        expect(body).to.equal(mockLibraryHtml);
-        expect(body).to.include('Design Library');
-        expect(body).to.include('component-library');
+        expect(event.node.res.statusCode).toBe(200);
+        expect(body).toBe(mockLibraryHtml);
+        expect(body).toContain('Design Library');
+        expect(body).toContain('component-library');
       });
 
       it('should handle request with mode=library-metadata', async () => {
         const mockMetadataHtml =
           '<html><head><title>Component Metadata</title></head><body><div class="metadata-view"></div></body></html>';
-        getEditingRequestHtmlStub.resolves(mockMetadataHtml);
+        vi.mocked(getEditingRequestHtml).mockResolvedValue(mockMetadataHtml);
 
         const event = createMockEvent(
           { origin: allowedOrigin },
@@ -601,9 +603,9 @@ describe('createEditingRenderRoute', () => {
         await handlers.handleGet(event);
         const body = await bodyPromise;
 
-        expect(event.node.res.statusCode).to.equal(200);
-        expect(body).to.equal(mockMetadataHtml);
-        expect(body).to.include('Component Metadata');
+        expect(event.node.res.statusCode).toBe(200);
+        expect(body).toBe(mockMetadataHtml);
+        expect(body).toContain('Component Metadata');
       });
     });
 
@@ -618,13 +620,13 @@ describe('createEditingRenderRoute', () => {
         await handlers.handleGet(event);
         await bodyPromise;
 
-        expect(event.node.res.statusCode).to.equal(200);
+        expect(event.node.res.statusCode).toBe(200);
       });
     });
 
     describe('internal server request host resolution', () => {
       it('should use resolveServerUrl for making internal request', async () => {
-        resolveServerUrlStub.returns('http://some-other-host:8080');
+        vi.mocked(resolveServerUrl).mockReturnValue('http://some-other-host:8080');
 
         const event = createMockEvent(
           { origin: allowedOrigin, host: 'some-other-host:8080' },
@@ -635,9 +637,9 @@ describe('createEditingRenderRoute', () => {
         await handlers.handleGet(event);
         await bodyPromise;
 
-        expect(resolveServerUrlStub).to.have.been.calledOnce;
-        const [requestUrl] = getEditingRequestHtmlStub.firstCall.args;
-        expect(requestUrl.origin).to.equal('http://some-other-host:8080');
+        expect(vi.mocked(resolveServerUrl)).toHaveBeenCalledOnce();
+        const [requestUrl] = vi.mocked(getEditingRequestHtml).mock.calls[0];
+        expect((requestUrl as URL).origin).toBe('http://some-other-host:8080');
       });
     });
   });
@@ -665,7 +667,7 @@ describe('createEditingRenderRoute', () => {
     };
 
     it('should return 401 for invalid origin', async () => {
-      getEnforcedCorsHeadersStub.returns(null);
+      vi.mocked(getEnforcedCorsHeaders).mockReturnValue(null);
 
       const event = createPostEvent(
         { origin: allowedOrigin, host: 'some-other-host' },
@@ -676,12 +678,12 @@ describe('createEditingRenderRoute', () => {
       await handlers.handlePost(event);
       const body = await bodyPromise;
 
-      expect(event.node.res.statusCode).to.equal(401);
-      expect(body).to.include('not allowed');
+      expect(event.node.res.statusCode).toBe(401);
+      expect(body).toContain('not allowed');
     });
 
     it('should allow request when host is localhost', async () => {
-      getEnforcedCorsHeadersStub.returns(null);
+      vi.mocked(getEnforcedCorsHeaders).mockReturnValue(null);
 
       const event = createPostEvent(
         { origin: allowedOrigin, host: 'localhost:3000' },
@@ -692,11 +694,11 @@ describe('createEditingRenderRoute', () => {
       await handlers.handlePost(event);
       await bodyPromise;
 
-      expect(proxyRequestStub).to.have.been.calledOnce;
+      expect(vi.mocked(proxyRequest)).toHaveBeenCalledOnce();
     });
 
     it('should allow request when request host matches origin host', async () => {
-      getEnforcedCorsHeadersStub.returns(null);
+      vi.mocked(getEnforcedCorsHeaders).mockReturnValue(null);
 
       const event = createPostEvent(
         { origin: 'https://some-url', host: 'some-url' },
@@ -707,7 +709,7 @@ describe('createEditingRenderRoute', () => {
       await handlers.handlePost(event);
       await bodyPromise;
 
-      expect(proxyRequestStub).to.have.been.calledOnce;
+      expect(vi.mocked(proxyRequest)).toHaveBeenCalledOnce();
     });
 
     it('should return 401 for invalid editing secret', async () => {
@@ -720,8 +722,8 @@ describe('createEditingRenderRoute', () => {
       await handlers.handlePost(event);
       const body = await bodyPromise;
 
-      expect(event.node.res.statusCode).to.equal(401);
-      expect(JSON.parse(body).html).to.equal(INVALID_SECRET_HTML_MESSAGE);
+      expect(event.node.res.statusCode).toBe(401);
+      expect(JSON.parse(body).html).toBe(INVALID_SECRET_HTML_MESSAGE);
     });
 
     it('should return 401 for missing editing secret', async () => {
@@ -736,8 +738,8 @@ describe('createEditingRenderRoute', () => {
       await handlers.handlePost(event);
       const body = await bodyPromise;
 
-      expect(event.node.res.statusCode).to.equal(401);
-      expect(JSON.parse(body).html).to.equal(INVALID_SECRET_HTML_MESSAGE);
+      expect(event.node.res.statusCode).toBe(401);
+      expect(JSON.parse(body).html).toBe(INVALID_SECRET_HTML_MESSAGE);
     });
 
     it('should proxy POST request to correct target URL with mapped query params', async () => {
@@ -750,17 +752,17 @@ describe('createEditingRenderRoute', () => {
       await handlers.handlePost(event);
       await bodyPromise;
 
-      expect(proxyRequestStub).to.have.been.calledOnce;
+      expect(vi.mocked(proxyRequest)).toHaveBeenCalledOnce();
 
-      const targetUrl = new URL(proxyRequestStub.firstCall.args[1]);
-      expect(targetUrl.searchParams.get('itemId')).to.equal(defaultPostQuery.sc_itemid);
-      expect(targetUrl.searchParams.get('language')).to.equal(defaultPostQuery.sc_lang);
-      expect(targetUrl.searchParams.get('site')).to.equal(defaultPostQuery.sc_site);
-      expect(targetUrl.searchParams.get('mode')).to.equal(defaultPostQuery.mode);
-      expect(targetUrl.searchParams.get('variantIds')).to.equal(defaultPostQuery.sc_variant);
-      expect(targetUrl.searchParams.get('version')).to.equal(defaultPostQuery.sc_version);
-      expect(targetUrl.searchParams.get('layoutKind')).to.equal(defaultPostQuery.sc_layoutKind);
-      expect(targetUrl.searchParams.get('timestamp')).to.not.be.null;
+      const targetUrl = new URL(vi.mocked(proxyRequest).mock.calls[0][1] as string);
+      expect(targetUrl.searchParams.get('itemId')).toBe(defaultPostQuery.sc_itemid);
+      expect(targetUrl.searchParams.get('language')).toBe(defaultPostQuery.sc_lang);
+      expect(targetUrl.searchParams.get('site')).toBe(defaultPostQuery.sc_site);
+      expect(targetUrl.searchParams.get('mode')).toBe(defaultPostQuery.mode);
+      expect(targetUrl.searchParams.get('variantIds')).toBe(defaultPostQuery.sc_variant);
+      expect(targetUrl.searchParams.get('version')).toBe(defaultPostQuery.sc_version);
+      expect(targetUrl.searchParams.get('layoutKind')).toBe(defaultPostQuery.sc_layoutKind);
+      expect(targetUrl.searchParams.get('timestamp')).not.toBeNull();
     });
 
     it('should set preview cookies on the request before proxying', async () => {
@@ -773,8 +775,8 @@ describe('createEditingRenderRoute', () => {
       await handlers.handlePost(event);
       await bodyPromise;
 
-      expect(getPreviewCookiesStub).to.have.been.calledWith(defaultPostQuery.sc_site);
-      expect(proxyRequestStub).to.have.been.calledOnce;
+      expect(vi.mocked(getPreviewCookies)).toHaveBeenCalledWith(defaultPostQuery.sc_site);
+      expect(vi.mocked(proxyRequest)).toHaveBeenCalledOnce();
     });
 
     it('should append preview cookies to existing cookie header', async () => {
@@ -787,11 +789,11 @@ describe('createEditingRenderRoute', () => {
       await handlers.handlePost(event);
       await bodyPromise;
 
-      expect(proxyRequestStub).to.have.been.calledOnce;
+      expect(vi.mocked(proxyRequest)).toHaveBeenCalledOnce();
       const cookieHeader = event.node.res.getHeader('cookie') as string;
-      expect(cookieHeader).to.include('existing=cookie');
-      expect(cookieHeader).to.include(PREVIEW_KEY);
-      expect(cookieHeader).to.include(SITE_KEY);
+      expect(cookieHeader).toContain('existing=cookie');
+      expect(cookieHeader).toContain(PREVIEW_KEY);
+      expect(cookieHeader).toContain(SITE_KEY);
     });
 
     it('should set Content-Security-Policy header', async () => {
@@ -804,9 +806,9 @@ describe('createEditingRenderRoute', () => {
       await handlers.handlePost(event);
       await bodyPromise;
 
-      expect(getCSPHeaderStub).to.have.been.calledOnce;
-      expect(event.node.res.getHeader('Content-Security-Policy')).to.equal(
-        `frame-ancestors 'self' ${allowedOrigin} ${EDITING_ALLOWED_ORIGINS.join(' ')}`
+      expect(vi.mocked(getCSPHeader)).toHaveBeenCalledOnce();
+      expect(event.node.res.getHeader('Content-Security-Policy')).toBe(
+        `frame-ancestors 'self' $${allowedOrigin} $${EDITING_ALLOWED_ORIGINS.join(' ')}`
       );
     });
 
@@ -820,19 +822,19 @@ describe('createEditingRenderRoute', () => {
       await handlers.handlePost(event);
       await bodyPromise;
 
-      expect(event.node.res.getHeader('Access-Control-Allow-Origin')).to.equal(allowedOrigin);
-      expect(event.node.res.getHeader('Access-Control-Allow-Methods')).to.equal(
+      expect(event.node.res.getHeader('Access-Control-Allow-Origin')).toBe(allowedOrigin);
+      expect(event.node.res.getHeader('Access-Control-Allow-Methods')).toBe(
         corsHeaders['Access-Control-Allow-Methods']
       );
     });
 
     describe('allowedQueryParams for POST', () => {
       it('should include allowed query params in proxied target URL', async () => {
-        handlers = editingRenderRouteModule.createEditingRenderRoute({
+        handlers = createEditingRenderRoute({
           allowedQueryParams: [{ name: 'customParam1' }, { name: 'customParam2' }],
         });
 
-        getAllowedQueryParamsStub.returns({
+        vi.mocked(getAllowedQueryParams).mockReturnValue({
           missingAllowedParams: [],
           allowedQueryParams: {
             customParam1: 'value1',
@@ -849,18 +851,18 @@ describe('createEditingRenderRoute', () => {
         await handlers.handlePost(event);
         await bodyPromise;
 
-        expect(proxyRequestStub).to.have.been.calledOnce;
-        const targetUrl = new URL(proxyRequestStub.firstCall.args[1]);
-        expect(targetUrl.searchParams.get('customParam1')).to.equal('value1');
-        expect(targetUrl.searchParams.get('customParam2')).to.equal('value2');
+        expect(vi.mocked(proxyRequest)).toHaveBeenCalledOnce();
+        const targetUrl = new URL(vi.mocked(proxyRequest).mock.calls[0][1] as string);
+        expect(targetUrl.searchParams.get('customParam1')).toBe('value1');
+        expect(targetUrl.searchParams.get('customParam2')).toBe('value2');
       });
 
       it('should use resolver function for allowedQueryParams in POST', async () => {
-        handlers = editingRenderRouteModule.createEditingRenderRoute({
+        handlers = createEditingRenderRoute({
           allowedQueryParams: (keys: string[]) => keys.filter((k) => k.startsWith('prefixed')),
         });
 
-        getAllowedQueryParamsStub.returns({
+        vi.mocked(getAllowedQueryParams).mockReturnValue({
           missingAllowedParams: [],
           allowedQueryParams: { prefixedParam1: 'value1' },
         });
@@ -874,18 +876,18 @@ describe('createEditingRenderRoute', () => {
         await handlers.handlePost(event);
         await bodyPromise;
 
-        expect(getAllowedQueryParamsStub).to.have.been.calledWith(
-          sinon.match.any,
-          sinon.match.func
+        expect(vi.mocked(getAllowedQueryParams)).toHaveBeenCalledWith(
+          expect.anything(),
+          expect.any(Function)
         );
       });
 
       it('should handle empty allowedQueryParams from resolver in POST', async () => {
-        handlers = editingRenderRouteModule.createEditingRenderRoute({
+        handlers = createEditingRenderRoute({
           allowedQueryParams: () => [],
         });
 
-        getAllowedQueryParamsStub.returns({
+        vi.mocked(getAllowedQueryParams).mockReturnValue({
           missingAllowedParams: [],
           allowedQueryParams: {},
         });
@@ -899,7 +901,7 @@ describe('createEditingRenderRoute', () => {
         await handlers.handlePost(event);
         await bodyPromise;
 
-        expect(proxyRequestStub).to.have.been.calledOnce;
+        expect(vi.mocked(proxyRequest)).toHaveBeenCalledOnce();
       });
     });
   });
@@ -908,7 +910,7 @@ describe('createEditingRenderRoute', () => {
     it('should handle request with mode=library', async () => {
       const mockLibraryHtml =
         '<html><head><title>Design Library</title></head><body><div class="component-library">Library Content</div></body></html>';
-      getEditingRequestHtmlStub.resolves(mockLibraryHtml);
+      vi.mocked(getEditingRequestHtml).mockResolvedValue(mockLibraryHtml);
 
       const event = createMockEvent(
         { origin: allowedOrigin },
@@ -928,17 +930,17 @@ describe('createEditingRenderRoute', () => {
       await handlers.handleGet(event);
       const body = await bodyPromise;
 
-      expect(event.node.res.statusCode).to.equal(200);
-      expect(body).to.equal(mockLibraryHtml);
-      expect(body).to.include('Design Library');
-      expect(body).to.include('component-library');
-      expect(body).to.include('Library Content');
+      expect(event.node.res.statusCode).toBe(200);
+      expect(body).toBe(mockLibraryHtml);
+      expect(body).toContain('Design Library');
+      expect(body).toContain('component-library');
+      expect(body).toContain('Library Content');
     });
 
     it('should handle request with mode=library-metadata', async () => {
       const mockMetadataHtml =
         '<html><head><title>Component Metadata</title></head><body><div class="metadata-view"><script type="application/json">{"componentId":"123","metadata":{}}</script></div></body></html>';
-      getEditingRequestHtmlStub.resolves(mockMetadataHtml);
+      vi.mocked(getEditingRequestHtml).mockResolvedValue(mockMetadataHtml);
 
       const event = createMockEvent(
         { origin: allowedOrigin },
@@ -958,11 +960,11 @@ describe('createEditingRenderRoute', () => {
       await handlers.handleGet(event);
       const body = await bodyPromise;
 
-      expect(event.node.res.statusCode).to.equal(200);
-      expect(body).to.equal(mockMetadataHtml);
-      expect(body).to.include('Component Metadata');
-      expect(body).to.include('metadata-view');
-      expect(body).to.include('componentId');
+      expect(event.node.res.statusCode).toBe(200);
+      expect(body).toBe(mockMetadataHtml);
+      expect(body).toContain('Component Metadata');
+      expect(body).toContain('metadata-view');
+      expect(body).toContain('componentId');
     });
   });
 
@@ -970,7 +972,7 @@ describe('createEditingRenderRoute', () => {
     it('should handle preview request', async () => {
       const mockPreviewHtml =
         '<html><head><title>Preview Mode</title><meta name="preview" content="true"></head><body><div class="preview-content">Preview page content</div></body></html>';
-      getEditingRequestHtmlStub.resolves(mockPreviewHtml);
+      vi.mocked(getEditingRequestHtml).mockResolvedValue(mockPreviewHtml);
 
       const event = createMockEvent(
         { origin: allowedOrigin },
@@ -991,25 +993,25 @@ describe('createEditingRenderRoute', () => {
       await handlers.handleGet(event);
       const body = await bodyPromise;
 
-      expect(event.node.res.statusCode).to.equal(200);
-      expect(body).to.equal(mockPreviewHtml);
-      expect(event.node.res.getHeader('Content-Type')).to.equal('text/html; charset=utf-8');
-      expect(getPreviewCookiesStub).to.have.been.calledWith('website');
+      expect(event.node.res.statusCode).toBe(200);
+      expect(body).toBe(mockPreviewHtml);
+      expect(event.node.res.getHeader('Content-Type')).toBe('text/html; charset=utf-8');
+      expect(vi.mocked(getPreviewCookies)).toHaveBeenCalledWith('website');
 
-      const [, , , cookies] = getEditingRequestHtmlStub.firstCall.args;
-      expect(cookies).to.include(`${PREVIEW_KEY}=true; Path=/; HttpOnly; SameSite=None; Secure`);
-      expect(cookies).to.include(`${SITE_KEY}=website; Path=/; HttpOnly; SameSite=None; Secure`);
+      const [, , , cookies] = vi.mocked(getEditingRequestHtml).mock.calls[0];
+      expect(cookies).toContain(`${PREVIEW_KEY}=true; Path=/; HttpOnly; SameSite=None; Secure`);
+      expect(cookies).toContain(`${SITE_KEY}=website; Path=/; HttpOnly; SameSite=None; Secure`);
 
-      expect(body).to.include('Preview Mode');
-      expect(body).to.include('name="preview"');
-      expect(body).to.include('preview-content');
-      expect(body).to.include('Preview page content');
+      expect(body).toContain('Preview Mode');
+      expect(body).toContain('name="preview"');
+      expect(body).toContain('preview-content');
+      expect(body).toContain('Preview page content');
     });
   });
 
   describe('internal server request host resolution', () => {
     it('should use resolveServerUrl for making internal request', async () => {
-      resolveServerUrlStub.returns('http://some-other-host:8080');
+      vi.mocked(resolveServerUrl).mockReturnValue('http://some-other-host:8080');
 
       const event = createMockEvent(
         { origin: allowedOrigin, host: 'some-other-host:8080' },
@@ -1020,18 +1022,18 @@ describe('createEditingRenderRoute', () => {
       await handlers.handleGet(event);
       await bodyPromise;
 
-      expect(resolveServerUrlStub).to.have.been.calledOnce;
-      const [requestUrl] = getEditingRequestHtmlStub.firstCall.args;
-      expect(requestUrl.origin).to.equal('http://some-other-host:8080');
+      expect(vi.mocked(resolveServerUrl)).toHaveBeenCalledOnce();
+      const [requestUrl] = vi.mocked(getEditingRequestHtml).mock.calls[0];
+      expect((requestUrl as URL).origin).toBe('http://some-other-host:8080');
     });
 
     it('should use custom sitecoreInternalEditingHostUrl if provided', async () => {
       const customHost = 'http://custom-internal-host:9000';
-      const customHandlers = editingRenderRouteModule.createEditingRenderRoute({
+      const customHandlers = createEditingRenderRoute({
         sitecoreInternalEditingHostUrl: customHost,
       });
 
-      resolveServerUrlStub.returns(customHost);
+      vi.mocked(resolveServerUrl).mockReturnValue(customHost);
 
       const event = createMockEvent({ origin: allowedOrigin }, buildPath(defaultQuery));
       const bodyPromise = readBody(event);
@@ -1039,8 +1041,8 @@ describe('createEditingRenderRoute', () => {
       await customHandlers.handleGet(event);
       await bodyPromise;
 
-      const [requestUrl] = getEditingRequestHtmlStub.firstCall.args;
-      expect(requestUrl.origin).to.equal(customHost);
+      const [requestUrl] = vi.mocked(getEditingRequestHtml).mock.calls[0];
+      expect((requestUrl as URL).origin).toBe(customHost);
     });
   });
 
@@ -1055,7 +1057,7 @@ describe('createEditingRenderRoute', () => {
       await handlers.handleGet(event);
       await bodyPromise;
 
-      expect(event.node.res.statusCode).to.equal(200);
+      expect(event.node.res.statusCode).toBe(200);
     });
   });
 
@@ -1067,18 +1069,18 @@ describe('createEditingRenderRoute', () => {
       await handlers.handleGet(event);
       await bodyPromise;
 
-      expect(event.node.res.getHeader('Access-Control-Allow-Origin')).to.equal(allowedOrigin);
-      expect(event.node.res.getHeader('Access-Control-Allow-Methods')).to.equal(
+      expect(event.node.res.getHeader('Access-Control-Allow-Origin')).toBe(allowedOrigin);
+      expect(event.node.res.getHeader('Access-Control-Allow-Methods')).toBe(
         corsHeaders['Access-Control-Allow-Methods']
       );
-      expect(event.node.res.getHeader('Access-Control-Allow-Headers')).to.equal(
+      expect(event.node.res.getHeader('Access-Control-Allow-Headers')).toBe(
         corsHeaders['Access-Control-Allow-Headers']
       );
     });
 
     it('should handle multiple allowed origins', async () => {
       process.env.JSS_ALLOWED_ORIGINS = 'https://allowed.com,https://anotherallowed.com';
-      getCSPHeaderStub.returns(
+      vi.mocked(getCSPHeader).mockReturnValue(
         `frame-ancestors 'self' https://allowed.com https://anotherallowed.com ${EDITING_ALLOWED_ORIGINS.join(
           ' '
         )}`
@@ -1090,12 +1092,10 @@ describe('createEditingRenderRoute', () => {
       await handlers.handleGet(event);
       await bodyPromise;
 
-      expect(getCSPHeaderStub).to.have.been.calledOnce;
-      expect(event.node.res.getHeader('Content-Security-Policy')).to.include(
+      expect(vi.mocked(getCSPHeader)).toHaveBeenCalledOnce();
+      expect(event.node.res.getHeader('Content-Security-Policy')).toContain(
         'https://anotherallowed.com'
       );
-
-      delete process.env.JSS_ALLOWED_ORIGINS;
     });
   });
 });
