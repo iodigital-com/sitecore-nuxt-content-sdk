@@ -8,7 +8,7 @@
 
 > **getEditingSecret**(): `string`
 
-Defined in: [utils/utils.ts:8](https://github.com/weareyou/sitecore-nuxt-content-sdk/blob/da1d006b8bfc42633b1a2946103c3bd212874990/packages/nuxt/src/utils/utils.ts#L8)
+Defined in: [nuxt/src/utils/utils.ts:8](https://github.com/weareyou/sitecore-nuxt-content-sdk/blob/41d0c7cf29778b0f6307913d365064cd5f8d528a/packages/nuxt/src/utils/utils.ts#L8)
 
 Gets the editing secret from environment variables.
 

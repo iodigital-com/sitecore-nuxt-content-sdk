@@ -8,7 +8,7 @@
 
 > **createSitemapRoute**(`options`): `object`
 
-Defined in: route-handlers/sitemap-route.ts:33
+Defined in: [nuxt/src/route-handlers/sitemap-route.ts:33](https://github.com/weareyou/sitecore-nuxt-content-sdk/blob/41d0c7cf29778b0f6307913d365064cd5f8d528a/packages/nuxt/src/route-handlers/sitemap-route.ts#L33)
 
 Creates a route handler to serve the sitemap.xml file.
 

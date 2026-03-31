@@ -17,7 +17,7 @@ import { personalizeServerPlugin } from '@sitecore-content-sdk/personalize';
 import { personalizeMiddlewareAdapter } from '../initialization/middleware/personalize-adapter';
 
 /**
- * Represents the geolocation data used for personalization
+ * Represents the geolocation data used for personalization.
  * @public
  */
 export type PersonalizeGeoData = {
@@ -27,21 +27,52 @@ export type PersonalizeGeoData = {
 };
 
 /**
- * The interface for the PersonalizeMiddleware configuration.
+ * Configuration for the PersonalizeMiddleware.
+ *
+ * Extends the base middleware config with Edge API settings and personalize options.
+ * When `contextId` and `clientContextId` are omitted, the middleware initializes without
+ * a personalize service and skips execution. This is expected in local container development.
  * @public
+ * @example
+ * const middleware = new PersonalizeMiddleware({
+ *   enabled: true,
+ *   contextId: 'my-context-id',
+ *   clientContextId: 'my-client-context-id',
+ *   edgeUrl: 'https://my-edge-url',
+ *   edgeTimeout: 400,
+ *   cdpTimeout: 400,
+ *   sites: [{ name: 'my-site', hostName: 'my-site.com', language: 'en' }],
+ * });
  */
 export type PersonalizeMiddlewareConfig = MiddlewareBaseConfig &
   SitecoreConfig['api']['edge'] &
   SitecoreConfig['personalize'] & {
+    /**
+     * Optional override for the personalize service. When provided, the default
+     * PersonalizeService is not instantiated.
+     */
     personalizeService?: PersonalizeService;
+    /**
+     * Optional callback to provide additional UTM parameters for the experience context.
+     * @param {H3Event} event - The incoming H3 event
+     * @returns {Partial<ExperienceParams['utm']>} Additional UTM parameters to merge
+     */
     getExtraUtmParams?: (event: H3Event) => Partial<ExperienceParams['utm']>;
+    /**
+     * Optional callback to extract geolocation data from the request.
+     * Can be synchronous or asynchronous.
+     * @param {H3Event} [event] - The incoming H3 event
+     * @returns {Promise<PersonalizeGeoData> | PersonalizeGeoData} Geolocation data
+     */
     extractGeoDataCb?: (event?: H3Event) => Promise<PersonalizeGeoData> | PersonalizeGeoData;
   };
 
 /**
- * Object model of Experience Context data
+ * Experience context data passed to the CDP personalize call.
+ * @public
  */
 export type ExperienceParams = {
+  /** The referrer URL of the request. */
   referrer: string;
   utm: {
     [key: string]: string | undefined;
@@ -53,22 +84,49 @@ export type ExperienceParams = {
 };
 
 /**
- * Object model of personalize execution data
+ * A single personalize execution unit, representing one CDP experience call.
  */
 type PersonalizeExecution = {
+  /** The CDP-friendly ID for the experience. */
   friendlyId: string;
+  /** The list of variant IDs to evaluate. */
   variantIds: string[];
 };
 
 /**
- * Middleware to support Sitecore Personalize
+ * Middleware that integrates Sitecore Personalize into the Nuxt server middleware chain.
+ *
+ * On each request, it resolves the current site, fetches personalize info from the Edge API,
+ * calls the CDP to identify applicable variants, and rewrites the request path to the
+ * personalized route.
+ *
+ * When Edge configuration (`contextId`/`clientContextId`) is missing, the middleware
+ * initializes in a degraded state and skips all personalization. This is expected when
+ * running locally without a connected Sitecore environment.
  * @public
+ * @example
+ * // server/middleware/personalize.ts
+ * import { PersonalizeMiddleware } from '@sitecore-content-sdk/nuxt';
+ *
+ * const middleware = new PersonalizeMiddleware({
+ *   enabled: true,
+ *   contextId: process.env.SITECORE_CONTEXT_ID,
+ *   clientContextId: process.env.SITECORE_CLIENT_CONTEXT_ID,
+ *   edgeUrl: process.env.SITECORE_EDGE_URL,
+ *   edgeTimeout: 400,
+ *   cdpTimeout: 400,
+ *   sites: config.sites,
+ * });
+ *
+ * export default defineEventHandler((event) => middleware.handle(event));
  */
 export class PersonalizeMiddleware extends MiddlewareBase {
   protected personalizeService: PersonalizeService | null;
 
   /**
-   * @param {PersonalizeMiddlewareConfig} config Personalize middleware config
+   * @param {PersonalizeMiddlewareConfig} config - Personalize middleware configuration.
+   * When `contextId` and `clientContextId` are not provided, `personalizeService` is set
+   * to `null` and personalization is disabled.
    */
   constructor(protected config: PersonalizeMiddlewareConfig) {
     super(config);
@@ -104,7 +162,21 @@ export class PersonalizeMiddleware extends MiddlewareBase {
 
   /**
    * Handles an incoming request and applies personalization if applicable.
-   * @param {H3Event} event
+   *
+   * Skips execution when:
+   * - The middleware is globally disabled via config
+   * - The request targets a static file, API route, or Nuxt internal route
+   * - The request is a preview or prefetch
+   * - No personalize service is configured
+   * - No personalize info is found for the current route
+   * - No variants are identified by the CDP
+   *
+   * On success, rewrites `event.node.req.url` to the personalized path and sets
+   * the `x-sc-rewrite` response header for downstream middleware.
+   *
+   * Errors are caught and logged without re-throwing, so the request continues normally.
+   * @param {H3Event} event - The incoming H3 event
+   * @returns {Promise<void>}
    */
   handle = async (event: H3Event): Promise<void> => {
     if (!this.config.enabled) {
@@ -221,6 +293,16 @@ export class PersonalizeMiddleware extends MiddlewareBase {
     }
   };
 
+  /**
+   * Determines whether the middleware should be skipped for the current request.
+   *
+   * Returns `true` when the personalize service is not configured, the path contains
+   * a file extension (static assets), or the base disabled check matches.
+   *
+   * Also logs a debug message when skipping due to missing Edge configuration.
+   * @param {H3Event} event - The incoming H3 event
+   * @returns {boolean} `true` if the middleware should be skipped
+   */
   protected disabled(event: H3Event): boolean {
     if (!this.personalizeService) {
       debug.personalize('skipped (personalize service not configured - edge config required)');
@@ -231,6 +313,14 @@ export class PersonalizeMiddleware extends MiddlewareBase {
     return pathname.includes('.') || super.disabled(event);
   }
 
+  /**
+   * Builds the experience context params from the current request.
+   *
+   * Reads UTM parameters from the query string and merges any additional
+   * params returned by `config.getExtraUtmParams`.
+   * @param {H3Event} event - The incoming H3 event
+   * @returns {ExperienceParams} The experience params to pass to the CDP
+   */
   protected getExperienceParams(event: H3Event): ExperienceParams {
     const url = getRequestURL(event);
     const extraParams = this.config.getExtraUtmParams ? this.config.getExtraUtmParams(event) : {};
@@ -249,6 +339,18 @@ export class PersonalizeMiddleware extends MiddlewareBase {
     };
   }
 
+  /**
+   * Initializes the Sitecore Content SDK with analytics and personalize plugins
+   * for the current request context.
+   *
+   * This must be called before invoking `personalize()` on each request, as it
+   * binds the analytics and personalize adapters to the current H3 event.
+   * @param {object} params
+   * @param {string} params.hostname - The request hostname, used as the cookie domain
+   * @param {string} params.siteName - The resolved Sitecore site name
+   * @param {H3Event} params.event - The incoming H3 event
+   * @returns {Promise<void>}
+   */
   protected async initPersonalizeServer({
     hostname,
     siteName,
@@ -282,6 +384,17 @@ export class PersonalizeMiddleware extends MiddlewareBase {
     });
   }
 
+  /**
+   * Calls the CDP to identify the variant for a single experience.
+   * @param {object} params
+   * @param {ExperienceParams} params.params - The experience context params
+   * @param {string} params.friendlyId - The CDP-friendly ID for the experience
+   * @param {string} params.language - The current page language
+   * @param {number} [params.timeout] - Optional timeout in milliseconds
+   * @param {string[]} [params.variantIds] - The list of variant IDs to evaluate
+   * @param {PersonalizeGeoData} [params.geo] - Optional geolocation data
+   * @returns {Promise<{ variantId: string }>} The identified variant ID
+   */
   protected async personalize({
     params,
     friendlyId,
@@ -316,10 +429,13 @@ export class PersonalizeMiddleware extends MiddlewareBase {
   }
 
   /**
-   * Aggregates personalize executions based on the provided route personalize information and language.
-   * @param {PersonalizeInfo} personalizeInfo the route personalize information
-   * @param {string} language the language
-   * @returns An array of personalize executions
+   * Builds the list of CDP experience calls based on the personalize info for the current route.
+   *
+   * Groups component-level variant IDs (format: `componentId_variantId`) into a single
+   * execution per component, and treats top-level variant IDs as page-level experiences.
+   * @param {PersonalizeInfo} personalizeInfo - The personalize info for the current route
+   * @param {string} language - The current page language
+   * @returns {PersonalizeExecution[]} The list of executions to run in parallel
    */
   protected getPersonalizeExecutions(
     personalizeInfo: PersonalizeInfo,

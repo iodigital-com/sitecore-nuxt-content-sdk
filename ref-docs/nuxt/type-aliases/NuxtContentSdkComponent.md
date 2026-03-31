@@ -8,7 +8,7 @@
 
 > **NuxtContentSdkComponent** = `VueContentSdkComponent` & `object`
 
-Defined in: [sharedTypes/component-props.ts:31](https://github.com/weareyou/sitecore-nuxt-content-sdk/blob/da1d006b8bfc42633b1a2946103c3bd212874990/packages/nuxt/src/sharedTypes/component-props.ts#L31)
+Defined in: [nuxt/src/sharedTypes/component-props.ts:31](https://github.com/weareyou/sitecore-nuxt-content-sdk/blob/41d0c7cf29778b0f6307913d365064cd5f8d528a/packages/nuxt/src/sharedTypes/component-props.ts#L31)
 
 Represents a Nuxt component import for use in the Sitecore component map.
 

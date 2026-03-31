@@ -8,11 +8,13 @@
 
 - [MiddlewareBase](classes/MiddlewareBase.md)
 - [MiddlewareHandler](classes/MiddlewareHandler.md)
+- [PersonalizeMiddleware](classes/PersonalizeMiddleware.md)
 - [PreviewMiddleware](classes/PreviewMiddleware.md)
 
 ## Interfaces
 
 - [AllowedQueryParam](interfaces/AllowedQueryParam.md)
+- [AnalyticsMiddlewareAdapter](interfaces/AnalyticsMiddlewareAdapter.md)
 - [GetAllowedQueryParamsResult](interfaces/GetAllowedQueryParamsResult.md)
 
 ## Type Aliases
@@ -26,6 +28,7 @@
 - [EditingRenderRouteConfig](type-aliases/EditingRenderRouteConfig.md)
 - [MiddlewareBaseConfig](type-aliases/MiddlewareBaseConfig.md)
 - [NuxtContentSdkComponent](type-aliases/NuxtContentSdkComponent.md)
+- [PersonalizeMiddlewareConfig](type-aliases/PersonalizeMiddlewareConfig.md)
 - [PreviewMiddlewareConfig](type-aliases/PreviewMiddlewareConfig.md)
 - [RobotsRouteOptions](type-aliases/RobotsRouteOptions.md)
 - [SitemapRouteOptions](type-aliases/SitemapRouteOptions.md)
@@ -37,6 +40,7 @@
 
 ## Functions
 
+- [analyticsMiddlewareAdapter](functions/analyticsMiddlewareAdapter.md)
 - [createEditingConfigRoute](functions/createEditingConfigRoute.md)
 - [createEditingRenderRoute](functions/createEditingRenderRoute.md)
 - [createHealthcheckRoute](functions/createHealthcheckRoute.md)
