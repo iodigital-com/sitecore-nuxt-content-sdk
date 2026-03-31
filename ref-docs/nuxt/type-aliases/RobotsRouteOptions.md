@@ -8,7 +8,7 @@
 
 > **RobotsRouteOptions** = `object`
 
-Defined in: [nuxt/src/route-handlers/robots-route.ts:11](https://github.com/weareyou/sitecore-nuxt-content-sdk/blob/bcfd48627517b7dcda869581de14dee3f971bda7/packages/nuxt/src/route-handlers/robots-route.ts#L11)
+Defined in: [nuxt/src/route-handlers/robots-route.ts:11](https://github.com/weareyou/sitecore-nuxt-content-sdk/blob/cc7599bd3ffb9b6b0f89c6d5fc538fedfa79fb62/packages/nuxt/src/route-handlers/robots-route.ts#L11)
 
 ## Properties
 
@@ -16,7 +16,7 @@ Defined in: [nuxt/src/route-handlers/robots-route.ts:11](https://github.com/wear
 
 > **client**: `SitecoreClient`
 
-Defined in: [nuxt/src/route-handlers/robots-route.ts:15](https://github.com/weareyou/sitecore-nuxt-content-sdk/blob/bcfd48627517b7dcda869581de14dee3f971bda7/packages/nuxt/src/route-handlers/robots-route.ts#L15)
+Defined in: [nuxt/src/route-handlers/robots-route.ts:15](https://github.com/weareyou/sitecore-nuxt-content-sdk/blob/cc7599bd3ffb9b6b0f89c6d5fc538fedfa79fb62/packages/nuxt/src/route-handlers/robots-route.ts#L15)
 
 Sitecore client instance used to fetch robots.txt content.
 
@@ -26,7 +26,7 @@ Sitecore client instance used to fetch robots.txt content.
 
 > `optional` **revalidate**: `number` \| `false`
 
-Defined in: [nuxt/src/route-handlers/robots-route.ts:25](https://github.com/weareyou/sitecore-nuxt-content-sdk/blob/bcfd48627517b7dcda869581de14dee3f971bda7/packages/nuxt/src/route-handlers/robots-route.ts#L25)
+Defined in: [nuxt/src/route-handlers/robots-route.ts:25](https://github.com/weareyou/sitecore-nuxt-content-sdk/blob/cc7599bd3ffb9b6b0f89c6d5fc538fedfa79fb62/packages/nuxt/src/route-handlers/robots-route.ts#L25)
 
 Cache revalidation interval in seconds.
 Pass false to cache indefinitely.
@@ -38,6 +38,6 @@ Default is 60 seconds.
 
 > **sites**: `SiteInfo`[]
 
-Defined in: [nuxt/src/route-handlers/robots-route.ts:19](https://github.com/weareyou/sitecore-nuxt-content-sdk/blob/bcfd48627517b7dcda869581de14dee3f971bda7/packages/nuxt/src/route-handlers/robots-route.ts#L19)
+Defined in: [nuxt/src/route-handlers/robots-route.ts:19](https://github.com/weareyou/sitecore-nuxt-content-sdk/blob/cc7599bd3ffb9b6b0f89c6d5fc538fedfa79fb62/packages/nuxt/src/route-handlers/robots-route.ts#L19)
 
 List of sites used for site resolution by hostname.

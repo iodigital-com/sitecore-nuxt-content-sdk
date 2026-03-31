@@ -8,6 +8,6 @@
 
 > `const` **LOCALE\_HEADER\_NAME**: `"x-sc-locale"` = `'x-sc-locale'`
 
-Defined in: [nuxt/src/middleware/middleware.ts:25](https://github.com/weareyou/sitecore-nuxt-content-sdk/blob/bcfd48627517b7dcda869581de14dee3f971bda7/packages/nuxt/src/middleware/middleware.ts#L25)
+Defined in: [nuxt/src/middleware/middleware.ts:25](https://github.com/weareyou/sitecore-nuxt-content-sdk/blob/cc7599bd3ffb9b6b0f89c6d5fc538fedfa79fb62/packages/nuxt/src/middleware/middleware.ts#L25)
 
 Header name used by LocaleMiddleware to share the resolved locale with subsequent proxies.

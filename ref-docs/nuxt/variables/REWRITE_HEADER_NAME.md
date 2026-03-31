@@ -8,6 +8,6 @@
 
 > `const` **REWRITE\_HEADER\_NAME**: `"x-sc-rewrite"` = `'x-sc-rewrite'`
 
-Defined in: [nuxt/src/middleware/middleware.ts:20](https://github.com/weareyou/sitecore-nuxt-content-sdk/blob/bcfd48627517b7dcda869581de14dee3f971bda7/packages/nuxt/src/middleware/middleware.ts#L20)
+Defined in: [nuxt/src/middleware/middleware.ts:20](https://github.com/weareyou/sitecore-nuxt-content-sdk/blob/cc7599bd3ffb9b6b0f89c6d5fc538fedfa79fb62/packages/nuxt/src/middleware/middleware.ts#L20)
 
 Header name used to share the rewrite path between proxies in the middleware chain.

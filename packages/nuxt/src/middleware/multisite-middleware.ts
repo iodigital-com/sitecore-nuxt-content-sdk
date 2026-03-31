@@ -1,20 +1,20 @@
 import { H3Event, getCookie, setCookie, getRequestURL } from 'h3';
-import { getSiteRewrite, SITE_KEY } from '@sitecore-content-sdk/content/site';
+import { SITE_KEY } from '@sitecore-content-sdk/content/site';
 import { MiddlewareBase, MiddlewareBaseConfig, REWRITE_HEADER_NAME } from './middleware';
 import { SitecoreConfig } from '../config';
 import { PREVIEW_KEY } from '@sitecore-content-sdk/content/editing';
 import debug from '../debug';
 
 /**
- * Defines the attributes of a cookie used in the multisite middleware.
+ * Cookie attributes for the site cookie.
  * @public
  */
 export type CookieAttributes = {
-  /** the Secure attribute of the site cookie */
+  /** The Secure attribute of the site cookie. */
   secure: boolean;
-  /** the HttpOnly attribute of the site cookie */
+  /** The HttpOnly attribute of the site cookie. */
   httpOnly: boolean;
-  /** the SameSite attribute of the site cookie */
+  /** The SameSite attribute of the site cookie. */
   sameSite?: true | false | 'lax' | 'strict' | 'none' | undefined;
 };
 
@@ -28,23 +28,27 @@ export type MultisiteMiddlewareConfig = MiddlewareBaseConfig & SitecoreConfig['m
  * Middleware that resolves the active Sitecore site for each request and rewrites
  * the request path to include the site segment.
  *
+ * Because Nuxt uses file-based routing with a `[site]` dynamic segment, the middleware
+ * always runs regardless of whether multisite is configured with multiple sites.
+ * Skipping it would cause 404 errors for regular page requests.
+ * This middleware is only needed when your Nuxt app uses multisite routing
+ * with a `[site]` dynamic segment. If your app serves a single site, do not
+ * register this middleware.
+ *
  * Site resolution order:
- * 1. `sc_site` query string parameter
- * 2. `site` query string parameter (used in Page Builder preview)
- * 3. `sc_site` cookie (when `useCookieResolution` returns true)
- * 4. Hostname-based resolution via `SiteResolver`
+ * 1. `sc_site` cookie — when in Sitecore preview mode (`sc_preview` cookie present)
+ * 2. `sc_site` query string parameter
+ * 3. `site` query string parameter (used in Sitecore Page Builder preview)
+ * 4. `sc_site` cookie — when `useCookieResolution` returns true
+ * 5. Hostname-based resolution via `SiteResolver`
  *
- * In Sitecore preview mode (`sc_preview` cookie present), the site name is read
- * directly from the `sc_site` cookie to preserve site context during navigation.
- *
- * On success, rewrites `event.node.req.url` to the site-specific path and sets
+ * On success, rewrites `event.node.req.url` to `/${siteName}${pathname}` and sets
  * the `sc_site` cookie for downstream middleware.
  * @example
  * // server/middleware/multisite.ts
  * import { MultisiteMiddleware } from '@sitecore-content-sdk/nuxt';
  *
  * const middleware = new MultisiteMiddleware({
- *   enabled: true,
  *   useCookieResolution: () => true,
  *   sites: config.sites,
  * });
@@ -63,10 +67,11 @@ export class MultisiteMiddleware extends MiddlewareBase {
   /**
    * Handles an incoming request by resolving the active site and rewriting the path.
    *
-   * Skips execution when:
-   * - The middleware is globally disabled via config (unless in preview mode)
-   * - The request targets a static file, API route, or Nuxt internal route
-   * - The request is a preview (unless site name preservation is needed)
+   * Skips execution for static files, API routes, Nuxt internal routes, and when
+   * a custom skip function returns true.
+   *
+   * In Sitecore preview mode, the site name is read from the `sc_site` cookie to
+   * preserve site context during navigation between pages.
    *
    * Errors are caught and logged without re-throwing, so the request continues normally.
    * @param {H3Event} event - The incoming H3 event
@@ -80,55 +85,32 @@ export class MultisiteMiddleware extends MiddlewareBase {
       const hostname = this.getHostHeader(event) || this.defaultHostname;
       const startTimestamp = Date.now();
 
-      debug.multisite('multisite middleware start: %o', {
-        pathname,
-        language,
-        hostname,
-      });
+      debug.multisite('multisite middleware start: %o', { pathname, language, hostname });
+
+      if (this.disabled(event)) {
+        debug.multisite('skipped (multisite middleware is disabled)');
+        return;
+      }
 
       const isSitecorePreview = getCookie(event, PREVIEW_KEY);
+      const url = getRequestURL(event);
 
-      if (!isSitecorePreview) {
-        if (!this.config.enabled) {
-          this.shouldWarnWhenDisabled();
-          if (this.shouldSkipWhenDisabled()) {
-            debug.multisite('skipped (multisite middleware is disabled globally)');
-            return;
-          }
-        }
-
-        if (this.disabled(event)) {
-          debug.multisite('skipped (multisite middleware is disabled)');
-          return;
-        }
-      }
-
-      let siteName: string;
-
-      if (isSitecorePreview) {
-        siteName = getCookie(event, SITE_KEY) as string;
-      } else {
-        const url = getRequestURL(event);
-        siteName =
-          url.searchParams.get(SITE_KEY) ||
+      const siteName = isSitecorePreview
+        ? (getCookie(event, SITE_KEY) as string)
+        : url.searchParams.get(SITE_KEY) ||
           url.searchParams.get('site') ||
-          (this.config.useCookieResolution &&
-            this.config.useCookieResolution(event) &&
-            getCookie(event, SITE_KEY)) ||
+          (this.config.useCookieResolution?.(event) && getCookie(event, SITE_KEY)) ||
           this.siteResolver.getByHost(hostname).name;
-      }
 
       const rewritePath = this.getSiteRewrite(pathname, siteName);
 
       this.rewrite(rewritePath, event);
 
-      const defaultCookieAttributes: CookieAttributes = {
+      setCookie(event, SITE_KEY, siteName, {
         secure: true,
         httpOnly: true,
         sameSite: 'none',
-      };
-
-      setCookie(event, SITE_KEY, siteName, defaultCookieAttributes);
+      } as CookieAttributes);
 
       debug.multisite('multisite middleware end in %dms: %o', Date.now() - startTimestamp, {
         rewritePath,
@@ -143,7 +125,7 @@ export class MultisiteMiddleware extends MiddlewareBase {
   /**
    * Determines whether the middleware should be skipped for the current request.
    * Returns `true` for paths containing a file extension (static assets) or
-   * when the base disabled check matches.
+   * when the base disabled check matches (API routes, Nuxt internal routes, custom skip).
    * @param {H3Event} event - The incoming H3 event
    * @returns {boolean} `true` if the middleware should be skipped
    */
@@ -153,31 +135,16 @@ export class MultisiteMiddleware extends MiddlewareBase {
   }
 
   /**
-   * Called when multisite is disabled. Override in subclasses to show
-   * environment-specific warnings.
-   */
-  protected shouldWarnWhenDisabled(): void {
-    // Base implementation does nothing - subclasses can override to show warnings
-  }
-
-  /**
-   * Determines if the middleware should be skipped when multisite is disabled.
-   * Override in subclasses to provide environment-specific behaviour.
-   * @returns {boolean} `true` if the middleware should be skipped when disabled
-   */
-  protected shouldSkipWhenDisabled(): boolean {
-    return true;
-  }
-
-  /**
-   * Generates a site-specific rewrite path based on the provided pathname and site name.
+   * Generates the site-specific rewrite path by prepending the site name segment.
    * @example
-   * // '/about' + 'my-site' → '/_site_my-site/about'
+   * // '/about' + 'my-site' → '/my-site/about'
+   * // 'about' + 'my-site' → '/my-site/about'
    * @param {string} pathname - The pathname to rewrite
    * @param {string} siteName - The resolved site name
    * @returns {string} The rewritten path
    */
   protected getSiteRewrite(pathname: string, siteName: string): string {
-    return getSiteRewrite(pathname, { siteName });
+    const path = pathname.startsWith('/') ? pathname : '/' + pathname;
+    return `/${siteName}${path}`;
   }
 }

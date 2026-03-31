@@ -6,16 +6,16 @@ import { describe, it, beforeEach, afterEach, beforeAll, afterAll } from 'vitest
 import { createEvent, H3Event } from 'h3';
 import { IncomingMessage, ServerResponse } from 'http';
 import { MultisiteMiddleware, MultisiteMiddlewareConfig } from './multisite-middleware';
-import { SiteInfo, SiteResolver } from '@sitecore-content-sdk/content/site';
+import { SiteResolver, SiteInfo } from '@sitecore-content-sdk/content/site';
 import debug from '../debug';
 
 const siteName = 'foo';
 
 const defaultConfig: MultisiteMiddlewareConfig = {
   sites: [],
-  enabled: true,
   useCookieResolution: () => false,
   defaultHostname: '',
+  enabled: true,
 };
 
 const createMockEvent = (
@@ -108,20 +108,12 @@ describe('MultisiteMiddleware', () => {
 
         await middleware.handle(event);
 
-        const isDisabledGlobally = middleware['config'].enabled === false;
-
-        if (!isDisabledGlobally) {
-          validateDebugLog('multisite middleware start: %o', {
-            pathname,
-            language: 'en',
-            hostname: 'foo.net',
-          });
-        }
-
-        const message = isDisabledGlobally
-          ? 'skipped (multisite middleware is disabled globally)'
-          : 'skipped (multisite middleware is disabled)';
-        validateDebugLog(message);
+        validateDebugLog('multisite middleware start: %o', {
+          pathname,
+          language: 'en',
+          hostname: 'foo.net',
+        });
+        validateDebugLog('skipped (multisite middleware is disabled)');
 
         expect(event.node.req.url).to.equal(pathname);
 
@@ -163,35 +155,11 @@ describe('MultisiteMiddleware', () => {
         });
 
         validateEndMessageDebugLog('multisite middleware end in %dms: %o', {
-          rewritePath: '/_site_foobar/styleguide',
+          rewritePath: '/foobar/styleguide',
           siteName: 'foobar',
         });
 
-        expect(event.node.req.url).to.equal('/_site_foobar/styleguide');
-        expect((siteResolver.getByHost as sinon.SinonStub).called).to.be.false;
-        expect((siteResolver.getByName as sinon.SinonStub).called).to.be.false;
-      });
-
-      it('should not be skipped if multisite middleware is disabled globally', async () => {
-        const event = createMockEvent({}, { sc_site: 'foobar', sc_preview: 'true' });
-        const { middleware, siteResolver } = createMiddleware({
-          config: { ...defaultConfig, enabled: false, useCookieResolution: () => true },
-        });
-
-        await middleware.handle(event);
-
-        validateDebugLog('multisite middleware start: %o', {
-          pathname: '/styleguide',
-          language: 'en',
-          hostname: 'foo.net',
-        });
-
-        validateEndMessageDebugLog('multisite middleware end in %dms: %o', {
-          rewritePath: '/_site_foobar/styleguide',
-          siteName: 'foobar',
-        });
-
-        expect(event.node.req.url).to.equal('/_site_foobar/styleguide');
+        expect(event.node.req.url).to.equal('/foobar/styleguide');
         expect((siteResolver.getByHost as sinon.SinonStub).called).to.be.false;
         expect((siteResolver.getByName as sinon.SinonStub).called).to.be.false;
       });
@@ -214,11 +182,11 @@ describe('MultisiteMiddleware', () => {
       });
 
       validateEndMessageDebugLog('multisite middleware end in %dms: %o', {
-        rewritePath: '/_site_foo/styleguide',
+        rewritePath: '/foo/styleguide',
         siteName,
       });
 
-      expect(event.node.req.url).to.equal('/_site_foo/styleguide');
+      expect(event.node.req.url).to.equal('/foo/styleguide');
       expect((siteResolver.getByHost as sinon.SinonStub).calledWith('bar.net')).to.be.true;
     });
 
@@ -235,11 +203,11 @@ describe('MultisiteMiddleware', () => {
       });
 
       validateEndMessageDebugLog('multisite middleware end in %dms: %o', {
-        rewritePath: '/_site_foo/styleguide/foo',
+        rewritePath: '/foo/styleguide/foo',
         siteName,
       });
 
-      expect(event.node.req.url).to.equal('/_site_foo/styleguide/foo');
+      expect(event.node.req.url).to.equal('/foo/styleguide/foo');
       expect((siteResolver.getByHost as sinon.SinonStub).calledWith('foo.net')).to.be.true;
     });
 
@@ -258,11 +226,11 @@ describe('MultisiteMiddleware', () => {
       });
 
       validateEndMessageDebugLog('multisite middleware end in %dms: %o', {
-        rewritePath: '/_site_foo/en/some/otherpath',
+        rewritePath: '/foo/en/some/otherpath',
         siteName,
       });
 
-      expect(event.node.req.url).to.equal('/_site_foo/en/some/otherpath');
+      expect(event.node.req.url).to.equal('/foo/en/some/otherpath');
       expect((siteResolver.getByHost as sinon.SinonStub).calledWith('foo.net')).to.be.true;
     });
 
@@ -279,11 +247,11 @@ describe('MultisiteMiddleware', () => {
       });
 
       validateEndMessageDebugLog('multisite middleware end in %dms: %o', {
-        rewritePath: '/_site_foo/styleguide',
+        rewritePath: '/foo/styleguide',
         siteName,
       });
 
-      expect(event.node.req.url).to.equal('/_site_foo/styleguide');
+      expect(event.node.req.url).to.equal('/foo/styleguide');
       expect((siteResolver.getByHost as sinon.SinonStub).calledWith('localhost')).to.be.true;
     });
 
@@ -300,11 +268,11 @@ describe('MultisiteMiddleware', () => {
       });
 
       validateEndMessageDebugLog('multisite middleware end in %dms: %o', {
-        rewritePath: '/_site_foo/styleguide',
+        rewritePath: '/foo/styleguide',
         siteName,
       });
 
-      expect(event.node.req.url).to.equal('/_site_foo/styleguide');
+      expect(event.node.req.url).to.equal('/foo/styleguide');
       expect((siteResolver.getByHost as sinon.SinonStub).calledWith('foo.net')).to.be.true;
     });
 
@@ -323,11 +291,11 @@ describe('MultisiteMiddleware', () => {
       });
 
       validateEndMessageDebugLog('multisite middleware end in %dms: %o', {
-        rewritePath: '/_site_qsFoo/styleguide',
+        rewritePath: '/qsFoo/styleguide',
         siteName: 'qsFoo',
       });
 
-      expect(event.node.req.url).to.equal('/_site_qsFoo/styleguide');
+      expect(event.node.req.url).to.equal('/qsFoo/styleguide');
       expect((siteResolver.getByHost as sinon.SinonStub).called).to.be.false;
       expect((siteResolver.getByName as sinon.SinonStub).called).to.be.false;
     });
@@ -347,11 +315,11 @@ describe('MultisiteMiddleware', () => {
       });
 
       validateEndMessageDebugLog('multisite middleware end in %dms: %o', {
-        rewritePath: '/_site_qsFoo/styleguide',
+        rewritePath: '/qsFoo/styleguide',
         siteName: 'qsFoo',
       });
 
-      expect(event.node.req.url).to.equal('/_site_qsFoo/styleguide');
+      expect(event.node.req.url).to.equal('/qsFoo/styleguide');
       expect((siteResolver.getByHost as sinon.SinonStub).called).to.be.false;
       expect((siteResolver.getByName as sinon.SinonStub).called).to.be.false;
     });
@@ -371,11 +339,11 @@ describe('MultisiteMiddleware', () => {
       });
 
       validateEndMessageDebugLog('multisite middleware end in %dms: %o', {
-        rewritePath: '/_site_foobar/styleguide',
+        rewritePath: '/foobar/styleguide',
         siteName: 'foobar',
       });
 
-      expect(event.node.req.url).to.equal('/_site_foobar/styleguide');
+      expect(event.node.req.url).to.equal('/foobar/styleguide');
       expect((siteResolver.getByHost as sinon.SinonStub).called).to.be.false;
       expect((siteResolver.getByName as sinon.SinonStub).called).to.be.false;
     });
@@ -393,11 +361,11 @@ describe('MultisiteMiddleware', () => {
       });
 
       validateEndMessageDebugLog('multisite middleware end in %dms: %o', {
-        rewritePath: '/_site_foo/styleguide',
+        rewritePath: '/foo/styleguide',
         siteName,
       });
 
-      expect(event.node.req.url).to.equal('/_site_foo/styleguide');
+      expect(event.node.req.url).to.equal('/foo/styleguide');
       expect((siteResolver.getByHost as sinon.SinonStub).calledWith('foo.net')).to.be.true;
     });
   });
