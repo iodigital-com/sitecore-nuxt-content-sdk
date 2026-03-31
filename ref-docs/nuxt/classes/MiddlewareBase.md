@@ -6,7 +6,7 @@
 
 # Abstract Class: MiddlewareBase
 
-Defined in: [nuxt/src/middleware/middleware.ts:72](https://github.com/weareyou/sitecore-nuxt-content-sdk/blob/41d0c7cf29778b0f6307913d365064cd5f8d528a/packages/nuxt/src/middleware/middleware.ts#L72)
+Defined in: [nuxt/src/middleware/middleware.ts:72](https://github.com/weareyou/sitecore-nuxt-content-sdk/blob/8e9953c2fff3c96cef6d4adca5dc120a512f0dfb/packages/nuxt/src/middleware/middleware.ts#L72)
 
 Base middleware class with common methods
 
@@ -25,7 +25,7 @@ Base middleware class with common methods
 
 > **new MiddlewareBase**(`config`): `MiddlewareBase`
 
-Defined in: [nuxt/src/middleware/middleware.ts:79](https://github.com/weareyou/sitecore-nuxt-content-sdk/blob/41d0c7cf29778b0f6307913d365064cd5f8d528a/packages/nuxt/src/middleware/middleware.ts#L79)
+Defined in: [nuxt/src/middleware/middleware.ts:79](https://github.com/weareyou/sitecore-nuxt-content-sdk/blob/8e9953c2fff3c96cef6d4adca5dc120a512f0dfb/packages/nuxt/src/middleware/middleware.ts#L79)
 
 #### Parameters
 
@@ -47,7 +47,7 @@ Defined in: [nuxt/src/middleware/middleware.ts:79](https://github.com/weareyou/s
 
 > `protected` **config**: [`MiddlewareBaseConfig`](../type-aliases/MiddlewareBaseConfig.md)
 
-Defined in: [nuxt/src/middleware/middleware.ts:79](https://github.com/weareyou/sitecore-nuxt-content-sdk/blob/41d0c7cf29778b0f6307913d365064cd5f8d528a/packages/nuxt/src/middleware/middleware.ts#L79)
+Defined in: [nuxt/src/middleware/middleware.ts:79](https://github.com/weareyou/sitecore-nuxt-content-sdk/blob/8e9953c2fff3c96cef6d4adca5dc120a512f0dfb/packages/nuxt/src/middleware/middleware.ts#L79)
 
 Middleware configuration
 
@@ -57,7 +57,7 @@ Middleware configuration
 
 > `protected` **defaultHostname**: `string`
 
-Defined in: [nuxt/src/middleware/middleware.ts:73](https://github.com/weareyou/sitecore-nuxt-content-sdk/blob/41d0c7cf29778b0f6307913d365064cd5f8d528a/packages/nuxt/src/middleware/middleware.ts#L73)
+Defined in: [nuxt/src/middleware/middleware.ts:73](https://github.com/weareyou/sitecore-nuxt-content-sdk/blob/8e9953c2fff3c96cef6d4adca5dc120a512f0dfb/packages/nuxt/src/middleware/middleware.ts#L73)
 
 ***
 
@@ -65,7 +65,7 @@ Defined in: [nuxt/src/middleware/middleware.ts:73](https://github.com/weareyou/s
 
 > `protected` **siteResolver**: `SiteResolver`
 
-Defined in: [nuxt/src/middleware/middleware.ts:74](https://github.com/weareyou/sitecore-nuxt-content-sdk/blob/41d0c7cf29778b0f6307913d365064cd5f8d528a/packages/nuxt/src/middleware/middleware.ts#L74)
+Defined in: [nuxt/src/middleware/middleware.ts:74](https://github.com/weareyou/sitecore-nuxt-content-sdk/blob/8e9953c2fff3c96cef6d4adca5dc120a512f0dfb/packages/nuxt/src/middleware/middleware.ts#L74)
 
 ## Methods
 
@@ -73,7 +73,7 @@ Defined in: [nuxt/src/middleware/middleware.ts:74](https://github.com/weareyou/s
 
 > `protected` **disabled**(`event`): `boolean`
 
-Defined in: [nuxt/src/middleware/middleware.ts:122](https://github.com/weareyou/sitecore-nuxt-content-sdk/blob/41d0c7cf29778b0f6307913d365064cd5f8d528a/packages/nuxt/src/middleware/middleware.ts#L122)
+Defined in: [nuxt/src/middleware/middleware.ts:122](https://github.com/weareyou/sitecore-nuxt-content-sdk/blob/8e9953c2fff3c96cef6d4adca5dc120a512f0dfb/packages/nuxt/src/middleware/middleware.ts#L122)
 
 Determines if the middleware should be skipped for the current request.
 Returns true for Nuxt internal routes, API routes, Sitecore API routes,
@@ -97,7 +97,7 @@ true if the middleware should be skipped
 
 > `protected` **getClientFactory**(`graphQLOptions`): `GraphQLRequestClientFactory`
 
-Defined in: [nuxt/src/middleware/middleware.ts:205](https://github.com/weareyou/sitecore-nuxt-content-sdk/blob/41d0c7cf29778b0f6307913d365064cd5f8d528a/packages/nuxt/src/middleware/middleware.ts#L205)
+Defined in: [nuxt/src/middleware/middleware.ts:205](https://github.com/weareyou/sitecore-nuxt-content-sdk/blob/8e9953c2fff3c96cef6d4adca5dc120a512f0dfb/packages/nuxt/src/middleware/middleware.ts#L205)
 
 Creates a new GraphQLRequestClientFactory instance
 
@@ -119,7 +119,7 @@ GraphQLRequestClientFactory instance
 
 > `protected` **getHostHeader**(`event`): `string` \| `undefined`
 
-Defined in: [nuxt/src/middleware/middleware.ts:151](https://github.com/weareyou/sitecore-nuxt-content-sdk/blob/41d0c7cf29778b0f6307913d365064cd5f8d528a/packages/nuxt/src/middleware/middleware.ts#L151)
+Defined in: [nuxt/src/middleware/middleware.ts:151](https://github.com/weareyou/sitecore-nuxt-content-sdk/blob/8e9953c2fff3c96cef6d4adca5dc120a512f0dfb/packages/nuxt/src/middleware/middleware.ts#L151)
 
 Extract 'host' header.
 
@@ -141,7 +141,7 @@ The host header, `undefined` will be returned instead of the default value when 
 
 > `protected` **getLanguage**(`event`): `string`
 
-Defined in: [nuxt/src/middleware/middleware.ts:138](https://github.com/weareyou/sitecore-nuxt-content-sdk/blob/41d0c7cf29778b0f6307913d365064cd5f8d528a/packages/nuxt/src/middleware/middleware.ts#L138)
+Defined in: [nuxt/src/middleware/middleware.ts:138](https://github.com/weareyou/sitecore-nuxt-content-sdk/blob/8e9953c2fff3c96cef6d4adca5dc120a512f0dfb/packages/nuxt/src/middleware/middleware.ts#L138)
 
 Provides used language
 
@@ -163,7 +163,7 @@ language
 
 > `protected` **getSite**(`event`): `SiteInfo`
 
-Defined in: [nuxt/src/middleware/middleware.ts:164](https://github.com/weareyou/sitecore-nuxt-content-sdk/blob/41d0c7cf29778b0f6307913d365064cd5f8d528a/packages/nuxt/src/middleware/middleware.ts#L164)
+Defined in: [nuxt/src/middleware/middleware.ts:164](https://github.com/weareyou/sitecore-nuxt-content-sdk/blob/8e9953c2fff3c96cef6d4adca5dc120a512f0dfb/packages/nuxt/src/middleware/middleware.ts#L164)
 
 Get site information. If site name is stored in cookie, use it, otherwise resolve by hostname
 - If site can't be resolved by site name cookie use default site info based on provided parameters
@@ -187,7 +187,7 @@ site information
 
 > `abstract` **handle**(`event`): `Promise`\<`void`\>
 
-Defined in: [nuxt/src/middleware/middleware.ts:65](https://github.com/weareyou/sitecore-nuxt-content-sdk/blob/41d0c7cf29778b0f6307913d365064cd5f8d528a/packages/nuxt/src/middleware/middleware.ts#L65)
+Defined in: [nuxt/src/middleware/middleware.ts:65](https://github.com/weareyou/sitecore-nuxt-content-sdk/blob/8e9953c2fff3c96cef6d4adca5dc120a512f0dfb/packages/nuxt/src/middleware/middleware.ts#L65)
 
 Handler method to execute middleware logic
 
@@ -211,7 +211,7 @@ Handler method to execute middleware logic
 
 > `protected` **isPrefetch**(`event`): `boolean`
 
-Defined in: [nuxt/src/middleware/middleware.ts:99](https://github.com/weareyou/sitecore-nuxt-content-sdk/blob/41d0c7cf29778b0f6307913d365064cd5f8d528a/packages/nuxt/src/middleware/middleware.ts#L99)
+Defined in: [nuxt/src/middleware/middleware.ts:99](https://github.com/weareyou/sitecore-nuxt-content-sdk/blob/8e9953c2fff3c96cef6d4adca5dc120a512f0dfb/packages/nuxt/src/middleware/middleware.ts#L99)
 
 Determines if the request is a Nuxt prefetch request
 
@@ -233,7 +233,7 @@ is prefetch
 
 > `protected` **isPreview**(`event`): `boolean`
 
-Defined in: [nuxt/src/middleware/middleware.ts:90](https://github.com/weareyou/sitecore-nuxt-content-sdk/blob/41d0c7cf29778b0f6307913d365064cd5f8d528a/packages/nuxt/src/middleware/middleware.ts#L90)
+Defined in: [nuxt/src/middleware/middleware.ts:90](https://github.com/weareyou/sitecore-nuxt-content-sdk/blob/8e9953c2fff3c96cef6d4adca5dc120a512f0dfb/packages/nuxt/src/middleware/middleware.ts#L90)
 
 Determines if mode is preview
 
@@ -255,7 +255,7 @@ is preview
 
 > `protected` **rewrite**(`rewritePath`, `event`, `skipHeader?`): `void`
 
-Defined in: [nuxt/src/middleware/middleware.ts:191](https://github.com/weareyou/sitecore-nuxt-content-sdk/blob/41d0c7cf29778b0f6307913d365064cd5f8d528a/packages/nuxt/src/middleware/middleware.ts#L191)
+Defined in: [nuxt/src/middleware/middleware.ts:191](https://github.com/weareyou/sitecore-nuxt-content-sdk/blob/8e9953c2fff3c96cef6d4adca5dc120a512f0dfb/packages/nuxt/src/middleware/middleware.ts#L191)
 
 Rewrites the request path for subsequent handling.
 

@@ -8,7 +8,7 @@
 
 > **SitemapRouteOptions** = `object`
 
-Defined in: [nuxt/src/route-handlers/sitemap-route.ts:10](https://github.com/weareyou/sitecore-nuxt-content-sdk/blob/41d0c7cf29778b0f6307913d365064cd5f8d528a/packages/nuxt/src/route-handlers/sitemap-route.ts#L10)
+Defined in: [nuxt/src/route-handlers/sitemap-route.ts:10](https://github.com/weareyou/sitecore-nuxt-content-sdk/blob/8e9953c2fff3c96cef6d4adca5dc120a512f0dfb/packages/nuxt/src/route-handlers/sitemap-route.ts#L10)
 
 ## Properties
 
@@ -16,7 +16,7 @@ Defined in: [nuxt/src/route-handlers/sitemap-route.ts:10](https://github.com/wea
 
 > **client**: `SitecoreClient`
 
-Defined in: [nuxt/src/route-handlers/sitemap-route.ts:14](https://github.com/weareyou/sitecore-nuxt-content-sdk/blob/41d0c7cf29778b0f6307913d365064cd5f8d528a/packages/nuxt/src/route-handlers/sitemap-route.ts#L14)
+Defined in: [nuxt/src/route-handlers/sitemap-route.ts:14](https://github.com/weareyou/sitecore-nuxt-content-sdk/blob/8e9953c2fff3c96cef6d4adca5dc120a512f0dfb/packages/nuxt/src/route-handlers/sitemap-route.ts#L14)
 
 Sitecore client instance used to fetch robots.txt content.
 
@@ -26,7 +26,7 @@ Sitecore client instance used to fetch robots.txt content.
 
 > `optional` **revalidate**: `number` \| `false`
 
-Defined in: [nuxt/src/route-handlers/sitemap-route.ts:24](https://github.com/weareyou/sitecore-nuxt-content-sdk/blob/41d0c7cf29778b0f6307913d365064cd5f8d528a/packages/nuxt/src/route-handlers/sitemap-route.ts#L24)
+Defined in: [nuxt/src/route-handlers/sitemap-route.ts:24](https://github.com/weareyou/sitecore-nuxt-content-sdk/blob/8e9953c2fff3c96cef6d4adca5dc120a512f0dfb/packages/nuxt/src/route-handlers/sitemap-route.ts#L24)
 
 Cache revalidation interval in seconds.
 Pass false to cache indefinitely.
@@ -38,6 +38,6 @@ Default is 60 seconds.
 
 > **sites**: `SiteInfo`[]
 
-Defined in: [nuxt/src/route-handlers/sitemap-route.ts:18](https://github.com/weareyou/sitecore-nuxt-content-sdk/blob/41d0c7cf29778b0f6307913d365064cd5f8d528a/packages/nuxt/src/route-handlers/sitemap-route.ts#L18)
+Defined in: [nuxt/src/route-handlers/sitemap-route.ts:18](https://github.com/weareyou/sitecore-nuxt-content-sdk/blob/8e9953c2fff3c96cef6d4adca5dc120a512f0dfb/packages/nuxt/src/route-handlers/sitemap-route.ts#L18)
 
 List of sites used for site resolution by hostname.
