@@ -8,7 +8,7 @@
 
 > **EditingConfigRouteConfig** = `object`
 
-Defined in: [nuxt/src/route-handlers/editing-config-route.ts:18](https://github.com/weareyou/sitecore-nuxt-content-sdk/blob/8e9953c2fff3c96cef6d4adca5dc120a512f0dfb/packages/nuxt/src/route-handlers/editing-config-route.ts#L18)
+Defined in: [nuxt/src/route-handlers/editing-config-route.ts:18](https://github.com/weareyou/sitecore-nuxt-content-sdk/blob/bcfd48627517b7dcda869581de14dee3f971bda7/packages/nuxt/src/route-handlers/editing-config-route.ts#L18)
 
 Configuration for the createEditingConfigRoute factory function.
 
@@ -18,7 +18,7 @@ Configuration for the createEditingConfigRoute factory function.
 
 > `optional` **clientComponents**: `ComponentMap`\<[`NuxtContentSdkComponent`](NuxtContentSdkComponent.md)\>
 
-Defined in: [nuxt/src/route-handlers/editing-config-route.ts:32](https://github.com/weareyou/sitecore-nuxt-content-sdk/blob/8e9953c2fff3c96cef6d4adca5dc120a512f0dfb/packages/nuxt/src/route-handlers/editing-config-route.ts#L32)
+Defined in: [nuxt/src/route-handlers/editing-config-route.ts:32](https://github.com/weareyou/sitecore-nuxt-content-sdk/blob/bcfd48627517b7dcda869581de14dee3f971bda7/packages/nuxt/src/route-handlers/editing-config-route.ts#L32)
 
 Contains only client and universal components that can be used in client bundles.
 When provided, Page Builder can distinguish between server and client components.
@@ -29,7 +29,7 @@ When provided, Page Builder can distinguish between server and client components
 
 > **components**: `ComponentMap`\<[`NuxtContentSdkComponent`](NuxtContentSdkComponent.md)\>
 
-Defined in: [nuxt/src/route-handlers/editing-config-route.ts:23](https://github.com/weareyou/sitecore-nuxt-content-sdk/blob/8e9953c2fff3c96cef6d4adca5dc120a512f0dfb/packages/nuxt/src/route-handlers/editing-config-route.ts#L23)
+Defined in: [nuxt/src/route-handlers/editing-config-route.ts:23](https://github.com/weareyou/sitecore-nuxt-content-sdk/blob/bcfd48627517b7dcda869581de14dee3f971bda7/packages/nuxt/src/route-handlers/editing-config-route.ts#L23)
 
 Components available in the application.
 Used to report available components to the Sitecore Page Builder.
@@ -40,6 +40,6 @@ Used to report available components to the Sitecore Page Builder.
 
 > **metadata**: `Metadata`
 
-Defined in: [nuxt/src/route-handlers/editing-config-route.ts:27](https://github.com/weareyou/sitecore-nuxt-content-sdk/blob/8e9953c2fff3c96cef6d4adca5dc120a512f0dfb/packages/nuxt/src/route-handlers/editing-config-route.ts#L27)
+Defined in: [nuxt/src/route-handlers/editing-config-route.ts:27](https://github.com/weareyou/sitecore-nuxt-content-sdk/blob/bcfd48627517b7dcda869581de14dee3f971bda7/packages/nuxt/src/route-handlers/editing-config-route.ts#L27)
 
 Application metadata containing package information.

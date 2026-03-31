@@ -10,6 +10,10 @@ export {
   PreviewMiddlewareConfig,
 } from './preview-middleware';
 export {
+  MultisiteMiddleware as MultisiteMiddleware,
+  MultisiteMiddlewareConfig,
+} from './multisite-middleware';
+export {
   analyticsMiddlewareAdapter as analyticsMiddlewareAdapter,
   AnalyticsMiddlewareAdapter,
 } from '../initialization/middleware/analytics-adapter';

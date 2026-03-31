@@ -8,6 +8,7 @@
 
 - [MiddlewareBase](classes/MiddlewareBase.md)
 - [MiddlewareHandler](classes/MiddlewareHandler.md)
+- [MultisiteMiddleware](classes/MultisiteMiddleware.md)
 - [PersonalizeMiddleware](classes/PersonalizeMiddleware.md)
 - [PreviewMiddleware](classes/PreviewMiddleware.md)
 
@@ -27,6 +28,7 @@
 - [EditingConfigRouteConfig](type-aliases/EditingConfigRouteConfig.md)
 - [EditingRenderRouteConfig](type-aliases/EditingRenderRouteConfig.md)
 - [MiddlewareBaseConfig](type-aliases/MiddlewareBaseConfig.md)
+- [MultisiteMiddlewareConfig](type-aliases/MultisiteMiddlewareConfig.md)
 - [NuxtContentSdkComponent](type-aliases/NuxtContentSdkComponent.md)
 - [PersonalizeMiddlewareConfig](type-aliases/PersonalizeMiddlewareConfig.md)
 - [PreviewMiddlewareConfig](type-aliases/PreviewMiddlewareConfig.md)
