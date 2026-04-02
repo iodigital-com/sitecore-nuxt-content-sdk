@@ -11,7 +11,7 @@
     "test": "vitest run",
     "coverage": "vitest run --coverage",
     "prepublishOnly": "npm run build",
-    "generate-docs": "npx typedoc --plugin typedoc-plugin-markdown --outputFileStrategy Members --parametersFormat table --readme none --out ../../ref-docs/vue --entryPoints src/index.ts --githubPages false"
+    "generate-docs": "npx typedoc --plugin typedoc-plugin-markdown --outputFileStrategy Members --parametersFormat table --readme none --out ../../ref-docs/vue --entryPoints src/typedoc-entry.ts --githubPages false"
   },
   "engines": {
     "node": ">=24"

@@ -1,25 +1,11 @@
 <script setup lang="ts">
 import { computed, useSlots } from 'vue';
 import { isFieldValueEmpty } from '@sitecore-content-sdk/content/layout';
+import { FileField, FileFieldValue } from './File';
 
 defineOptions({
   name: 'File',
 });
-
-export interface FileFieldValue {
-  [propName: string]: unknown;
-  src?: string;
-  title?: string;
-  displayName?: string;
-}
-
-/**
- * The interface for the File field.
- * @public
- */
-export interface FileField {
-  value: FileFieldValue;
-}
 
 const props = defineProps<{
   /** The file field data. */
