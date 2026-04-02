@@ -1,4 +1,4 @@
-export * from './sharedTypes/components';
+export * from './sharedTypes';
 export {
   constants,
   enableDebug,
