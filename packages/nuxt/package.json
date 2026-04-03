@@ -1,11 +1,12 @@
 {
   "name": "@sitecore-content-sdk/nuxt",
   "version": "1.0.0",
-  "main": "dist/cjs/index.js",
-  "module": "dist/esm/index.js",
+  "main": "dist/index.js",
+  "module": "dist/index.js",
+  "type": "module",
   "sideEffects": false,
   "scripts": {
-    "build": "npm run clean && tsc -p tsconfig.json && tsc -p tsconfig-esm.json",
+    "build": "npm run clean && tsc -p tsconfig.json",
     "clean": "del-cli dist types",
     "lint": "eslint \"./src/**/*.ts\"",
     "test": "vitest run",
@@ -35,6 +36,7 @@
     "del-cli": "^6.0.0",
     "eslint": "^9.32.0",
     "nitro": "^3.0.260311-beta",
+    "nuxt": "^4.4.2",
     "proxyquire": "^2.1.3",
     "regex-parser": "^2.3.1",
     "sinon": "^20.0.0",
@@ -63,6 +65,12 @@
     "@sitecore-content-sdk/vue": "workspace:*",
     "h3": "^1.0.0",
     "std-env": "^4.0.0"
+  },
+  "exports": {
+    ".": {
+      "import": "./dist/index.js",
+      "types": "./types/index.d.ts"
+    }
   },
   "types": "types/index.d.ts",
   "files": [
