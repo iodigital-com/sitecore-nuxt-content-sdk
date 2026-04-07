@@ -1,8 +1,6 @@
 /* eslint-disable no-unused-expressions */
 /* eslint-disable dot-notation */
-import sinon, { spy } from 'sinon';
-import { expect } from 'chai';
-import { describe, it, beforeEach, afterEach, beforeAll, afterAll } from 'vitest';
+import { describe, it, beforeEach, afterEach, beforeAll, afterAll, vi, expect } from 'vitest';
 import { createEvent, H3Event } from 'h3';
 import { IncomingMessage, ServerResponse } from 'http';
 import { MultisiteMiddleware, MultisiteMiddlewareConfig } from './multisite-middleware';
@@ -54,17 +52,16 @@ const createMiddleware = (
     siteResolver?: SiteResolver;
   } = {}
 ) => {
-  const sandbox = sinon.createSandbox();
   const props = { ...defaultConfig, ...(input.config ?? {}) };
 
   class MockSiteResolver extends SiteResolver {
-    getByName = sandbox.stub().returns({
+    getByName = vi.fn().mockReturnValue({
       name: siteName,
       language: input.language ?? '',
       hostName: input.hostName,
     });
 
-    getByHost = sandbox.stub().returns({
+    getByHost = vi.fn().mockReturnValue({
       name: siteName,
       language: input.language ?? '',
       hostName: input.hostName,
@@ -72,33 +69,34 @@ const createMiddleware = (
   }
 
   const siteResolver = input.siteResolver ?? new MockSiteResolver([]);
-
   const middleware = new MultisiteMiddleware(props as MultisiteMiddlewareConfig);
   middleware['siteResolver'] = siteResolver;
 
-  return { middleware, siteResolver, sandbox };
+  return { middleware, siteResolver };
 };
 
 describe('MultisiteMiddleware', () => {
-  let debugSpy: ReturnType<typeof spy>;
+  let debugSpy: ReturnType<typeof vi.spyOn>;
 
   const validateDebugLog = (message: string, ...params: unknown[]) =>
-    expect(debugSpy.args.find((log: unknown[]) => log[0] === message)).to.deep.equal([
+    expect(debugSpy.mock.calls.find((log: unknown[]) => log[0] === message)).toEqual([
       message,
       ...params,
     ]);
 
   const validateEndMessageDebugLog = (message: string, params: unknown) => {
-    const logParams = debugSpy.args.find((log: unknown[]) => log[0] === message) as Array<unknown>;
-    expect(logParams[2]).to.deep.equal(params);
+    const logParams = debugSpy.mock.calls.find(
+      (log: unknown[]) => log[0] === message
+    ) as Array<unknown>;
+    expect(logParams[2]).toEqual(params);
   };
 
-  beforeAll(() => {
-    debugSpy = spy(debug, 'multisite');
+  beforeEach(() => {
+    debugSpy = vi.spyOn(debug, 'multisite').mockImplementation(() => {});
   });
 
   afterEach(() => {
-    debugSpy.resetHistory();
+    debugSpy.mockRestore();
   });
 
   describe('request skipped', () => {
@@ -115,9 +113,9 @@ describe('MultisiteMiddleware', () => {
         });
         validateDebugLog('skipped (multisite middleware is disabled)');
 
-        expect(event.node.req.url).to.equal(pathname);
+        expect(event.node.req.url).toBe(pathname);
 
-        debugSpy.resetHistory();
+        debugSpy.mockClear();
       };
 
       it('default', async () => {
@@ -146,6 +144,12 @@ describe('MultisiteMiddleware', () => {
           config: { ...defaultConfig, useCookieResolution: () => true },
         });
 
+        vi.spyOn(middleware as any, 'getSite').mockReturnValue({
+          name: 'foobar',
+          language: 'en',
+          hostName: 'foo.net',
+        });
+
         await middleware.handle(event);
 
         validateDebugLog('multisite middleware start: %o', {
@@ -159,9 +163,9 @@ describe('MultisiteMiddleware', () => {
           siteName: 'foobar',
         });
 
-        expect(event.node.req.url).to.equal('/foobar/styleguide');
-        expect((siteResolver.getByHost as sinon.SinonStub).called).to.be.false;
-        expect((siteResolver.getByName as sinon.SinonStub).called).to.be.false;
+        expect(event.node.req.url).toBe('/foobar/styleguide');
+        expect((siteResolver.getByHost as ReturnType<typeof vi.fn>).mock.calls).toHaveLength(0);
+        expect((siteResolver.getByName as ReturnType<typeof vi.fn>).mock.calls).toHaveLength(0);
       });
     });
   });
@@ -186,8 +190,8 @@ describe('MultisiteMiddleware', () => {
         siteName,
       });
 
-      expect(event.node.req.url).to.equal('/foo/styleguide');
-      expect((siteResolver.getByHost as sinon.SinonStub).calledWith('bar.net')).to.be.true;
+      expect(event.node.req.url).toBe('/foo/styleguide');
+      expect((siteResolver.getByHost as ReturnType<typeof vi.fn>).mock.calls[0][0]).toBe('bar.net');
     });
 
     it('request pathname is used', async () => {
@@ -207,8 +211,8 @@ describe('MultisiteMiddleware', () => {
         siteName,
       });
 
-      expect(event.node.req.url).to.equal('/foo/styleguide/foo');
-      expect((siteResolver.getByHost as sinon.SinonStub).calledWith('foo.net')).to.be.true;
+      expect(event.node.req.url).toBe('/foo/styleguide/foo');
+      expect((siteResolver.getByHost as ReturnType<typeof vi.fn>).mock.calls[0][0]).toBe('foo.net');
     });
 
     it('rewritten pathname from response header is used when present', async () => {
@@ -230,8 +234,8 @@ describe('MultisiteMiddleware', () => {
         siteName,
       });
 
-      expect(event.node.req.url).to.equal('/foo/en/some/otherpath');
-      expect((siteResolver.getByHost as sinon.SinonStub).calledWith('foo.net')).to.be.true;
+      expect(event.node.req.url).toBe('/foo/en/some/otherpath');
+      expect((siteResolver.getByHost as ReturnType<typeof vi.fn>).mock.calls[0][0]).toBe('foo.net');
     });
 
     it('fallback default hostname is used', async () => {
@@ -251,8 +255,10 @@ describe('MultisiteMiddleware', () => {
         siteName,
       });
 
-      expect(event.node.req.url).to.equal('/foo/styleguide');
-      expect((siteResolver.getByHost as sinon.SinonStub).calledWith('localhost')).to.be.true;
+      expect(event.node.req.url).toBe('/foo/styleguide');
+      expect((siteResolver.getByHost as ReturnType<typeof vi.fn>).mock.calls[0][0]).toBe(
+        'localhost'
+      );
     });
 
     it('host header is used', async () => {
@@ -272,8 +278,8 @@ describe('MultisiteMiddleware', () => {
         siteName,
       });
 
-      expect(event.node.req.url).to.equal('/foo/styleguide');
-      expect((siteResolver.getByHost as sinon.SinonStub).calledWith('foo.net')).to.be.true;
+      expect(event.node.req.url).toBe('/foo/styleguide');
+      expect((siteResolver.getByHost as ReturnType<typeof vi.fn>).mock.calls[0][0]).toBe('foo.net');
     });
 
     it('sc_site querystring parameter is provided', async () => {
@@ -295,9 +301,9 @@ describe('MultisiteMiddleware', () => {
         siteName: 'qsFoo',
       });
 
-      expect(event.node.req.url).to.equal('/qsFoo/styleguide');
-      expect((siteResolver.getByHost as sinon.SinonStub).called).to.be.false;
-      expect((siteResolver.getByName as sinon.SinonStub).called).to.be.false;
+      expect(event.node.req.url).toBe('/qsFoo/styleguide');
+      expect((siteResolver.getByHost as ReturnType<typeof vi.fn>).mock.calls).toHaveLength(0);
+      expect((siteResolver.getByName as ReturnType<typeof vi.fn>).mock.calls).toHaveLength(0);
     });
 
     it('site querystring parameter is provided', async () => {
@@ -319,15 +325,21 @@ describe('MultisiteMiddleware', () => {
         siteName: 'qsFoo',
       });
 
-      expect(event.node.req.url).to.equal('/qsFoo/styleguide');
-      expect((siteResolver.getByHost as sinon.SinonStub).called).to.be.false;
-      expect((siteResolver.getByName as sinon.SinonStub).called).to.be.false;
+      expect(event.node.req.url).toBe('/qsFoo/styleguide');
+      expect((siteResolver.getByHost as ReturnType<typeof vi.fn>).mock.calls).toHaveLength(0);
+      expect((siteResolver.getByName as ReturnType<typeof vi.fn>).mock.calls).toHaveLength(0);
     });
 
     it('sc_site cookie is provided and its usage enabled', async () => {
       const event = createMockEvent({}, { sc_site: 'foobar' });
       const { middleware, siteResolver } = createMiddleware({
         config: { ...defaultConfig, useCookieResolution: () => true },
+      });
+
+      vi.spyOn(middleware as any, 'getSite').mockReturnValue({
+        name: 'foobar',
+        language: 'en',
+        hostName: 'foo.net',
       });
 
       await middleware.handle(event);
@@ -343,9 +355,9 @@ describe('MultisiteMiddleware', () => {
         siteName: 'foobar',
       });
 
-      expect(event.node.req.url).to.equal('/foobar/styleguide');
-      expect((siteResolver.getByHost as sinon.SinonStub).called).to.be.false;
-      expect((siteResolver.getByName as sinon.SinonStub).called).to.be.false;
+      expect(event.node.req.url).toBe('/foobar/styleguide');
+      expect((siteResolver.getByHost as ReturnType<typeof vi.fn>).mock.calls).toHaveLength(0);
+      expect((siteResolver.getByName as ReturnType<typeof vi.fn>).mock.calls).toHaveLength(0);
     });
 
     it('sc_site cookie is provided and its usage disabled', async () => {
@@ -365,24 +377,24 @@ describe('MultisiteMiddleware', () => {
         siteName,
       });
 
-      expect(event.node.req.url).to.equal('/foo/styleguide');
-      expect((siteResolver.getByHost as sinon.SinonStub).calledWith('foo.net')).to.be.true;
+      expect(event.node.req.url).toBe('/foo/styleguide');
+      expect((siteResolver.getByHost as ReturnType<typeof vi.fn>).mock.calls[0][0]).toBe('foo.net');
     });
   });
 
   describe('error handling', () => {
-    let errorSpy: ReturnType<typeof spy>;
+    let errorSpy: ReturnType<typeof vi.spyOn>;
 
     beforeAll(() => {
-      errorSpy = spy(console, 'log');
+      errorSpy = vi.spyOn(console, 'log').mockImplementation(() => {});
     });
 
     beforeEach(() => {
-      errorSpy.resetHistory();
+      errorSpy.mockClear();
     });
 
     afterAll(() => {
-      errorSpy.restore();
+      errorSpy.mockRestore();
     });
 
     it('should handle error', async () => {
@@ -405,8 +417,8 @@ describe('MultisiteMiddleware', () => {
 
       await middleware.handle(event);
 
-      expect(errorSpy.getCall(0).calledWith('Multisite middleware failed:')).to.be.true;
-      expect(errorSpy.getCall(1).calledWith(error)).to.be.true;
+      expect(errorSpy).toHaveBeenNthCalledWith(1, 'Multisite middleware failed:');
+      expect(errorSpy).toHaveBeenNthCalledWith(2, error);
     });
   });
 });

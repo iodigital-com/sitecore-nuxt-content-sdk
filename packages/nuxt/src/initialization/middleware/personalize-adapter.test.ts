@@ -1,4 +1,3 @@
-import sinon from 'sinon';
 import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest';
 import { createEvent, H3Event } from 'h3';
 import { IncomingMessage, ServerResponse } from 'http';
@@ -39,9 +38,7 @@ import { getCookie, setCookie, deleteCookie, getRequestHeader } from 'h3';
 import { personalizeMiddlewareAdapter } from './personalize-adapter';
 
 describe('personalizeMiddlewareAdapter', () => {
-  const sandbox = sinon.createSandbox();
-
-  const mockAnalyticsPlugin = {
+    const mockAnalyticsPlugin = {
     options: {
       cookies: {
         name: 'sc_cid',
@@ -92,7 +89,7 @@ describe('personalizeMiddlewareAdapter', () => {
   });
 
   afterEach(() => {
-    sandbox.restore();
+    vi.restoreAllMocks();
     vi.clearAllMocks();
   });
 

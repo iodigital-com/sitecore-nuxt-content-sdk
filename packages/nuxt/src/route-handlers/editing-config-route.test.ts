@@ -1,4 +1,3 @@
-import sinon from 'sinon';
 import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest';
 import { createEvent, H3Event } from 'h3';
 import { IncomingMessage, ServerResponse } from 'http';
@@ -40,8 +39,7 @@ const readBody = (event: H3Event): Promise<string> => {
 };
 
 describe('createEditingConfigRoute', () => {
-  const sandbox = sinon.createSandbox();
-  let route: any;
+    let route: any;
 
   const allowedOrigin = 'https://allowed.com';
   const secret = 'jss-editing-secret-mock';
@@ -74,7 +72,7 @@ describe('createEditingConfigRoute', () => {
   });
 
   afterEach(() => {
-    sandbox.restore();
+    vi.restoreAllMocks();
     vi.clearAllMocks();
   });
 

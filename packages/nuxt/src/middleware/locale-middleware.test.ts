@@ -1,7 +1,5 @@
 /* eslint-disable no-unused-expressions */
-import sinon, { spy } from 'sinon';
-import { expect } from 'chai';
-import { describe, it, beforeEach, afterEach } from 'vitest';
+import { describe, it, beforeEach, afterEach, vi, expect } from 'vitest';
 import { createEvent, H3Event } from 'h3';
 import { IncomingMessage, ServerResponse } from 'http';
 import { LocaleMiddleware, LocaleMiddlewareConfig } from './locale-middleware';
@@ -34,19 +32,21 @@ const createMiddleware = (config: Partial<LocaleMiddlewareConfig> = {}) => {
 };
 
 describe('LocaleMiddleware', () => {
-  const sandbox = sinon.createSandbox();
-  const debugSpy = spy(debug, 'locale');
+  let debugSpy: ReturnType<typeof vi.spyOn>;
 
   const validateDebugLog = (message: string, ...params: unknown[]) => {
-    expect(debugSpy.args.find((log) => log[0] === message)).to.deep.equal([message, ...params]);
+    expect(debugSpy.mock.calls.find((log: unknown[]) => log[0] === message)).toEqual([
+      message,
+      ...params,
+    ]);
   };
 
   beforeEach(() => {
-    debugSpy.resetHistory();
+    debugSpy = vi.spyOn(debug, 'locale').mockImplementation(() => {});
   });
 
   afterEach(() => {
-    sandbox.restore();
+    debugSpy.mockRestore();
   });
 
   describe('disabled / skip', () => {
@@ -60,9 +60,9 @@ describe('LocaleMiddleware', () => {
         locale: 'en',
       });
       validateDebugLog('skipped (locale middleware is disabled)');
-      expect(event.node.res.getHeader(LOCALE_HEADER_NAME)).to.be.undefined;
+      expect(event.node.res.getHeader(LOCALE_HEADER_NAME)).toBeUndefined();
 
-      debugSpy.resetHistory();
+      debugSpy.mockClear();
     };
 
     it('default', async () => {
@@ -100,7 +100,7 @@ describe('LocaleMiddleware', () => {
         locale: 'de-DE',
       });
 
-      expect(event.node.res.getHeader(LOCALE_HEADER_NAME)).to.equal('de-DE');
+      expect(event.node.res.getHeader(LOCALE_HEADER_NAME)).toBe('de-DE');
     });
 
     it('should set locale header with fallback to en when locale is not in path', async () => {
@@ -118,7 +118,7 @@ describe('LocaleMiddleware', () => {
         locale: 'en',
       });
 
-      expect(event.node.res.getHeader(LOCALE_HEADER_NAME)).to.equal('en');
+      expect(event.node.res.getHeader(LOCALE_HEADER_NAME)).toBe('en');
     });
 
     it('should set locale header with defaultLanguage when locale is not in path', async () => {
@@ -136,7 +136,7 @@ describe('LocaleMiddleware', () => {
         locale: 'de-DE',
       });
 
-      expect(event.node.res.getHeader(LOCALE_HEADER_NAME)).to.equal('de-DE');
+      expect(event.node.res.getHeader(LOCALE_HEADER_NAME)).toBe('de-DE');
     });
 
     it('should match locale at end of path', async () => {
@@ -145,21 +145,23 @@ describe('LocaleMiddleware', () => {
 
       await middleware.handle(event);
 
-      expect(event.node.res.getHeader(LOCALE_HEADER_NAME)).to.equal('en');
+      expect(event.node.res.getHeader(LOCALE_HEADER_NAME)).toBe('en');
     });
   });
 
   describe('error handling', () => {
     it('should log error and not throw when an error occurs', async () => {
       const event = createMockEvent({}, '/about');
-      const consoleLogStub = sandbox.stub(console, 'log');
+      const consoleLogSpy = vi.spyOn(console, 'log').mockImplementation(() => {});
       const { middleware } = createMiddleware();
 
-      sandbox.stub(middleware as any, 'getLocaleFromPath').throws(new Error('Unexpected failure'));
+      vi.spyOn(middleware as any, 'getLocaleFromPath').mockImplementation(() => {
+        throw new Error('Unexpected failure');
+      });
 
       await middleware.handle(event);
 
-      expect(consoleLogStub.getCall(0).calledWith('Locale middleware failed:')).to.be.true;
+      expect(consoleLogSpy).toHaveBeenNthCalledWith(1, 'Locale middleware failed:');
     });
   });
 });

@@ -1,8 +1,6 @@
 /* eslint-disable react-hooks/rules-of-hooks */
 /* eslint-disable no-unused-expressions */
-import sinon from 'sinon';
-import { expect } from 'chai';
-import { describe, it, beforeEach, afterEach, vi, expect as vitestExpect } from 'vitest';
+import { describe, it, beforeEach, afterEach, vi, expect } from 'vitest';
 import type { Page } from '@sitecore-content-sdk/content/client';
 import { LayoutServicePageState } from '@sitecore-content-sdk/content/layout';
 import { useSitecorePage } from './useSitecorePages';
@@ -26,10 +24,10 @@ const mockPage: Page = {
   },
 };
 
-const getPageStub = sinon.stub().resolves(mockPage);
-const getPreviewStub = sinon.stub().resolves(mockPage);
-const getDesignLibraryDataStub = sinon.stub().resolves(mockPage);
-const getHeadLinksStub = sinon.stub().returns([]);
+const getPageStub = vi.fn().mockResolvedValue(mockPage);
+const getPreviewStub = vi.fn().mockResolvedValue(mockPage);
+const getDesignLibraryDataStub = vi.fn().mockResolvedValue(mockPage);
+const getHeadLinksStub = vi.fn().mockReturnValue([]);
 
 vi.mock('./useSitecoreClient', () => ({
   useSitecoreClient: () => ({
@@ -53,13 +51,11 @@ vi.mock('nuxt/app', () => ({
 }));
 
 describe('useSitecorePage', () => {
-  const sandbox = sinon.createSandbox();
-
   beforeEach(() => {
-    getPageStub.resolves(mockPage);
-    getPreviewStub.resolves(mockPage);
-    getDesignLibraryDataStub.resolves(mockPage);
-    getHeadLinksStub.returns([]);
+    getPageStub.mockResolvedValue(mockPage);
+    getPreviewStub.mockResolvedValue(mockPage);
+    getDesignLibraryDataStub.mockResolvedValue(mockPage);
+    getHeadLinksStub.mockReturnValue([]);
     mockUseHead.mockReturnValue(undefined);
     mockUseAsyncData.mockImplementation((_key: string, fetcher: () => Promise<Page | null>) =>
       fetcher().then((data) => ({
@@ -71,11 +67,11 @@ describe('useSitecorePage', () => {
   });
 
   afterEach(() => {
-    sandbox.restore();
-    getPageStub.resetHistory();
-    getPreviewStub.resetHistory();
-    getDesignLibraryDataStub.resetHistory();
-    getHeadLinksStub.resetHistory();
+    vi.restoreAllMocks();
+    getPageStub.mockClear();
+    getPreviewStub.mockClear();
+    getDesignLibraryDataStub.mockClear();
+    getHeadLinksStub.mockClear();
     mockUseAsyncData.mockReset();
     mockUseHead.mockReset();
   });
@@ -89,8 +85,8 @@ describe('useSitecorePage', () => {
 
       const { page } = await useSitecorePage();
 
-      expect(getPageStub.calledWith(['producten', 'stoel', 'rood'])).to.be.true;
-      expect(page.value).to.deep.equal(mockPage);
+      expect(getPageStub).toHaveBeenCalledWith(['producten', 'stoel', 'rood']);
+      expect(page.value).toEqual(mockPage);
     });
 
     it('calls getPage with empty array when slug is empty', async () => {
@@ -101,7 +97,7 @@ describe('useSitecorePage', () => {
 
       await useSitecorePage();
 
-      expect(getPageStub.calledWith([])).to.be.true;
+      expect(getPageStub).toHaveBeenCalledWith([]);
     });
 
     it('calls getPage with single string slug wrapped in array', async () => {
@@ -112,7 +108,7 @@ describe('useSitecorePage', () => {
 
       await useSitecorePage();
 
-      expect(getPageStub.calledWith(['about'])).to.be.true;
+      expect(getPageStub).toHaveBeenCalledWith(['about']);
     });
   });
 
@@ -130,8 +126,8 @@ describe('useSitecorePage', () => {
 
       await useSitecorePage();
 
-      expect(getPreviewStub.calledOnce).to.be.true;
-      expect(getPageStub.called).to.be.false;
+      expect(getPreviewStub).toHaveBeenCalledOnce();
+      expect(getPageStub).not.toHaveBeenCalled();
     });
   });
 
@@ -151,16 +147,16 @@ describe('useSitecorePage', () => {
 
       await useSitecorePage();
 
-      expect(getDesignLibraryDataStub.calledOnce).to.be.true;
-      expect(getPageStub.called).to.be.false;
-      expect(getPreviewStub.called).to.be.false;
+      expect(getDesignLibraryDataStub).toHaveBeenCalledOnce();
+      expect(getPageStub).not.toHaveBeenCalled();
+      expect(getPreviewStub).not.toHaveBeenCalled();
     });
   });
 
   describe('head links', () => {
     it('calls useHead with head links when page is returned', async () => {
       const headLinks = [{ rel: 'stylesheet', href: 'https://example.com/style.css' }];
-      getHeadLinksStub.returns(headLinks);
+      getHeadLinksStub.mockReturnValue(headLinks);
 
       mockUseRoute.mockReturnValue({
         params: { slug: ['home'] },
@@ -169,14 +165,14 @@ describe('useSitecorePage', () => {
 
       await useSitecorePage();
 
-      vitestExpect(mockUseHead).toHaveBeenCalledOnce();
-      vitestExpect(mockUseHead).toHaveBeenCalledWith({
+      expect(mockUseHead).toHaveBeenCalledOnce();
+      expect(mockUseHead).toHaveBeenCalledWith({
         link: [{ rel: 'stylesheet', href: 'https://example.com/style.css' }],
       });
     });
 
     it('does not call useHead when page is null', async () => {
-      getPageStub.resolves(null);
+      getPageStub.mockResolvedValue(null);
 
       mockUseRoute.mockReturnValue({
         params: { slug: ['not-found'] },
@@ -185,7 +181,7 @@ describe('useSitecorePage', () => {
 
       await useSitecorePage();
 
-      vitestExpect(mockUseHead).not.toHaveBeenCalled();
+      expect(mockUseHead).not.toHaveBeenCalled();
     });
   });
 

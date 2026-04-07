@@ -1,5 +1,3 @@
-import sinon from 'sinon';
-import { expect } from 'chai';
 import { describe, it, afterEach, vi } from 'vitest';
 import { SitecoreNuxtClient } from '../client/sitecore-nuxt-client';
 
@@ -35,10 +33,8 @@ vi.mock('nuxt/app', () => ({
 import { useSitecoreClient } from './useSitecoreClient';
 
 describe('useSitecoreClient', () => {
-  const sandbox = sinon.createSandbox();
-
-  afterEach(() => {
-    sandbox.restore();
+    afterEach(() => {
+    vi.restoreAllMocks();
   });
 
   it('returns a SitecoreNuxtClient instance', () => {
@@ -48,7 +44,7 @@ describe('useSitecoreClient', () => {
 
   it('initializes client with runtime config', () => {
     const client = useSitecoreClient();
-    expect((client as any).initOptions.defaultSite).to.equal('default-site');
-    expect((client as any).initOptions.defaultLanguage).to.equal('en');
+    expect((client as any).initOptions.defaultSite).toBe('default-site');
+    expect((client as any).initOptions.defaultLanguage).toBe('en');
   });
 });

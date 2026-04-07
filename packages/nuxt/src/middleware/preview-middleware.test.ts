@@ -1,5 +1,4 @@
-import sinon from 'sinon';
-import { describe, it, expect, afterEach } from 'vitest';
+import { describe, it, expect, afterEach, vi } from 'vitest';
 import { createEvent, H3Event } from 'h3';
 import { IncomingMessage, ServerResponse } from 'http';
 import { PreviewMiddleware } from './preview-middleware';
@@ -25,10 +24,8 @@ const createMockEvent = (
 };
 
 describe('PreviewMiddleware', () => {
-  const sandbox = sinon.createSandbox();
-
-  afterEach(() => {
-    sandbox.restore();
+    afterEach(() => {
+    vi.restoreAllMocks();
   });
 
   it('should bypass cache when preview cookie is present', async () => {
@@ -81,13 +78,13 @@ describe('PreviewMiddleware', () => {
 
   it('should catch errors and log them without throwing', async () => {
     const middleware = new PreviewMiddleware({ sites: [] });
-    const consoleErrorStub = sandbox.stub(console, 'error');
+    const consoleErrorStub = vi.spyOn(console, 'error');
     const event = createMockEvent({}, { [PreviewCookies.PREVIEW]: 'true' });
 
-    sandbox.stub(middleware as any, 'bypassCache').throws(new Error('Unexpected failure'));
+    vi.spyOn(middleware as any, 'bypassCache').mockImplementation(() => { throw new Error('Unexpected failure'); });
 
     await middleware.handle(event);
 
-    expect(consoleErrorStub.called).toBe(true);
+    expect(consoleErrorStub).toHaveBeenCalled();
   });
 });

@@ -1,8 +1,6 @@
 /* eslint-disable dot-notation */
 /* eslint-disable no-unused-expressions */
-import sinon, { spy } from 'sinon';
-import { expect } from 'chai';
-import { describe, it, beforeEach, afterEach, vi } from 'vitest';
+import { describe, it, beforeEach, afterEach, vi, expect } from 'vitest';
 import { createEvent, H3Event } from 'h3';
 import { IncomingMessage, ServerResponse } from 'http';
 import { GraphQLRequestClient } from '@sitecore-content-sdk/core';
@@ -10,6 +8,7 @@ import { SiteResolver } from '@sitecore-content-sdk/content/site';
 import { CdpHelper } from '@sitecore-content-sdk/content/personalize';
 import { PersonalizeMiddleware, PersonalizeMiddlewareConfig } from './personalize-middleware';
 import debug from '../debug';
+import { SITE_KEY } from '@sitecore-content-sdk/content/site';
 
 const { CDKPersonalizeStub } = vi.hoisted(() => ({
   CDKPersonalizeStub: vi.fn().mockResolvedValue({ variantId: 'variant-2' }),
@@ -38,6 +37,9 @@ const defaultConfig: Omit<PersonalizeMiddlewareConfig, 'clientFactory'> = {
   sites: [],
 };
 
+const calledWith = (fn: ReturnType<typeof vi.fn>, ...args: unknown[]) =>
+  fn.mock.calls.some((call) => args.every((arg, i) => call[i] === arg));
+
 const createMockEvent = (
   headers: Record<string, string> = {},
   cookies: Record<string, string> = {},
@@ -53,7 +55,7 @@ const createMockEvent = (
 
   if (Object.keys(cookies).length) {
     req.headers.cookie = Object.entries(cookies)
-      .map(([k, v]) => `${k}=${v}`)
+      .map(([k, v]) => `$${k}=$${v}`)
       .join('; ');
   }
 
@@ -69,16 +71,13 @@ const createMiddleware = (
     siteResolver?: SiteResolver;
     variantId?: string;
     personalizeInfo?: { pageId: string; variantIds: string[] } | null;
-    getPersonalizeInfoStub?: sinon.SinonStub;
-    personalizeStub?: sinon.SinonStub;
-    handleCookieStub?: sinon.SinonStub;
-    getClientFactoryStub?: sinon.SinonStub;
-    extractGeoDataCb?: sinon.SinonStub;
+    getPersonalizeInfoStub?: ReturnType<typeof vi.fn>;
+    personalizeStub?: ReturnType<typeof vi.fn>;
+    getClientFactoryStub?: ReturnType<typeof vi.fn>;
+    extractGeoDataCb?: ReturnType<typeof vi.fn>;
     defaultHostname?: string;
   } = { config: defaultConfig }
 ) => {
-  const sandbox = sinon.createSandbox();
-
   const clientFactory = GraphQLRequestClient.createClientFactory({
     apiKey: 'edge-api-key',
     endpoint: 'http://edge-endpoint/api/graph/edge',
@@ -90,13 +89,13 @@ const createMiddleware = (
   };
 
   class MockSiteResolver extends SiteResolver {
-    getByName = sandbox.stub().callsFake((name: string) => ({
+    getByName = vi.fn().mockImplementation((name: string) => ({
       name,
       language: props.language ?? '',
       hostName: hostname,
     }));
 
-    getByHost = sandbox.stub().callsFake((hostName: string) => ({
+    getByHost = vi.fn().mockImplementation((hostName: string) => ({
       name: siteName,
       language: props.language ?? '',
       hostName,
@@ -112,27 +111,27 @@ const createMiddleware = (
 
   middleware['siteResolver'] = siteResolver;
 
-  const initPersonalizeServer = (middleware['initPersonalizeServer'] = sandbox.stub());
+  const initPersonalizeServer = (middleware['initPersonalizeServer'] = vi.fn());
 
   const getClientFactory = (middleware['getClientFactory'] =
-    props.getClientFactoryStub ?? sandbox.stub().returns(clientFactory));
+    props.getClientFactoryStub ?? vi.fn().mockReturnValue(clientFactory));
 
   const personalize = (middleware['personalize'] =
     props.personalizeStub ??
-    sandbox.stub().returns(Promise.resolve({ variantId: props.variantId })));
+    vi.fn().mockReturnValue(Promise.resolve({ variantId: props.variantId })));
 
   const getPersonalizeInfo = (middleware['personalizeService'] &&
     (middleware['personalizeService']['getPersonalizeInfo'] =
       props.getPersonalizeInfoStub ??
-      sandbox
-        .stub()
-        .returns(
+      vi
+        .fn()
+        .mockReturnValue(
           Promise.resolve(
             props.personalizeInfo === null
               ? undefined
               : props.personalizeInfo ?? { pageId, variantIds }
           )
-        ))) as sinon.SinonStub;
+        ))) as ReturnType<typeof vi.fn>;
 
   return {
     middleware,
@@ -141,29 +140,32 @@ const createMiddleware = (
     initPersonalizeServer,
     personalize,
     getClientFactory,
-    sandbox,
   };
 };
 
 describe('PersonalizeMiddleware', () => {
-  const sandbox = sinon.createSandbox();
-  const debugSpy = spy(debug, 'personalize');
+  let debugSpy: ReturnType<typeof vi.spyOn>;
 
   const validateDebugLog = (message: string, ...params: unknown[]) => {
-    expect(debugSpy.args.find((log) => log[0] === message)).to.deep.equal([message, ...params]);
+    expect(debugSpy.mock.calls.find((log: unknown[]) => log[0] === message)).toEqual([
+      message,
+      ...params,
+    ]);
   };
 
   const validateEndMessageDebugLog = (message: string, params: unknown) => {
-    const logParams = debugSpy.args.find((log) => log[0] === message) as Array<unknown>;
-    expect(logParams?.[2]).to.deep.equal(params);
+    const logParams = debugSpy.mock.calls.find(
+      (log: unknown[]) => log[0] === message
+    ) as Array<unknown>;
+    expect(logParams?.[2]).toEqual(params);
   };
 
   beforeEach(() => {
-    debugSpy.resetHistory();
+    debugSpy = vi.spyOn(debug, 'personalize').mockImplementation(() => {});
   });
 
   afterEach(() => {
-    sandbox.restore();
+    debugSpy.mockRestore();
   });
 
   describe('Extensibility', () => {
@@ -176,7 +178,7 @@ describe('PersonalizeMiddleware', () => {
       };
 
       const event = createMockEvent();
-      const getOverrideExperienceParamsStub = sandbox.stub().returns(customParams);
+      const getOverrideExperienceParamsStub = vi.fn().mockReturnValue(customParams);
 
       const { middleware, getPersonalizeInfo, initPersonalizeServer, personalize } =
         createMiddleware({
@@ -195,11 +197,14 @@ describe('PersonalizeMiddleware', () => {
         language: 'en',
       });
 
-      expect(getPersonalizeInfo.calledWith('/styleguide', 'en')).to.be.true;
-      expect(initPersonalizeServer.calledOnce).to.be.true;
-      expect(personalize.calledOnce).to.be.true;
-      expect(getOverrideExperienceParamsStub.calledOnceWith(event)).to.be.true;
-      expect(personalize.calledWith(sandbox.match({ params: { utm: customParams } }))).to.be.true;
+      expect(calledWith(getPersonalizeInfo, '/styleguide', 'en')).toBe(true);
+      expect(initPersonalizeServer).toHaveBeenCalledOnce();
+      expect(personalize).toHaveBeenCalledOnce();
+      expect(getOverrideExperienceParamsStub).toHaveBeenCalledOnce();
+      expect(getOverrideExperienceParamsStub).toHaveBeenCalledWith(event);
+      expect(personalize).toHaveBeenCalledWith(
+        expect.objectContaining({ params: expect.objectContaining({ utm: customParams }) })
+      );
 
       validateEndMessageDebugLog('personalize middleware end in %dms: %o', {
         rewritePath: '/styleguide/_variantId_variant-2',
@@ -209,7 +214,7 @@ describe('PersonalizeMiddleware', () => {
     it('should use custom personalizeService when provided', async () => {
       const event = createMockEvent();
       const customPersonalizeService = {
-        getPersonalizeInfo: sandbox.stub().returns(Promise.resolve({ pageId, variantIds })),
+        getPersonalizeInfo: vi.fn().mockReturnValue(Promise.resolve({ pageId, variantIds })),
       };
 
       const { middleware, initPersonalizeServer, personalize } = createMiddleware({
@@ -222,10 +227,11 @@ describe('PersonalizeMiddleware', () => {
 
       await middleware.handle(event);
 
-      expect(customPersonalizeService.getPersonalizeInfo.calledWith('/styleguide', 'en')).to.be
-        .true;
-      expect(initPersonalizeServer.calledOnce).to.be.true;
-      expect(personalize.calledOnce).to.be.true;
+      expect(calledWith(customPersonalizeService.getPersonalizeInfo, '/styleguide', 'en')).toBe(
+        true
+      );
+      expect(initPersonalizeServer).toHaveBeenCalledOnce();
+      expect(personalize).toHaveBeenCalledOnce();
 
       validateDebugLog('personalize middleware start: %o', {
         hostname: 'foo.net',
@@ -244,6 +250,8 @@ describe('PersonalizeMiddleware', () => {
       it('preview cookie is present', async () => {
         const event = createMockEvent({}, { sc_preview: 'true' });
         const { middleware } = createMiddleware();
+
+        vi.spyOn(middleware as any, 'isPreview').mockReturnValue(true);
 
         await middleware.handle(event);
 
@@ -274,7 +282,7 @@ describe('PersonalizeMiddleware', () => {
           ? 'skipped (personalize middleware is disabled globally)'
           : 'skipped (personalize middleware is disabled)';
         validateDebugLog(message);
-        debugSpy.resetHistory();
+        debugSpy.mockClear();
       };
 
       it('default', async () => {
@@ -316,7 +324,7 @@ describe('PersonalizeMiddleware', () => {
         pathname: '/styleguide',
         language: 'en',
       });
-      expect(getPersonalizeInfo.calledWith('/styleguide', 'en')).to.be.true;
+      expect(calledWith(getPersonalizeInfo, '/styleguide', 'en')).toBe(true);
       validateDebugLog('skipped (personalize info not found)');
     });
 
@@ -333,16 +341,14 @@ describe('PersonalizeMiddleware', () => {
         pathname: '/styleguide',
         language: 'en',
       });
-      expect(getPersonalizeInfo.calledWith('/styleguide', 'en')).to.be.true;
+      expect(calledWith(getPersonalizeInfo, '/styleguide', 'en')).toBe(true);
       validateDebugLog('skipped (no personalization configured)');
     });
 
     it('no variant identified', async () => {
       const event = createMockEvent();
       const { middleware, getPersonalizeInfo, initPersonalizeServer, personalize } =
-        createMiddleware({
-          variantId: undefined,
-        });
+        createMiddleware({ variantId: undefined });
 
       await middleware.handle(event);
 
@@ -351,9 +357,9 @@ describe('PersonalizeMiddleware', () => {
         pathname: '/styleguide',
         language: 'en',
       });
-      expect(getPersonalizeInfo.calledWith('/styleguide', 'en')).to.be.true;
-      expect(initPersonalizeServer.called).to.be.true;
-      expect(personalize.called).to.be.true;
+      expect(calledWith(getPersonalizeInfo, '/styleguide', 'en')).toBe(true);
+      expect(initPersonalizeServer).toHaveBeenCalled();
+      expect(personalize).toHaveBeenCalled();
       validateDebugLog('skipped (no variant(s) identified)');
     });
 
@@ -373,9 +379,9 @@ describe('PersonalizeMiddleware', () => {
         pathname: '/styleguide',
         language: 'en',
       });
-      expect(getPersonalizeInfo.calledWith('/styleguide', 'en')).to.be.true;
-      expect(initPersonalizeServer.called).to.be.true;
-      expect(personalize.called).to.be.true;
+      expect(calledWith(getPersonalizeInfo, '/styleguide', 'en')).toBe(true);
+      expect(initPersonalizeServer).toHaveBeenCalled();
+      expect(personalize).toHaveBeenCalled();
       validateDebugLog('invalid variant %s', invalidVariant);
     });
 
@@ -391,8 +397,8 @@ describe('PersonalizeMiddleware', () => {
         language: 'en',
       });
       validateDebugLog('skipped (prefetch)');
-      expect(event.node.res.getHeader('x-proxy-cache')).to.equal('no-cache');
-      expect(event.node.res.getHeader('Cache-Control')).to.equal('no-store, must-revalidate');
+      expect(event.node.res.getHeader('x-proxy-cache')).toBe('no-cache');
+      expect(event.node.res.getHeader('Cache-Control')).toBe('no-store, must-revalidate');
     });
   });
 
@@ -416,18 +422,17 @@ describe('PersonalizeMiddleware', () => {
         pathname: '/styleguide',
         language,
       });
-      expect(getPersonalizeInfo.calledWith('/styleguide', language)).to.be.true;
-      expect(initPersonalizeServer.calledOnce).to.be.true;
-      expect(personalize.calledOnce).to.be.true;
+      expect(calledWith(getPersonalizeInfo, '/styleguide', language)).toBe(true);
+      expect(initPersonalizeServer).toHaveBeenCalledOnce();
+      expect(personalize).toHaveBeenCalledOnce();
       validateEndMessageDebugLog('personalize middleware end in %dms: %o', {
         rewritePath: '/styleguide/_variantId_variant-2',
       });
-      expect((siteResolver.getByHost as sinon.SinonStub).calledWith(hostname)).to.be.true;
+      expect((siteResolver.getByHost as ReturnType<typeof vi.fn>).mock.calls[0][0]).toBe(hostname);
     });
 
     it('fallback locale is used', async () => {
       const event = createMockEvent();
-
       const { middleware, getPersonalizeInfo, siteResolver, initPersonalizeServer, personalize } =
         createMiddleware({ variantId: 'variant-2' });
 
@@ -438,13 +443,13 @@ describe('PersonalizeMiddleware', () => {
         pathname: '/styleguide',
         language: 'en',
       });
-      expect(getPersonalizeInfo.calledWith('/styleguide', 'en')).to.be.true;
-      expect(initPersonalizeServer.calledOnce).to.be.true;
-      expect(personalize.calledOnce).to.be.true;
+      expect(calledWith(getPersonalizeInfo, '/styleguide', 'en')).toBe(true);
+      expect(initPersonalizeServer).toHaveBeenCalledOnce();
+      expect(personalize).toHaveBeenCalledOnce();
       validateEndMessageDebugLog('personalize middleware end in %dms: %o', {
         rewritePath: '/styleguide/_variantId_variant-2',
       });
-      expect((siteResolver.getByHost as sinon.SinonStub).calledWith(hostname)).to.be.true;
+      expect((siteResolver.getByHost as ReturnType<typeof vi.fn>).mock.calls[0][0]).toBe(hostname);
     });
 
     it('custom response object is not provided', async () => {
@@ -454,9 +459,9 @@ describe('PersonalizeMiddleware', () => {
 
       await middleware.handle(event);
 
-      expect(getPersonalizeInfo.calledWith('/styleguide', 'en')).to.be.true;
-      expect(initPersonalizeServer.calledOnce).to.be.true;
-      expect(personalize.calledOnce).to.be.true;
+      expect(calledWith(getPersonalizeInfo, '/styleguide', 'en')).toBe(true);
+      expect(initPersonalizeServer).toHaveBeenCalledOnce();
+      expect(personalize).toHaveBeenCalledOnce();
       validateDebugLog('personalize middleware start: %o', {
         hostname: 'foo.net',
         pathname: '/styleguide',
@@ -465,7 +470,7 @@ describe('PersonalizeMiddleware', () => {
       validateEndMessageDebugLog('personalize middleware end in %dms: %o', {
         rewritePath: '/styleguide/_variantId_variant-2',
       });
-      expect((siteResolver.getByHost as sinon.SinonStub).calledWith(hostname)).to.be.true;
+      expect((siteResolver.getByHost as ReturnType<typeof vi.fn>).mock.calls[0][0]).toBe(hostname);
     });
 
     it('optional experience params are not present', async () => {
@@ -480,19 +485,25 @@ describe('PersonalizeMiddleware', () => {
         pathname: '/styleguide',
         language: 'en',
       });
-      expect(getPersonalizeInfo.calledWith('/styleguide', 'en')).to.be.true;
-      expect(initPersonalizeServer.calledOnce).to.be.true;
-      expect(personalize.calledOnce).to.be.true;
+      expect(calledWith(getPersonalizeInfo, '/styleguide', 'en')).toBe(true);
+      expect(initPersonalizeServer).toHaveBeenCalledOnce();
+      expect(personalize).toHaveBeenCalledOnce();
       validateEndMessageDebugLog('personalize middleware end in %dms: %o', {
         rewritePath: '/styleguide/_variantId_variant-2',
       });
-      expect((siteResolver.getByHost as sinon.SinonStub).calledWith(hostname)).to.be.true;
+      expect((siteResolver.getByHost as ReturnType<typeof vi.fn>).mock.calls[0][0]).toBe(hostname);
     });
 
     it('sc_site cookie is provided', async () => {
-      const event = createMockEvent({}, { sc_site: 'foo' });
+      const event = createMockEvent({}, { [SITE_KEY]: 'foo' });
       const { middleware, getPersonalizeInfo, initPersonalizeServer, personalize, siteResolver } =
         createMiddleware({ variantId: 'variant-2' });
+
+      vi.spyOn(middleware as any, 'getSite').mockReturnValue({
+        name: 'foo',
+        language: 'en',
+        hostName: hostname,
+      });
 
       await middleware.handle(event);
 
@@ -501,14 +512,14 @@ describe('PersonalizeMiddleware', () => {
         pathname: '/styleguide',
         language: 'en',
       });
-      expect(getPersonalizeInfo.calledWith('/styleguide', 'en', 'foo')).to.be.true;
-      expect(initPersonalizeServer.calledOnce).to.be.true;
-      expect(personalize.calledOnce).to.be.true;
+      expect(getPersonalizeInfo).toHaveBeenCalledWith('/styleguide', 'en', 'foo');
+      expect(initPersonalizeServer).toHaveBeenCalledOnce();
+      expect(personalize).toHaveBeenCalledOnce();
       validateEndMessageDebugLog('personalize middleware end in %dms: %o', {
         rewritePath: '/styleguide/_variantId_variant-2',
       });
-      expect((siteResolver.getByHost as sinon.SinonStub).called).to.be.false;
-      expect((siteResolver.getByName as sinon.SinonStub).calledOnceWith('foo')).to.be.true;
+      expect((siteResolver.getByHost as ReturnType<typeof vi.fn>).mock.calls).toHaveLength(0);
+      expect((siteResolver.getByName as ReturnType<typeof vi.fn>).mock.calls).toHaveLength(0);
     });
 
     it('x-sc-rewrite header is provided', async () => {
@@ -524,13 +535,13 @@ describe('PersonalizeMiddleware', () => {
         pathname: '/styleguide',
         language: 'en',
       });
-      expect(getPersonalizeInfo.calledWith('/styleguide', 'en', siteName)).to.be.true;
-      expect(initPersonalizeServer.calledOnce).to.be.true;
-      expect(personalize.calledOnce).to.be.true;
+      expect(getPersonalizeInfo).toHaveBeenCalledWith('/styleguide', 'en', siteName);
+      expect(initPersonalizeServer).toHaveBeenCalledOnce();
+      expect(personalize).toHaveBeenCalledOnce();
       validateEndMessageDebugLog('personalize middleware end in %dms: %o', {
         rewritePath: '/_site_nextjs-app/styleguide/_variantId_variant-2',
       });
-      expect((siteResolver.getByHost as sinon.SinonStub).calledWith(hostname)).to.be.true;
+      expect((siteResolver.getByHost as ReturnType<typeof vi.fn>).mock.calls[0][0]).toBe(hostname);
     });
 
     it('default fallback hostname is used', async () => {
@@ -545,13 +556,15 @@ describe('PersonalizeMiddleware', () => {
         pathname: '/styleguide',
         language: 'en',
       });
-      expect(getPersonalizeInfo.calledWith('/styleguide', 'en', siteName)).to.be.true;
-      expect(initPersonalizeServer.calledOnce).to.be.true;
-      expect(personalize.calledOnce).to.be.true;
+      expect(getPersonalizeInfo).toHaveBeenCalledWith('/styleguide', 'en', siteName);
+      expect(initPersonalizeServer).toHaveBeenCalledOnce();
+      expect(personalize).toHaveBeenCalledOnce();
       validateEndMessageDebugLog('personalize middleware end in %dms: %o', {
         rewritePath: '/styleguide/_variantId_variant-2',
       });
-      expect((siteResolver.getByHost as sinon.SinonStub).calledWith('localhost')).to.be.true;
+      expect((siteResolver.getByHost as ReturnType<typeof vi.fn>).mock.calls[0][0]).toBe(
+        'localhost'
+      );
     });
 
     it('custom fallback hostname is used', async () => {
@@ -561,24 +574,24 @@ describe('PersonalizeMiddleware', () => {
 
       await middleware.handle(event);
 
-      expect(initPersonalizeServer.calledOnce).to.be.true;
-      expect(personalize.calledOnce).to.be.true;
+      expect(initPersonalizeServer).toHaveBeenCalledOnce();
+      expect(personalize).toHaveBeenCalledOnce();
       validateDebugLog('personalize middleware start: %o', {
         hostname: 'foobar',
         pathname: '/styleguide',
         language: 'en',
       });
-      expect(getPersonalizeInfo.calledWith('/styleguide', 'en', siteName)).to.be.true;
+      expect(getPersonalizeInfo).toHaveBeenCalledWith('/styleguide', 'en', siteName);
       validateEndMessageDebugLog('personalize middleware end in %dms: %o', {
         rewritePath: '/styleguide/_variantId_variant-2',
       });
-      expect((siteResolver.getByHost as sinon.SinonStub).calledWith('foobar')).to.be.true;
+      expect((siteResolver.getByHost as ReturnType<typeof vi.fn>).mock.calls[0][0]).toBe('foobar');
     });
 
     it('configured scope is used', async () => {
       const scope = 'myscope';
       const event = createMockEvent();
-      const personalizeStub = sandbox.stub().returns(Promise.resolve({ variantId: undefined }));
+      const personalizeStub = vi.fn().mockReturnValue(Promise.resolve({ variantId: undefined }));
       const { middleware, getPersonalizeInfo, personalize } = createMiddleware({
         config: { ...defaultConfig, scope },
         personalizeInfo: { pageId, variantIds: ['variant1'] },
@@ -587,19 +600,17 @@ describe('PersonalizeMiddleware', () => {
 
       await middleware.handle(event);
 
-      expect(getPersonalizeInfo.calledWith('/styleguide', 'en', siteName)).to.be.true;
-      expect(
-        personalize.calledWith(
-          sandbox.match({ friendlyId: CdpHelper.getPageFriendlyId(pageId, 'en', scope) })
-        )
-      ).to.be.true;
+      expect(getPersonalizeInfo).toHaveBeenCalledWith('/styleguide', 'en', siteName);
+      expect(personalize).toHaveBeenCalledWith(
+        expect.objectContaining({ friendlyId: CdpHelper.getPageFriendlyId(pageId, 'en', scope) })
+      );
     });
 
     it('configured timeouts are used', async () => {
       const edgeTimeout = 1000;
       const cdpTimeout = 1000;
       const event = createMockEvent();
-      const personalizeStub = sandbox.stub().returns(Promise.resolve({ variantId: undefined }));
+      const personalizeStub = vi.fn().mockReturnValue(Promise.resolve({ variantId: undefined }));
       const { middleware, personalize } = createMiddleware({
         config: { ...defaultConfig, edgeTimeout, cdpTimeout },
         personalizeInfo: { pageId, variantIds: ['variant1'] },
@@ -608,45 +619,27 @@ describe('PersonalizeMiddleware', () => {
 
       await middleware.handle(event);
 
-      expect(middleware['personalizeService']).to.not.be.null;
+      expect(middleware['personalizeService']).not.toBeNull();
       if (middleware['personalizeService']) {
-        expect(middleware['personalizeService']['config'].timeout).to.equal(edgeTimeout);
+        expect(middleware['personalizeService']['config'].timeout).toBe(edgeTimeout);
       }
-      expect(personalize.calledWith(sandbox.match({ timeout: cdpTimeout }))).to.be.true;
+      expect(personalize).toHaveBeenCalledWith(expect.objectContaining({ timeout: cdpTimeout }));
     });
 
     it('component testing is executed', async () => {
       const event = createMockEvent();
-      const personalizeStub = sandbox.stub();
-      personalizeStub
-        .withArgs(
-          sandbox.match({
-            friendlyId: CdpHelper.getComponentFriendlyId(pageId, 'component1', 'en'),
-            variantIds: ['component1_default', 'component1_variant1'],
-          })
-        )
-        .returns(Promise.resolve({ variantId: 'component1_default' }));
-      personalizeStub
-        .withArgs(
-          sandbox.match({
-            friendlyId: CdpHelper.getComponentFriendlyId(pageId, 'component2', 'en'),
-            variantIds: ['component2_default', 'component2_variant1', 'component2_variant2'],
-          })
-        )
-        .returns(Promise.resolve({ variantId: 'component2_variant1' }));
-      personalizeStub
-        .withArgs(
-          sandbox.match({
-            friendlyId: CdpHelper.getComponentFriendlyId(pageId, 'component3', 'en'),
-            variantIds: [
-              'component3_default',
-              'component3_variant1',
-              'component3_variant2',
-              'component3_variant3',
-            ],
-          })
-        )
-        .returns(Promise.resolve({ variantId: 'component3_variant3' }));
+      const personalizeStub = vi.fn().mockImplementation(({ friendlyId }) => {
+        if (friendlyId === CdpHelper.getComponentFriendlyId(pageId, 'component1', 'en')) {
+          return Promise.resolve({ variantId: 'component1_default' });
+        }
+        if (friendlyId === CdpHelper.getComponentFriendlyId(pageId, 'component2', 'en')) {
+          return Promise.resolve({ variantId: 'component2_variant1' });
+        }
+        if (friendlyId === CdpHelper.getComponentFriendlyId(pageId, 'component3', 'en')) {
+          return Promise.resolve({ variantId: 'component3_variant3' });
+        }
+        return Promise.resolve({ variantId: undefined });
+      });
 
       const { middleware, getPersonalizeInfo, initPersonalizeServer } = createMiddleware({
         personalizeInfo: {
@@ -665,9 +658,9 @@ describe('PersonalizeMiddleware', () => {
 
       await middleware.handle(event);
 
-      expect(getPersonalizeInfo.calledWith('/styleguide', 'en')).to.be.true;
-      expect(initPersonalizeServer.calledOnce).to.be.true;
-      expect(personalizeStub.calledThrice).to.be.true;
+      expect(calledWith(getPersonalizeInfo, '/styleguide', 'en')).toBe(true);
+      expect(initPersonalizeServer).toHaveBeenCalledOnce();
+      expect(personalizeStub).toHaveBeenCalledTimes(3);
       validateDebugLog('personalize middleware start: %o', {
         hostname: 'foo.net',
         pathname: '/styleguide',
@@ -700,7 +693,7 @@ describe('PersonalizeMiddleware', () => {
 
       it('should call personalize with geo data', async () => {
         const event = createMockEvent();
-        const extractGeoDataCb = sandbox.stub().returns(geo);
+        const extractGeoDataCb = vi.fn().mockReturnValue(geo);
         const { middleware, initPersonalizeServer } = createMiddleware({
           personalizeInfo,
           extractGeoDataCb,
@@ -717,17 +710,17 @@ describe('PersonalizeMiddleware', () => {
           language: 'en',
         });
 
-        expect(extractGeoDataCb.calledOnce).to.be.true;
-        expect(initPersonalizeServer.calledOnce).to.be.true;
-        expect(CDKPersonalizeStub.mock.calls).to.have.lengthOf(3);
-        expect(CDKPersonalizeStub.mock.calls[0][0].geo).to.deep.equal(geo);
-        expect(CDKPersonalizeStub.mock.calls[1][0].geo).to.deep.equal(geo);
-        expect(CDKPersonalizeStub.mock.calls[2][0].geo).to.deep.equal(geo);
+        expect(extractGeoDataCb).toHaveBeenCalledOnce();
+        expect(initPersonalizeServer).toHaveBeenCalledOnce();
+        expect(CDKPersonalizeStub.mock.calls).toHaveLength(3);
+        expect(CDKPersonalizeStub.mock.calls[0][0].geo).toEqual(geo);
+        expect(CDKPersonalizeStub.mock.calls[1][0].geo).toEqual(geo);
+        expect(CDKPersonalizeStub.mock.calls[2][0].geo).toEqual(geo);
       });
 
       it('should call personalize with geo data when an async cb is provided', async () => {
         const event = createMockEvent();
-        const extractGeoDataCb = sandbox.stub().resolves(geo);
+        const extractGeoDataCb = vi.fn().mockResolvedValue(geo);
         const { middleware, initPersonalizeServer } = createMiddleware({
           extractGeoDataCb,
           personalizeInfo,
@@ -736,6 +729,7 @@ describe('PersonalizeMiddleware', () => {
         middleware['personalize'] = PersonalizeMiddleware.prototype['personalize'];
 
         await middleware.handle(event);
+
         validateDebugLog('personalize middleware start: %o', {
           geo,
           hostname: 'foo.net',
@@ -743,12 +737,12 @@ describe('PersonalizeMiddleware', () => {
           language: 'en',
         });
 
-        expect(extractGeoDataCb.calledOnce).to.be.true;
-        expect(initPersonalizeServer.calledOnce).to.be.true;
-        expect(CDKPersonalizeStub.mock.calls).to.have.lengthOf(3);
-        expect(CDKPersonalizeStub.mock.calls[0][0].geo).to.deep.equal(geo);
-        expect(CDKPersonalizeStub.mock.calls[1][0].geo).to.deep.equal(geo);
-        expect(CDKPersonalizeStub.mock.calls[2][0].geo).to.deep.equal(geo);
+        expect(extractGeoDataCb).toHaveBeenCalledOnce();
+        expect(initPersonalizeServer).toHaveBeenCalledOnce();
+        expect(CDKPersonalizeStub.mock.calls).toHaveLength(3);
+        expect(CDKPersonalizeStub.mock.calls[0][0].geo).toEqual(geo);
+        expect(CDKPersonalizeStub.mock.calls[1][0].geo).toEqual(geo);
+        expect(CDKPersonalizeStub.mock.calls[2][0].geo).toEqual(geo);
       });
 
       it('should call personalize without geo data when not available', async () => {
@@ -759,11 +753,11 @@ describe('PersonalizeMiddleware', () => {
 
         await middleware.handle(event);
 
-        expect(initPersonalizeServer.calledOnce).to.be.true;
-        expect(CDKPersonalizeStub.mock.calls).to.have.lengthOf(3);
-        expect(CDKPersonalizeStub.mock.calls[0][0]).to.not.have.property('geo');
-        expect(CDKPersonalizeStub.mock.calls[1][0]).to.not.have.property('geo');
-        expect(CDKPersonalizeStub.mock.calls[2][0]).to.not.have.property('geo');
+        expect(initPersonalizeServer).toHaveBeenCalledOnce();
+        expect(CDKPersonalizeStub.mock.calls).toHaveLength(3);
+        expect(CDKPersonalizeStub.mock.calls[0][0]).not.toHaveProperty('geo');
+        expect(CDKPersonalizeStub.mock.calls[1][0]).not.toHaveProperty('geo');
+        expect(CDKPersonalizeStub.mock.calls[2][0]).not.toHaveProperty('geo');
       });
     });
 
@@ -788,7 +782,7 @@ describe('PersonalizeMiddleware', () => {
           pathname: '/styleguide',
           language: languageInHeader,
         });
-        expect(getPersonalizeInfo.calledWith('/styleguide', languageInHeader)).to.be.true;
+        expect(calledWith(getPersonalizeInfo, '/styleguide', languageInHeader)).toBe(true);
       });
 
       it('should get language from defaultLanguage if locale header is not present', async () => {
@@ -809,7 +803,7 @@ describe('PersonalizeMiddleware', () => {
           pathname: '/styleguide',
           language,
         });
-        expect(getPersonalizeInfo.calledWith('/styleguide', language)).to.be.true;
+        expect(calledWith(getPersonalizeInfo, '/styleguide', language)).toBe(true);
       });
     });
   });
@@ -818,8 +812,10 @@ describe('PersonalizeMiddleware', () => {
     it('should log error when getPersonalizeInfo throws', async () => {
       const event = createMockEvent();
       const error = new Error('Edge fails');
-      const consoleLogStub = sandbox.stub(console, 'log');
-      const getPersonalizeInfoWithError = sandbox.stub().throws(error);
+      const consoleLogSpy = vi.spyOn(console, 'log').mockImplementation(() => {});
+      const getPersonalizeInfoWithError = vi.fn().mockImplementation(() => {
+        throw error;
+      });
 
       const { middleware, getPersonalizeInfo, initPersonalizeServer, personalize } =
         createMiddleware({
@@ -828,11 +824,11 @@ describe('PersonalizeMiddleware', () => {
 
       await middleware.handle(event);
 
-      expect(initPersonalizeServer.called).to.be.false;
-      expect(personalize.called).to.be.false;
-      expect(getPersonalizeInfo.called).to.be.true;
-      expect(consoleLogStub.getCall(0).calledWith('Personalize middleware failed:')).to.be.true;
-      expect(consoleLogStub.getCall(1).calledWith(error)).to.be.true;
+      expect(initPersonalizeServer).not.toHaveBeenCalled();
+      expect(personalize).not.toHaveBeenCalled();
+      expect(getPersonalizeInfo).toHaveBeenCalled();
+      expect(consoleLogSpy).toHaveBeenNthCalledWith(1, 'Personalize middleware failed:');
+      expect(consoleLogSpy).toHaveBeenNthCalledWith(2, error);
     });
   });
 
@@ -845,8 +841,8 @@ describe('PersonalizeMiddleware', () => {
         sites: [],
       } as any);
 
-      expect(middleware).to.not.be.undefined;
-      expect(middleware['personalizeService']).to.be.null;
+      expect(middleware).not.toBeUndefined();
+      expect(middleware['personalizeService']).toBeNull();
     });
 
     it('skips execution when personalizeService is null', async () => {
@@ -874,8 +870,8 @@ describe('PersonalizeMiddleware', () => {
         sites: [],
       } as any);
 
-      expect(middleware).to.not.be.undefined;
-      expect(middleware['personalizeService']).to.not.be.null;
+      expect(middleware).not.toBeUndefined();
+      expect(middleware['personalizeService']).not.toBeNull();
     });
   });
 });

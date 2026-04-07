@@ -1,19 +1,18 @@
-import sinon from 'sinon';
 import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest';
 import { createEvent } from 'h3';
 import { IncomingMessage, ServerResponse } from 'http';
-import { SitecoreClient } from '@sitecore-content-sdk/content/client';
-import { SiteInfo } from '@sitecore-content-sdk/content/site';
-import { SiteResolver } from '@sitecore-content-sdk/content/site';
+import type { SiteInfo } from '@sitecore-content-sdk/content/site';
 import { createRobotsRoute } from './robots-route';
-// @ts-ignore - nitro/cache uses ESM-only exports (.mjs) incompatible with CommonJS moduleResolution.
-// Resolved via vitest.config.ts alias at test runtime.
-import { defineCachedFunction } from 'nitro/cache';
 
-vi.mock('nitro/cache', () => ({ defineCachedFunction: vi.fn() }));
+const { defineCachedFunctionMock, SiteResolverMock } = vi.hoisted(() => ({
+  defineCachedFunctionMock: vi.fn(),
+  SiteResolverMock: vi.fn(),
+}));
+
+vi.mock('nitro/cache', () => ({ defineCachedFunction: defineCachedFunctionMock }));
 vi.mock('@sitecore-content-sdk/content/site', async (importOriginal) => {
   const actual = await importOriginal<typeof import('@sitecore-content-sdk/content/site')>();
-  return { ...actual, SiteResolver: vi.fn() };
+  return { ...actual, SiteResolver: SiteResolverMock };
 });
 
 const createMockEvent = (headers: Record<string, string> = {}) => {
@@ -24,10 +23,13 @@ const createMockEvent = (headers: Record<string, string> = {}) => {
 };
 
 describe('createRobotsRoute', () => {
-  const sandbox = sinon.createSandbox();
-  let sitecoreClientStub: sinon.SinonStubbedInstance<SitecoreClient>;
+  let getRobotsMock: ReturnType<typeof vi.fn>;
+  let sitecoreClientStub: any;
+  let siteResolverStub: {
+    getByHost: ReturnType<typeof vi.fn>;
+    getByName: ReturnType<typeof vi.fn>;
+  };
   let route: any;
-  let siteResolverStub: { getByHost: sinon.SinonStub; getByName: sinon.SinonStub };
 
   const mockSiteInfo: SiteInfo = {
     name: 'test-site',
@@ -38,32 +40,30 @@ describe('createRobotsRoute', () => {
   const sites = [mockSiteInfo, { name: 'test-site-two', hostName: 'localhost', language: 'da' }];
 
   beforeEach(() => {
-    sitecoreClientStub = sandbox.createStubInstance(SitecoreClient);
+    getRobotsMock = vi.fn();
+    sitecoreClientStub = { getRobots: getRobotsMock };
+
     siteResolverStub = {
-      getByHost: sandbox.stub(),
-      getByName: sandbox.stub(),
+      getByHost: vi.fn((hostName: string) => sites.find((site) => site.hostName === hostName)),
+      getByName: vi.fn(),
     };
 
-    siteResolverStub.getByHost.callsFake((hostName: string) =>
-      sites.find((site) => site.hostName === hostName)
-    );
-
-    vi.mocked(defineCachedFunction).mockImplementation(
+    defineCachedFunctionMock.mockImplementation(
       (fn: (...args: unknown[]) => Promise<unknown>) => fn
     );
-    vi.mocked(SiteResolver).mockReturnValue(siteResolverStub as any);
+
+    SiteResolverMock.mockReturnValue(siteResolverStub);
 
     route = createRobotsRoute({ client: sitecoreClientStub, sites });
   });
 
   afterEach(() => {
-    sandbox.restore();
     vi.clearAllMocks();
   });
 
   it('should set the content type header to text/plain', async () => {
     const event = createMockEvent({ host: 'example.com' });
-    sitecoreClientStub.getRobots.resolves('User-agent: *\nDisallow: /');
+    getRobotsMock.mockResolvedValue('User-agent: *\nDisallow: /');
 
     await route.handle(event);
 
@@ -72,16 +72,16 @@ describe('createRobotsRoute', () => {
 
   it('should call getRobots with the correct siteName', async () => {
     const event = createMockEvent({ host: 'example.com' });
-    sitecoreClientStub.getRobots.resolves('User-agent: *\nDisallow: /');
+    getRobotsMock.mockResolvedValue('User-agent: *\nDisallow: /');
 
     await route.handle(event);
 
-    sinon.assert.calledWith(sitecoreClientStub.getRobots, 'test-site');
+    expect(getRobotsMock).toHaveBeenCalledWith('test-site');
   });
 
   it('should return 200 with robots content', async () => {
     const event = createMockEvent({ host: 'example.com' });
-    sitecoreClientStub.getRobots.resolves('User-agent: *\nDisallow: /');
+    getRobotsMock.mockResolvedValue('User-agent: *\nDisallow: /');
 
     await route.handle(event);
 
@@ -90,7 +90,7 @@ describe('createRobotsRoute', () => {
 
   it('should return 404 if getRobots returns null', async () => {
     const event = createMockEvent({ host: 'example.com' });
-    sitecoreClientStub.getRobots.resolves(undefined);
+    getRobotsMock.mockResolvedValue(undefined);
 
     await route.handle(event);
 
@@ -99,7 +99,7 @@ describe('createRobotsRoute', () => {
 
   it('should return 500 if getRobots throws an error', async () => {
     const event = createMockEvent({ host: 'example.com' });
-    sitecoreClientStub.getRobots.rejects(new Error('Unexpected failure'));
+    getRobotsMock.mockRejectedValue(new Error('Unexpected failure'));
 
     await route.handle(event);
 
@@ -108,11 +108,11 @@ describe('createRobotsRoute', () => {
 
   it('should use "localhost" as fallback when host header is missing', async () => {
     const event = createMockEvent({});
-    sitecoreClientStub.getRobots.resolves('User-agent: *\nDisallow: /');
+    getRobotsMock.mockResolvedValue('User-agent: *\nDisallow: /');
 
     await route.handle(event);
 
-    sinon.assert.calledWith(sitecoreClientStub.getRobots, 'test-site-two');
+    expect(getRobotsMock).toHaveBeenCalledWith('test-site-two');
   });
 
   it('should use x-forwarded-host header when present', async () => {
@@ -121,28 +121,24 @@ describe('createRobotsRoute', () => {
       host: 'localhost:3000',
     });
 
-    siteResolverStub.getByHost.returns(mockSiteInfo);
-    sitecoreClientStub.getRobots.resolves('User-agent: *\nDisallow: /');
+    siteResolverStub.getByHost.mockReturnValue(mockSiteInfo);
+    getRobotsMock.mockResolvedValue('User-agent: *\nDisallow: /');
 
     await route.handle(event);
 
-    sinon.assert.calledWith(siteResolverStub.getByHost, 'middleware.forwarded.com');
+    expect(siteResolverStub.getByHost).toHaveBeenCalledWith('middleware.forwarded.com');
   });
 
   it('should cache the response for default revalidate time', async () => {
-    expect(vi.mocked(defineCachedFunction)).toHaveBeenCalledOnce();
-    expect(vi.mocked(defineCachedFunction).mock.calls[0][1].maxAge).toBe(60);
+    expect(defineCachedFunctionMock).toHaveBeenCalledOnce();
+    expect(defineCachedFunctionMock.mock.calls[0][1].maxAge).toBe(60);
   });
 
   it('should cache the response for custom revalidate time', async () => {
-    vi.mocked(defineCachedFunction).mockClear();
-    route = createRobotsRoute({
-      client: sitecoreClientStub,
-      sites,
-      revalidate: 120,
-    });
+    defineCachedFunctionMock.mockClear();
+    route = createRobotsRoute({ client: sitecoreClientStub, sites, revalidate: 120 });
 
-    expect(vi.mocked(defineCachedFunction)).toHaveBeenCalledOnce();
-    expect(vi.mocked(defineCachedFunction).mock.calls[0][1].maxAge).toBe(120);
+    expect(defineCachedFunctionMock).toHaveBeenCalledOnce();
+    expect(defineCachedFunctionMock.mock.calls[0][1].maxAge).toBe(120);
   });
 });

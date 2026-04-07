@@ -1,5 +1,4 @@
-import sinon from 'sinon';
-import { describe, it, expect } from 'vitest';
+import { describe, it, expect, vi } from 'vitest';
 import { createEvent, H3Event } from 'h3';
 import { IncomingMessage, ServerResponse } from 'http';
 import { MiddlewareBase, REWRITE_HEADER_NAME } from './middleware';
@@ -7,13 +6,13 @@ import { SiteResolver } from '@sitecore-content-sdk/content/site';
 import { PreviewCookies } from '../utils/editing-utils';
 
 class MockSiteResolver extends SiteResolver {
-  getByName = sinon.stub().callsFake((siteName: string) => ({
+  getByName = vi.fn().mockImplementation((siteName: string) => ({
     name: siteName,
     language: 'en',
     hostName: 'foo.net',
   }));
 
-  getByHost = sinon.stub().callsFake((hostName: string) => ({
+  getByHost = vi.fn().mockImplementation((hostName: string) => ({
     name: 'foo',
     language: 'en',
     hostName,
@@ -220,12 +219,12 @@ describe('MiddlewareBase', () => {
       const event = createMockEvent({}, { sc_site: 'xxx' });
 
       expect(middleware._getSite(event).name).toBe('xxx');
-      sinon.assert.calledWith(resolver.getByName, 'xxx');
+      expect(resolver.getByName).toHaveBeenCalledWith('xxx');
     });
 
     it('should return default site info when site cookie is provided but site not found', () => {
       class NotFoundSiteResolver extends SiteResolver {
-        getByName = sinon.stub().returns(undefined);
+        getByName = vi.fn().mockReturnValue(undefined);
       }
 
       const middleware = new SampleMiddleware({ sites: [] });
@@ -247,7 +246,7 @@ describe('MiddlewareBase', () => {
       const event = createMockEvent({ host: 'xxx.net:9999' });
 
       expect(middleware._getSite(event).hostName).toBe('xxx.net');
-      sinon.assert.calledWith(resolver.getByHost, 'xxx.net');
+      expect(resolver.getByHost).toHaveBeenCalledWith('xxx.net');
     });
 
     it('should get site by default host', () => {
@@ -257,7 +256,7 @@ describe('MiddlewareBase', () => {
       const event = createMockEvent();
 
       expect(middleware._getSite(event).hostName).toBe('localhost');
-      sinon.assert.calledWith(resolver.getByHost, 'localhost');
+      expect(resolver.getByHost).toHaveBeenCalledWith('localhost');
     });
 
     it('should get site by custom default host', () => {
@@ -267,7 +266,7 @@ describe('MiddlewareBase', () => {
       const event = createMockEvent();
 
       expect(middleware._getSite(event).hostName).toBe('yyy.net');
-      sinon.assert.calledWith(resolver.getByHost, 'yyy.net');
+      expect(resolver.getByHost).toHaveBeenCalledWith('yyy.net');
     });
   });
 

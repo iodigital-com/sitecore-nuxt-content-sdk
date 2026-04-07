@@ -1,14 +1,11 @@
 import { describe, it, expect, beforeEach, afterEach, beforeAll, afterAll, vi } from 'vitest';
-import sinon from 'sinon';
-
 vi.mock('@sitecore-content-sdk/content/config', () => ({ defineConfig: vi.fn() }));
 
 import { defineConfig as defineConfigCore } from '@sitecore-content-sdk/content/config';
 import { defineConfig, SitecoreConfigInput } from './define-config';
 
 describe('defineConfig', () => {
-  const sandbox = sinon.createSandbox();
-  const defaultConfig = () => ({
+    const defaultConfig = () => ({
     api: {
       edge: { contextId: 'contextId' },
     },
@@ -20,7 +17,7 @@ describe('defineConfig', () => {
   });
 
   afterEach(() => {
-    sandbox.restore();
+    vi.restoreAllMocks();
   });
 
   describe('config.api.edge.contextId', () => {

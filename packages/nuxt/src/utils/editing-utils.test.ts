@@ -1,11 +1,9 @@
-import sinon from 'sinon';
-import { describe, it, expect, beforeEach, afterEach } from 'vitest';
+import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest';
 import { createEvent } from 'h3';
 import { IncomingMessage, ServerResponse } from 'http';
 import { DesignLibraryMode, PREVIEW_KEY } from '@sitecore-content-sdk/content/editing';
 import { DEFAULT_VARIANT } from '@sitecore-content-sdk/content/personalize';
 import { SITE_KEY } from '@sitecore-content-sdk/content/site';
-import { NativeDataFetcher } from '@sitecore-content-sdk/core';
 import {
   mapEditingParams,
   getAllowedQueryParams,
@@ -27,10 +25,8 @@ const createMockEvent = (headers: Record<string, string> = {}) => {
 };
 
 describe('editing-utils', () => {
-  const sandbox = sinon.createSandbox();
-
   afterEach(() => {
-    sandbox.restore();
+    vi.restoreAllMocks();
     delete process.env.SITECORE_INTERNAL_EDITING_HOST_URL;
     delete process.env.SITECORE;
     delete process.env.VERCEL;
@@ -242,14 +238,14 @@ describe('editing-utils', () => {
 
     it('should call resolver function with query parameter keys', () => {
       const queryParams = { param1: 'value1', param2: 'value2', param3: 'value3' };
-      const resolver = sandbox
-        .stub()
-        .returns([{ name: 'param1', required: true }, { name: 'param2' }]);
+      const resolver = vi
+        .fn()
+        .mockReturnValue([{ name: 'param1', required: true }, { name: 'param2' }]);
 
       const result = getAllowedQueryParams(queryParams, resolver);
 
-      sinon.assert.calledOnce(resolver);
-      sinon.assert.calledWith(resolver, ['param1', 'param2', 'param3']);
+      expect(resolver).toHaveBeenCalledOnce();
+      expect(resolver).toHaveBeenCalledWith(['param1', 'param2', 'param3']);
       expect(result).toEqual({
         missingAllowedParams: [],
         allowedQueryParams: { param1: 'value1', param2: 'value2' },
@@ -258,17 +254,17 @@ describe('editing-utils', () => {
 
     it('should handle resolver function returning empty array', () => {
       const queryParams = { param1: 'value1' };
-      const resolver = sandbox.stub().returns([]);
+      const resolver = vi.fn().mockReturnValue([]);
 
       const result = getAllowedQueryParams(queryParams, resolver);
 
-      sinon.assert.calledOnce(resolver);
+      expect(resolver).toHaveBeenCalledOnce();
       expect(result).toEqual({ missingAllowedParams: [], allowedQueryParams: {} });
     });
 
     it('should handle resolver function with missing required parameters', () => {
       const queryParams = { param1: 'value1' };
-      const resolver = sandbox.stub().returns([
+      const resolver = vi.fn().mockReturnValue([
         { name: 'param1', required: true },
         { name: 'param2', required: true },
       ]);
@@ -413,11 +409,11 @@ describe('editing-utils', () => {
         prefixedParam2: 'value2',
         otherParam: 'value3',
       };
-      const resolver = sandbox.stub().returns(['prefixedParam1', 'prefixedParam2']);
+      const resolver = vi.fn().mockReturnValue(['prefixedParam1', 'prefixedParam2']);
 
       const result = getAllowedQueryParams(queryParams, resolver);
 
-      sinon.assert.calledOnce(resolver);
+      expect(resolver).toHaveBeenCalledOnce();
       expect(result).toEqual({
         missingAllowedParams: [],
         allowedQueryParams: { prefixedParam1: 'value1', prefixedParam2: 'value2' },
@@ -431,9 +427,9 @@ describe('editing-utils', () => {
         requiredParam: 'required-value',
         optionalParam: 'optional-value',
       };
-      const resolver = sandbox
-        .stub()
-        .returns([
+      const resolver = vi
+        .fn()
+        .mockReturnValue([
           'stringParam1',
           'stringParam2',
           { name: 'requiredParam', required: true },
@@ -443,7 +439,7 @@ describe('editing-utils', () => {
 
       const result = getAllowedQueryParams(queryParams, resolver);
 
-      sinon.assert.calledOnce(resolver);
+      expect(resolver).toHaveBeenCalledOnce();
       expect(result).toEqual({
         missingAllowedParams: ['missingRequiredParam'],
         allowedQueryParams: {
@@ -568,17 +564,19 @@ describe('editing-utils', () => {
   });
 
   describe('getEditingRequestHtml', () => {
-    let mockDataFetcher: sinon.SinonStubbedInstance<NativeDataFetcher>;
+    let mockDataFetcher: any;
     let requestUrl: URL;
 
     beforeEach(() => {
-      mockDataFetcher = sandbox.createStubInstance(NativeDataFetcher);
+      mockDataFetcher = {
+        get: vi.fn(),
+      };
       requestUrl = new URL('https://example.com/page');
     });
 
     it('should successfully fetch and return HTML', async () => {
       const mockHtml = '<html><body>Content</body></html>';
-      mockDataFetcher.get.resolves({ data: mockHtml } as any);
+      mockDataFetcher.get.mockResolvedValue({ data: mockHtml } as any);
 
       const result = await getEditingRequestHtml(
         requestUrl,
@@ -589,19 +587,19 @@ describe('editing-utils', () => {
       );
 
       expect(result).toBe(mockHtml);
-      sinon.assert.calledOnce(mockDataFetcher.get);
+      expect(mockDataFetcher.get).toHaveBeenCalledOnce();
 
-      const calledUrl = mockDataFetcher.get.firstCall.args[0];
+      const calledUrl = mockDataFetcher.get.mock.calls[0][0];
       expect(calledUrl).toContain('param1=value1');
       expect(calledUrl).toContain('timestamp=');
 
-      const calledOptions = mockDataFetcher.get.firstCall.args[1] as any;
+      const calledOptions = mockDataFetcher.get.mock.calls[0][1] as any;
       expect(calledOptions.headers.cookie).toBe('session=abc123;other=xyz789');
       expect(calledOptions.credentials).toBe('include');
     });
 
     it('should append cookies to existing cookie header', async () => {
-      mockDataFetcher.get.resolves({ data: '<html><body>Content</body></html>' } as any);
+      mockDataFetcher.get.mockResolvedValue({ data: '<html><body>Content</body></html>' } as any);
 
       await getEditingRequestHtml(
         requestUrl,
@@ -611,21 +609,21 @@ describe('editing-utils', () => {
         mockDataFetcher as any
       );
 
-      const calledOptions = mockDataFetcher.get.firstCall.args[1] as any;
+      const calledOptions = mockDataFetcher.get.mock.calls[0][1] as any;
       expect(calledOptions.headers.cookie).toBe('existing=cookie;session=abc123');
     });
 
     it('should set __content_sdk_preview header', async () => {
-      mockDataFetcher.get.resolves({ data: '<html><body>Content</body></html>' } as any);
+      mockDataFetcher.get.mockResolvedValue({ data: '<html><body>Content</body></html>' } as any);
 
       await getEditingRequestHtml(requestUrl, {}, {}, [], mockDataFetcher as any);
 
-      const calledOptions = mockDataFetcher.get.firstCall.args[1] as any;
+      const calledOptions = mockDataFetcher.get.mock.calls[0][1] as any;
       expect(calledOptions.headers.__content_sdk_preview).toBe('1');
     });
 
     it('should handle 404 response without throwing', async () => {
-      mockDataFetcher.get.rejects({
+      mockDataFetcher.get.mockRejectedValue({
         response: { status: 404, data: '<html><body>404 Not Found</body></html>' },
       });
 
@@ -636,7 +634,7 @@ describe('editing-utils', () => {
 
     it('should throw error for non-404 fetch failures', async () => {
       const error = { response: { status: 500 } };
-      mockDataFetcher.get.rejects(error);
+      mockDataFetcher.get.mockRejectedValue(error);
 
       await expect(
         getEditingRequestHtml(requestUrl, {}, {}, [], mockDataFetcher as any)
@@ -644,7 +642,7 @@ describe('editing-utils', () => {
     });
 
     it('should throw error when HTML is empty', async () => {
-      mockDataFetcher.get.resolves({ data: '' } as any);
+      mockDataFetcher.get.mockResolvedValue({ data: '' } as any);
 
       await expect(
         getEditingRequestHtml(requestUrl, {}, {}, [], mockDataFetcher as any)
@@ -652,7 +650,7 @@ describe('editing-utils', () => {
     });
 
     it('should throw error when HTML is null', async () => {
-      mockDataFetcher.get.resolves({ data: null } as any);
+      mockDataFetcher.get.mockResolvedValue({ data: null } as any);
 
       await expect(
         getEditingRequestHtml(requestUrl, {}, {}, [], mockDataFetcher as any)
@@ -660,13 +658,13 @@ describe('editing-utils', () => {
     });
 
     it('should add timestamp to URL', async () => {
-      mockDataFetcher.get.resolves({ data: '<html><body>Content</body></html>' } as any);
+      mockDataFetcher.get.mockResolvedValue({ data: '<html><body>Content</body></html>' } as any);
 
       const beforeTime = Date.now();
       await getEditingRequestHtml(requestUrl, {}, {}, [], mockDataFetcher as any);
       const afterTime = Date.now();
 
-      const calledUrl = mockDataFetcher.get.firstCall.args[0];
+      const calledUrl = mockDataFetcher.get.mock.calls[0][0];
       const url = new URL(calledUrl);
       const timestamp = parseInt(url.searchParams.get('timestamp') || '0', 10);
       expect(timestamp).toBeGreaterThanOrEqual(beforeTime);

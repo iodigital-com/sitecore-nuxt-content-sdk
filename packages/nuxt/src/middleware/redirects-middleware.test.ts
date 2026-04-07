@@ -1,8 +1,6 @@
 /* eslint-disable no-unused-expressions */
 /* eslint-disable dot-notation */
-import sinon, { spy } from 'sinon';
-import { expect } from 'chai';
-import { describe, it, beforeEach, afterEach, beforeAll, afterAll } from 'vitest';
+import { describe, it, beforeEach, afterEach, beforeAll, afterAll, vi, expect } from 'vitest';
 import { createEvent, H3Event } from 'h3';
 import { IncomingMessage, ServerResponse } from 'http';
 import {
@@ -76,15 +74,13 @@ type TestMiddlewareProps = {
   isQueryStringPreserved?: boolean;
   isLanguagePreserved?: boolean;
   locale?: string;
-  fetchRedirectsStub?: sinon.SinonStub;
-  getClientFactoryStub?: sinon.SinonStub;
+  fetchRedirectsStub?: any;
+  getClientFactoryStub?: any;
   defaultHostname?: string;
   siteResolver?: SiteResolver;
 };
 
 const createMiddleware = (input: TestMiddlewareProps = {}) => {
-  const sandbox = sinon.createSandbox();
-
   const props = {
     ...defaultConfig,
     ...input.redirectsMiddlewareConfig,
@@ -92,13 +88,13 @@ const createMiddleware = (input: TestMiddlewareProps = {}) => {
   };
 
   class MockSiteResolver extends SiteResolver {
-    getByName = sandbox.stub().returns({
+    getByName = vi.fn().mockReturnValue({
       name: siteName,
       language: input.locale ?? 'en',
       hostName: hostname,
     });
 
-    getByHost = sandbox.stub().returns({
+    getByHost = vi.fn().mockReturnValue({
       name: siteName,
       language: input.locale ?? 'en',
       hostName: hostname,
@@ -112,7 +108,7 @@ const createMiddleware = (input: TestMiddlewareProps = {}) => {
     endpoint: 'http://edge-endpoint/api/graph/edge',
   });
 
-  const getClientFactory = input.getClientFactoryStub ?? sandbox.stub().returns(clientFactory);
+  const getClientFactory = input.getClientFactoryStub ?? vi.fn().mockReturnValue(clientFactory);
 
   const defaultRedirects = input.redirectMaps ?? [
     {
@@ -124,7 +120,8 @@ const createMiddleware = (input: TestMiddlewareProps = {}) => {
     },
   ];
 
-  const fetchRedirectsStub = input.fetchRedirectsStub ?? sandbox.stub().resolves(defaultRedirects);
+  const fetchRedirectsStub =
+    input.fetchRedirectsStub ?? vi.fn().mockResolvedValue(defaultRedirects);
 
   const mockRedirectsService = {
     fetchRedirects: fetchRedirectsStub,
@@ -138,29 +135,30 @@ const createMiddleware = (input: TestMiddlewareProps = {}) => {
   middleware['siteResolver'] = siteResolver;
   middleware['getClientFactory'] = getClientFactory;
 
-  return { middleware, siteResolver, fetchRedirectsStub, getClientFactory, sandbox };
+  return { middleware, siteResolver, fetchRedirectsStub, getClientFactory };
 };
 
 describe('RedirectsMiddleware', () => {
-  const sandbox = sinon.createSandbox();
-  const debugSpy = spy(debug, 'redirects');
+  let debugSpy: ReturnType<typeof vi.spyOn>;
 
   const validateDebugLog = (message: string, ...params: unknown[]) => {
-    const foundLog = debugSpy.args.find((log) => log[0] === message);
-    expect(foundLog).to.deep.equal([message, ...params]);
+    const foundLog = debugSpy.mock.calls.find((log: unknown[]) => log[0] === message);
+    expect(foundLog).toEqual([message, ...params]);
   };
 
   const validateEndMessageDebugLog = (message: string, params: unknown) => {
-    const logParams = debugSpy.args.find((log) => log[0] === message) as Array<unknown>;
-    expect(logParams[2]).to.deep.equal(params);
+    const logParams = debugSpy.mock.calls.find(
+      (log: unknown[]) => log[0] === message
+    ) as Array<unknown>;
+    expect(logParams[2]).toEqual(params);
   };
 
   beforeEach(() => {
-    debugSpy.resetHistory();
+    debugSpy = vi.spyOn(debug, 'redirects').mockImplementation(() => {});
   });
 
   afterEach(() => {
-    sandbox.restore();
+    debugSpy.mockRestore();
   });
 
   describe('request skipped', () => {
@@ -185,7 +183,7 @@ describe('RedirectsMiddleware', () => {
           : 'skipped (redirects middleware is disabled)';
         validateDebugLog(message);
 
-        debugSpy.resetHistory();
+        debugSpy.mockClear();
       };
 
       it('default', async () => {
@@ -233,8 +231,8 @@ describe('RedirectsMiddleware', () => {
           hostname: 'foo.net',
         });
         validateDebugLog('skipped (prefetch)');
-        expect(event.node.res.getHeader('x-proxy-cache')).to.equal('no-cache');
-        expect(event.node.res.getHeader('Cache-Control')).to.equal('no-store, must-revalidate');
+        expect(event.node.res.getHeader('x-proxy-cache')).toBe('no-cache');
+        expect(event.node.res.getHeader('Cache-Control')).toBe('no-store, must-revalidate');
       });
     });
   });
@@ -256,8 +254,8 @@ describe('RedirectsMiddleware', () => {
         hostname: 'foo.net',
       });
 
-      expect(fetchRedirectsStub.calledWith(siteName)).to.be.true;
-      expect(event.node.res.statusCode).to.equal(301);
+      expect(fetchRedirectsStub).toHaveBeenCalledWith(siteName);
+      expect(event.node.res.statusCode).toBe(301);
 
       validateEndMessageDebugLog('redirects middleware end in %dms: %o', {
         target: '/new-page',
@@ -275,8 +273,8 @@ describe('RedirectsMiddleware', () => {
 
       await middleware.handle(event);
 
-      expect(fetchRedirectsStub.calledWith(siteName)).to.be.true;
-      expect(event.node.res.statusCode).to.equal(302);
+      expect(fetchRedirectsStub).toHaveBeenCalledWith(siteName);
+      expect(event.node.res.statusCode).toBe(302);
 
       validateEndMessageDebugLog('redirects middleware end in %dms: %o', {
         target: '/new-page',
@@ -295,7 +293,7 @@ describe('RedirectsMiddleware', () => {
 
       await middleware.handle(event);
 
-      expect(event.node.req.url).to.equal('/new-page');
+      expect(event.node.req.url).toBe('/new-page');
 
       validateEndMessageDebugLog('redirects middleware end in %dms: %o', {
         target: '/new-page',
@@ -314,8 +312,8 @@ describe('RedirectsMiddleware', () => {
 
       await middleware.handle(event);
 
-      expect(event.node.res.getHeader('location')).to.include('param1=value1');
-      expect(event.node.res.getHeader('location')).to.include('param2=value2');
+      expect(event.node.res.getHeader('location')).toContain('param1=value1');
+      expect(event.node.res.getHeader('location')).toContain('param2=value2');
     });
 
     it('should not preserve query string when isQueryStringPreserved is false', async () => {
@@ -330,9 +328,9 @@ describe('RedirectsMiddleware', () => {
       await middleware.handle(event);
 
       const location = event.node.res.getHeader('location') as string;
-      expect(location).to.include('/new-page');
-      expect(location).to.not.include('param1');
-      expect(location).to.not.include('param2');
+      expect(location).toContain('/new-page');
+      expect(location).not.toContain('param1');
+      expect(location).not.toContain('param2');
     });
 
     it('should handle absolute URL targets', async () => {
@@ -346,7 +344,7 @@ describe('RedirectsMiddleware', () => {
       await middleware.handle(event);
 
       const location = event.node.res.getHeader('location') as string;
-      expect(location).to.include('https://example.com/new-page');
+      expect(location).toContain('https://example.com/new-page');
     });
 
     it('should handle regex patterns with capture groups', async () => {
@@ -360,7 +358,7 @@ describe('RedirectsMiddleware', () => {
       await middleware.handle(event);
 
       const location = event.node.res.getHeader('location') as string;
-      expect(location).to.include('/new-page/123');
+      expect(location).toContain('/new-page/123');
     });
 
     it('should replace $siteLang token in target', async () => {
@@ -375,31 +373,23 @@ describe('RedirectsMiddleware', () => {
       await middleware.handle(event);
 
       const location = event.node.res.getHeader('location') as string;
-      expect(location).to.include('/da/new-page');
+      expect(location).toContain('/da/new-page');
     });
 
     it('should handle multiple redirect rules', async () => {
       const event = createMockEvent({}, {}, '/old-page-2');
       const { middleware, fetchRedirectsStub } = createMiddleware({
         redirectMaps: [
-          {
-            pattern: '/old-page-1',
-            target: '/new-page-1',
-            redirectType: REDIRECT_TYPE_301,
-          },
-          {
-            pattern: '/old-page-2',
-            target: '/new-page-2',
-            redirectType: REDIRECT_TYPE_302,
-          },
+          { pattern: '/old-page-1', target: '/new-page-1', redirectType: REDIRECT_TYPE_301 },
+          { pattern: '/old-page-2', target: '/new-page-2', redirectType: REDIRECT_TYPE_302 },
         ],
       });
 
       await middleware.handle(event);
 
-      expect(fetchRedirectsStub.calledWith(siteName)).to.be.true;
-      expect(event.node.res.statusCode).to.equal(302);
-      expect(event.node.res.getHeader('location')).to.include('/new-page-2');
+      expect(fetchRedirectsStub).toHaveBeenCalledWith(siteName);
+      expect(event.node.res.statusCode).toBe(302);
+      expect(event.node.res.getHeader('location')).toContain('/new-page-2');
     });
 
     it('should use fallback hostname when host header is missing', async () => {
@@ -419,13 +409,11 @@ describe('RedirectsMiddleware', () => {
         hostname: 'bar.net',
       });
 
-      expect(event.node.res.statusCode).to.equal(301);
+      expect(event.node.res.statusCode).toBe(301);
     });
 
     it('should preserve site prefix from x-sc-rewrite on server transfer', async () => {
-      const event = createMockEvent({}, {}, '/old-page', {
-        'x-sc-rewrite': '/foo/en/old-page',
-      });
+      const event = createMockEvent({}, {}, '/old-page', { 'x-sc-rewrite': '/foo/en/old-page' });
       const { middleware } = createMiddleware({
         pattern: '/old-page',
         target: '/en/new-page',
@@ -435,29 +423,31 @@ describe('RedirectsMiddleware', () => {
 
       await middleware.handle(event);
 
-      expect(event.node.req.url).to.include('/foo/en/new-page');
+      expect(event.node.req.url).toContain('/foo/en/new-page');
     });
   });
 
   describe('error handling', () => {
-    let errorSpy: ReturnType<typeof spy>;
+    let errorSpy: ReturnType<typeof vi.spyOn>;
 
     beforeAll(() => {
-      errorSpy = spy(console, 'log');
+      errorSpy = vi.spyOn(console, 'log').mockImplementation(() => {});
     });
 
     beforeEach(() => {
-      errorSpy.resetHistory();
+      errorSpy.mockClear();
     });
 
     afterAll(() => {
-      errorSpy.restore();
+      errorSpy.mockRestore();
     });
 
     it('should handle error when fetchRedirects throws', async () => {
       const error = new Error('Custom error');
       const event = createMockEvent();
-      const fetchRedirectsWithError = sandbox.stub().throws(error);
+      const fetchRedirectsWithError = vi.fn().mockImplementation(() => {
+        throw error;
+      });
 
       const { middleware, fetchRedirectsStub } = createMiddleware({
         fetchRedirectsStub: fetchRedirectsWithError,
@@ -465,9 +455,9 @@ describe('RedirectsMiddleware', () => {
 
       await middleware.handle(event);
 
-      expect(fetchRedirectsStub.called).to.be.true;
-      expect(errorSpy.getCall(0).calledWith('Redirects middleware failed:')).to.be.true;
-      expect(errorSpy.getCall(1).calledWith(error)).to.be.true;
+      expect(fetchRedirectsStub).toHaveBeenCalled();
+      expect(errorSpy).toHaveBeenNthCalledWith(1, 'Redirects middleware failed:');
+      expect(errorSpy).toHaveBeenNthCalledWith(2, error);
     });
   });
 
@@ -479,8 +469,8 @@ describe('RedirectsMiddleware', () => {
         sites: [],
       } as any);
 
-      expect(middleware).to.not.be.undefined;
-      expect(middleware['redirectsService']).to.be.null;
+      expect(middleware).not.toBeUndefined();
+      expect(middleware['redirectsService']).toBeNull();
     });
 
     it('skips execution when redirectsService is null', async () => {
@@ -506,8 +496,8 @@ describe('RedirectsMiddleware', () => {
         sites: [],
       } as any);
 
-      expect(middleware).to.not.be.undefined;
-      expect(middleware['redirectsService']).to.not.be.null;
+      expect(middleware).not.toBeUndefined();
+      expect(middleware['redirectsService']).not.toBeNull();
     });
 
     it('works normally when local API config is provided', () => {
@@ -519,8 +509,8 @@ describe('RedirectsMiddleware', () => {
         sites: [],
       } as any);
 
-      expect(middleware).to.not.be.undefined;
-      expect(middleware['redirectsService']).to.not.be.null;
+      expect(middleware).not.toBeUndefined();
+      expect(middleware['redirectsService']).not.toBeNull();
     });
   });
 });

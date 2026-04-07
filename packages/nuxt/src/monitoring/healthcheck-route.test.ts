@@ -1,4 +1,4 @@
-import { expect } from 'chai';
+import { describe, it, expect, vi, beforeEach, afterEach, beforeAll, afterAll } from 'vitest';
 import { createEvent } from 'h3';
 import { IncomingMessage, ServerResponse } from 'http';
 import { createHealthcheckRoute } from './healthcheck-route';
@@ -36,7 +36,7 @@ describe('createHealthcheckRoute', () => {
     await handle(event);
     const body = await bodyPromise;
 
-    expect(event.node.res.statusCode).to.equal(200);
-    expect(body).to.equal('Healthy');
+    expect(event.node.res.statusCode).toBe(200);
+    expect(body).toBe('Healthy');
   });
 });

@@ -1,24 +1,22 @@
-import sinon from 'sinon';
 import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest';
 import { createEvent } from 'h3';
 import { IncomingMessage, ServerResponse } from 'http';
-import { SitecoreClient } from '@sitecore-content-sdk/content/client';
-import { SiteInfo } from '@sitecore-content-sdk/content/site';
+import type { SiteInfo } from '@sitecore-content-sdk/content/site';
 import { constants } from '@sitecore-content-sdk/core';
+import { createSitemapRoute } from './sitemap-route';
 
 const { ERROR_MESSAGES } = constants;
 
-vi.mock('nitro/cache', () => ({ defineCachedFunction: vi.fn() }));
+const { defineCachedFunctionMock, SiteResolverMock } = vi.hoisted(() => ({
+  defineCachedFunctionMock: vi.fn(),
+  SiteResolverMock: vi.fn(),
+}));
+
+vi.mock('nitro/cache', () => ({ defineCachedFunction: defineCachedFunctionMock }));
 vi.mock('@sitecore-content-sdk/content/site', async (importOriginal) => {
   const actual = await importOriginal<typeof import('@sitecore-content-sdk/content/site')>();
-  return { ...actual, SiteResolver: vi.fn() };
+  return { ...actual, SiteResolver: SiteResolverMock };
 });
-
-// @ts-ignore - nitro/cache uses ESM-only exports (.mjs) incompatible with CommonJS moduleResolution.
-// Resolved via vitest.config.ts alias at test runtime.
-import { defineCachedFunction } from 'nitro/cache';
-import { SiteResolver } from '@sitecore-content-sdk/content/site';
-import { createSitemapRoute } from './sitemap-route';
 
 const createMockEvent = (headers: Record<string, string> = {}, path: string = '/') => {
   const req = new IncomingMessage(null as any);
@@ -46,9 +44,12 @@ const readBody = (event: ReturnType<typeof createMockEvent>): Promise<string> =>
 };
 
 describe('createSitemapRoute', () => {
-  const sandbox = sinon.createSandbox();
-  let sitecoreClientStub: sinon.SinonStubbedInstance<SitecoreClient>;
-  let siteResolverStub: { getByHost: sinon.SinonStub; getByName: sinon.SinonStub };
+  let getSiteMapMock: ReturnType<typeof vi.fn>;
+  let sitecoreClientStub: any;
+  let siteResolverStub: {
+    getByHost: ReturnType<typeof vi.fn>;
+    getByName: ReturnType<typeof vi.fn>;
+  };
   let route: any;
 
   const sites: SiteInfo[] = [
@@ -57,36 +58,33 @@ describe('createSitemapRoute', () => {
   ];
 
   beforeEach(() => {
-    sitecoreClientStub = sandbox.createStubInstance(SitecoreClient);
+    getSiteMapMock = vi.fn();
+    sitecoreClientStub = { getSiteMap: getSiteMapMock };
+
     siteResolverStub = {
-      getByHost: sandbox.stub(),
-      getByName: sandbox.stub(),
+      getByHost: vi.fn(
+        (hostName: string) => sites.find((site) => site.hostName === hostName) || sites[1]
+      ),
+      getByName: vi.fn(),
     };
 
-    siteResolverStub.getByHost.callsFake(
-      (hostName: string) => sites.find((site) => site.hostName === hostName) || sites[1]
-    );
-
-    vi.mocked(defineCachedFunction).mockImplementation(
+    defineCachedFunctionMock.mockImplementation(
       (fn: (...args: unknown[]) => Promise<unknown>) => fn
     );
-    vi.mocked(SiteResolver).mockReturnValue(siteResolverStub as any);
 
-    route = createSitemapRoute({
-      client: sitecoreClientStub as unknown as SitecoreClient,
-      sites,
-    });
+    SiteResolverMock.mockReturnValue(siteResolverStub);
+
+    route = createSitemapRoute({ client: sitecoreClientStub, sites });
   });
 
   afterEach(() => {
-    sandbox.restore();
     vi.clearAllMocks();
   });
 
   describe('handle', () => {
     it('should process sitemap request without id parameter', async () => {
       const xmlContent = '<sitemapindex>...</sitemapindex>';
-      sitecoreClientStub.getSiteMap.resolves(xmlContent);
+      getSiteMapMock.mockResolvedValue(xmlContent);
 
       const event = createMockEvent(
         { host: 'example.com', 'x-forwarded-proto': 'https' },
@@ -97,8 +95,8 @@ describe('createSitemapRoute', () => {
       await route.handle(event);
       const body = await bodyPromise;
 
-      sinon.assert.calledOnce(sitecoreClientStub.getSiteMap);
-      expect(sitecoreClientStub.getSiteMap.firstCall.args[0]).toMatchObject({
+      expect(getSiteMapMock).toHaveBeenCalledOnce();
+      expect(getSiteMapMock.mock.calls[0][0]).toMatchObject({
         reqHost: 'example.com',
         reqProtocol: 'https',
         id: '',
@@ -111,7 +109,7 @@ describe('createSitemapRoute', () => {
     it('should handle sitemap request with specific id parameter', async () => {
       const sitemapId = '1';
       const xmlContent = '<urlset>...</urlset>';
-      sitecoreClientStub.getSiteMap.resolves(xmlContent);
+      getSiteMapMock.mockResolvedValue(xmlContent);
 
       const event = createMockEvent(
         { host: 'example.com', 'x-forwarded-proto': 'https' },
@@ -122,7 +120,7 @@ describe('createSitemapRoute', () => {
       await route.handle(event);
       const body = await bodyPromise;
 
-      expect(sitecoreClientStub.getSiteMap.firstCall.args[0]).toMatchObject({
+      expect(getSiteMapMock.mock.calls[0][0]).toMatchObject({
         reqHost: 'example.com',
         reqProtocol: 'https',
         id: sitemapId,
@@ -132,8 +130,7 @@ describe('createSitemapRoute', () => {
     });
 
     it('should default to https protocol when x-forwarded-proto header is missing', async () => {
-      const xmlContent = '<sitemapindex>...</sitemapindex>';
-      sitecoreClientStub.getSiteMap.resolves(xmlContent);
+      getSiteMapMock.mockResolvedValue('<sitemapindex>...</sitemapindex>');
 
       const event = createMockEvent({ host: 'example.com' }, '/sitemap.xml');
       const bodyPromise = readBody(event);
@@ -141,7 +138,7 @@ describe('createSitemapRoute', () => {
       await route.handle(event);
       await bodyPromise;
 
-      expect(sitecoreClientStub.getSiteMap.firstCall.args[0]).toMatchObject({
+      expect(getSiteMapMock.mock.calls[0][0]).toMatchObject({
         reqHost: 'example.com',
         reqProtocol: 'https',
         siteName: 'test-site',
@@ -149,7 +146,7 @@ describe('createSitemapRoute', () => {
     });
 
     it('should use x-forwarded-host header when present', async () => {
-      sitecoreClientStub.getSiteMap.resolves('<sitemapindex>...</sitemapindex>');
+      getSiteMapMock.mockResolvedValue('<sitemapindex>...</sitemapindex>');
 
       const event = createMockEvent(
         { 'x-forwarded-host': 'example.com', host: 'localhost:3000' },
@@ -160,15 +157,13 @@ describe('createSitemapRoute', () => {
       await route.handle(event);
       await bodyPromise;
 
-      sinon.assert.calledWithMatch(sitecoreClientStub.getSiteMap, {
-        reqHost: 'example.com',
-        siteName: 'test-site',
-      });
+      expect(getSiteMapMock).toHaveBeenCalledWith(
+        expect.objectContaining({ reqHost: 'example.com', siteName: 'test-site' })
+      );
     });
 
     it('should use empty string when both x-forwarded-host and host headers are missing', async () => {
-      const xmlContent = '<sitemapindex>...</sitemapindex>';
-      sitecoreClientStub.getSiteMap.resolves(xmlContent);
+      getSiteMapMock.mockResolvedValue('<sitemapindex>...</sitemapindex>');
 
       const event = createMockEvent({ 'x-forwarded-proto': 'https' }, '/sitemap.xml');
       const bodyPromise = readBody(event);
@@ -176,32 +171,28 @@ describe('createSitemapRoute', () => {
       await route.handle(event);
       await bodyPromise;
 
-      expect(sitecoreClientStub.getSiteMap.firstCall.args[0]).toMatchObject({
+      expect(getSiteMapMock.mock.calls[0][0]).toMatchObject({
         reqHost: '',
         reqProtocol: 'https',
       });
     });
 
     it('should cache the response for default revalidate time', async () => {
-      expect(vi.mocked(defineCachedFunction)).toHaveBeenCalledOnce();
-      expect(vi.mocked(defineCachedFunction).mock.calls[0][1].maxAge).toBe(60);
+      expect(defineCachedFunctionMock).toHaveBeenCalledOnce();
+      expect(defineCachedFunctionMock.mock.calls[0][1].maxAge).toBe(60);
     });
 
     it('should cache the response for custom revalidate time', async () => {
-      vi.mocked(defineCachedFunction).mockClear();
+      defineCachedFunctionMock.mockClear();
 
-      route = createSitemapRoute({
-        client: sitecoreClientStub,
-        sites,
-        revalidate: 10,
-      });
+      route = createSitemapRoute({ client: sitecoreClientStub, sites, revalidate: 10 });
 
-      expect(vi.mocked(defineCachedFunction)).toHaveBeenCalledOnce();
-      expect(vi.mocked(defineCachedFunction).mock.calls[0][1].maxAge).toBe(10);
+      expect(defineCachedFunctionMock).toHaveBeenCalledOnce();
+      expect(defineCachedFunctionMock.mock.calls[0][1].maxAge).toBe(10);
     });
 
     it('should return 404 when REDIRECT_404 error is thrown', async () => {
-      sitecoreClientStub.getSiteMap.rejects(new Error('REDIRECT_404'));
+      getSiteMapMock.mockRejectedValue(new Error('REDIRECT_404'));
 
       const event = createMockEvent(
         { host: 'example.com', 'x-forwarded-proto': 'https' },
@@ -217,7 +208,7 @@ describe('createSitemapRoute', () => {
     });
 
     it('should return 500 when any other error occurs', async () => {
-      sitecoreClientStub.getSiteMap.rejects(new Error('Unexpected error'));
+      getSiteMapMock.mockRejectedValue(new Error('Unexpected error'));
 
       const event = createMockEvent(
         { host: 'example.com', 'x-forwarded-proto': 'https' },

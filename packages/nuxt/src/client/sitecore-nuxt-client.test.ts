@@ -1,18 +1,13 @@
 /* eslint-disable dot-notation */
 /* eslint-disable no-unused-expressions */
-import sinon from 'sinon';
-import { expect } from 'chai';
-import { describe, it, beforeEach, afterEach } from 'vitest';
+import { describe, it, beforeEach, afterEach, vi, expect } from 'vitest';
 import { SitecoreNuxtClient } from './sitecore-nuxt-client';
-import { DefaultRetryStrategy } from '@sitecore-content-sdk/core';
 import * as siteTools from '@sitecore-content-sdk/content/site';
 import { SITE_PREFIX } from '@sitecore-content-sdk/content/site';
 import { VARIANT_PREFIX } from '@sitecore-content-sdk/content/personalize';
 import { layoutData, componentsWithExperiencesArray } from '../test-data/personalizeData';
 
 describe('SitecoreNuxtClient', () => {
-  const sandbox = sinon.createSandbox();
-
   const defaultInitOptions = {
     api: {
       edge: {
@@ -27,25 +22,25 @@ describe('SitecoreNuxtClient', () => {
       },
     },
     editingSecret: '********-****',
-    retries: { count: 3, retryStrategy: sinon.createStubInstance(DefaultRetryStrategy) },
+    retries: { count: 3, retryStrategy: {} as any },
     defaultSite: 'default-site',
     defaultLanguage: 'en',
-    layout: { formatLayoutQuery: sandbox.stub() },
+    layout: { formatLayoutQuery: vi.fn() },
     dictionary: { caching: { enabled: true, timeout: 60000 } },
   };
 
   let sitecoreClient: SitecoreNuxtClient;
-  let layoutServiceStub: { fetchLayoutData: sinon.SinonStub };
+  let layoutServiceStub: { fetchLayoutData: any };
 
   beforeEach(() => {
-    layoutServiceStub = { fetchLayoutData: sandbox.stub() };
+    layoutServiceStub = { fetchLayoutData: vi.fn() };
 
     sitecoreClient = new SitecoreNuxtClient(defaultInitOptions as any);
     sitecoreClient['layoutService'] = layoutServiceStub as any;
   });
 
   afterEach(() => {
-    sandbox.restore();
+    vi.restoreAllMocks();
   });
 
   describe('getPage', () => {
@@ -54,11 +49,11 @@ describe('SitecoreNuxtClient', () => {
       const locale = 'en-US';
       const testLayoutData = structuredClone(layoutData);
 
-      layoutServiceStub.fetchLayoutData.resolves(testLayoutData);
+      layoutServiceStub.fetchLayoutData.mockResolvedValue(testLayoutData);
 
       const result = await sitecoreClient.getPage(path, { locale });
 
-      expect(result?.layout.sitecore.route?.placeholders).to.deep.equal({
+      expect(result?.layout.sitecore.route?.placeholders).toEqual({
         'content-sdk-main': [...componentsWithExperiencesArray],
       });
     });
@@ -68,14 +63,14 @@ describe('SitecoreNuxtClient', () => {
       const locale = 'en-US';
       const testLayoutData = structuredClone(layoutData);
 
-      layoutServiceStub.fetchLayoutData.resolves(testLayoutData);
+      layoutServiceStub.fetchLayoutData.mockResolvedValue(testLayoutData);
 
       const result = await sitecoreClient.getPage(path, {
         locale,
         personalize: { variantId: 'variant2', componentVariantIds: ['mountain_bike_audience'] },
       });
 
-      expect(result?.layout.sitecore.route?.placeholders).to.deep.equal({
+      expect(result?.layout.sitecore.route?.placeholders).toEqual({
         'content-sdk-main': [...componentsWithExperiencesArray],
       });
     });
@@ -85,17 +80,19 @@ describe('SitecoreNuxtClient', () => {
       const locale = 'en-US';
       const testLayoutData = structuredClone(layoutData);
 
-      sandbox.stub(sitecoreClient, 'parsePath').returns('/test/path');
-      layoutServiceStub.fetchLayoutData.resolves(testLayoutData);
+      vi.spyOn(sitecoreClient, 'parsePath').mockReturnValue('/test/path');
+      layoutServiceStub.fetchLayoutData.mockResolvedValue(testLayoutData);
 
       await sitecoreClient.getPage(path, { locale });
 
-      expect(
-        layoutServiceStub.fetchLayoutData.calledWithMatch('/test/path', {
+      expect(layoutServiceStub.fetchLayoutData).toHaveBeenCalledWith(
+        '/test/path',
+        expect.objectContaining({
           locale,
           site: 'mysite',
-        })
-      ).to.be.true;
+        }),
+        undefined
+      );
     });
 
     it('should use site passed in page options over site parsed from path', async () => {
@@ -103,28 +100,30 @@ describe('SitecoreNuxtClient', () => {
       const locale = 'en-US';
       const testLayoutData = structuredClone(layoutData);
 
-      sandbox.stub(sitecoreClient, 'parsePath').returns('/test/path');
-      layoutServiceStub.fetchLayoutData.resolves(testLayoutData);
+      vi.spyOn(sitecoreClient, 'parsePath').mockReturnValue('/test/path');
+      layoutServiceStub.fetchLayoutData.mockResolvedValue(testLayoutData);
 
       await sitecoreClient.getPage(path, { locale, site: 'other-site' });
 
-      expect(
-        layoutServiceStub.fetchLayoutData.calledWithMatch('/test/path', {
+      expect(layoutServiceStub.fetchLayoutData).toHaveBeenCalledWith(
+        '/test/path',
+        expect.objectContaining({
           locale,
           site: 'other-site',
-        })
-      ).to.be.true;
+        }),
+        undefined
+      );
     });
   });
 
   describe('getSiteNameFromPath', () => {
     it('should get site name correctly with string path', () => {
       const path = '/some/path';
-      sandbox.stub(siteTools, 'getSiteRewriteData').returns({ siteName: 'default-site' });
+      vi.spyOn(siteTools, 'getSiteRewriteData').mockReturnValue({ siteName: 'default-site' });
 
       const result = sitecoreClient.getSiteNameFromPath(path);
 
-      expect(result).to.equal('default-site');
+      expect(result).toBe('default-site');
     });
 
     it('should get site name correctly with array path', () => {
@@ -132,7 +131,7 @@ describe('SitecoreNuxtClient', () => {
 
       const result = sitecoreClient.getSiteNameFromPath(path);
 
-      expect(result).to.equal('other-site');
+      expect(result).toBe('other-site');
     });
 
     it('should get default site name when site not found', () => {
@@ -140,7 +139,7 @@ describe('SitecoreNuxtClient', () => {
 
       const result = sitecoreClient.getSiteNameFromPath(path);
 
-      expect(result).to.equal('default-site');
+      expect(result).toBe('default-site');
     });
   });
 
@@ -150,7 +149,7 @@ describe('SitecoreNuxtClient', () => {
 
       const result = sitecoreClient.parsePath(path);
 
-      expect(result).to.equal('/some/path');
+      expect(result).toBe('/some/path');
     });
 
     it('should strip site and variant prefixes from path', () => {
@@ -158,7 +157,7 @@ describe('SitecoreNuxtClient', () => {
 
       const result = sitecoreClient.parsePath(path);
 
-      expect(result).to.equal('/some/path');
+      expect(result).toBe('/some/path');
     });
   });
 });
