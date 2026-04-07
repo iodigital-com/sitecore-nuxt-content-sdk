@@ -48,14 +48,20 @@
     }
   },
   "dependencies": {
-    "@sitecore-content-sdk/content": "workspace:*",
-    "@sitecore-content-sdk/core": "workspace:*"
+    "@sitecore-content-sdk/content": "2.0.0-canary.20",
+    "@sitecore-content-sdk/core": "2.0.0-canary.20",
+    "@sitecore-content-sdk/search": "0.2.0-canary.30"
   },
   "exports": {
     ".": {
       "import": "./dist/esm/index.js",
       "require": "./dist/cjs/index.js",
       "types": "./types/index.d.ts"
+    },
+    "./search": {
+      "import": "./dist/esm/search/index.js",
+      "require": "./dist/cjs/search/index.js",
+      "types": "./types/search/index.d.ts"
     }
   },
   "types": "types/index.d.ts",
