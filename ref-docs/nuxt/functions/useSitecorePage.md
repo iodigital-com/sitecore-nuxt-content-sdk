@@ -8,7 +8,7 @@
 
 > **useSitecorePage**(): `Promise`\<[`UseSitecorePageResult`](../type-aliases/UseSitecorePageResult.md)\>
 
-Defined in: nuxt/src/composables/useSitecorePages.ts:55
+Defined in: [nuxt/src/composables/useSitecorePages.ts:55](https://github.com/weareyou/sitecore-nuxt-content-sdk/blob/0855a622b10e7f8f1a092bf930d8d53d3144a776/packages/nuxt/src/composables/useSitecorePages.ts#L55)
 
 Composable that fetches Sitecore page data for the current route.
 

@@ -8,7 +8,7 @@
 
 > **createHealthcheckRoute**(): `object`
 
-Defined in: [nuxt/src/monitoring/healthcheck-route.ts:16](https://github.com/weareyou/sitecore-nuxt-content-sdk/blob/fea536f819edb689aeb38530140c8bbd5b901091/packages/nuxt/src/monitoring/healthcheck-route.ts#L16)
+Defined in: [nuxt/src/monitoring/healthcheck-route.ts:16](https://github.com/weareyou/sitecore-nuxt-content-sdk/blob/0855a622b10e7f8f1a092bf930d8d53d3144a776/packages/nuxt/src/monitoring/healthcheck-route.ts#L16)
 
 Creates a route handler for the healthcheck endpoint.
 Returns a 200 "Healthy" response so monitoring tools can verify the application is reachable.

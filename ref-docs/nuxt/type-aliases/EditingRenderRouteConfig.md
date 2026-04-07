@@ -8,7 +8,7 @@
 
 > **EditingRenderRouteConfig** = `object`
 
-Defined in: [nuxt/src/route-handlers/editing-render-route.ts:32](https://github.com/weareyou/sitecore-nuxt-content-sdk/blob/fea536f819edb689aeb38530140c8bbd5b901091/packages/nuxt/src/route-handlers/editing-render-route.ts#L32)
+Defined in: [nuxt/src/route-handlers/editing-render-route.ts:32](https://github.com/weareyou/sitecore-nuxt-content-sdk/blob/0855a622b10e7f8f1a092bf930d8d53d3144a776/packages/nuxt/src/route-handlers/editing-render-route.ts#L32)
 
 ## Properties
 
@@ -16,7 +16,7 @@ Defined in: [nuxt/src/route-handlers/editing-render-route.ts:32](https://github.
 
 > `optional` **allowedQueryParams**: [`AllowedQueryParams`](AllowedQueryParams.md)
 
-Defined in: [nuxt/src/route-handlers/editing-render-route.ts:46](https://github.com/weareyou/sitecore-nuxt-content-sdk/blob/fea536f819edb689aeb38530140c8bbd5b901091/packages/nuxt/src/route-handlers/editing-render-route.ts#L46)
+Defined in: [nuxt/src/route-handlers/editing-render-route.ts:46](https://github.com/weareyou/sitecore-nuxt-content-sdk/blob/0855a622b10e7f8f1a092bf930d8d53d3144a776/packages/nuxt/src/route-handlers/editing-render-route.ts#L46)
 
 Query string parameters to allow and include in the search params.
 - Array: each item is a parameter name (string) or an object `{ name, required? }`.
@@ -28,7 +28,7 @@ Query string parameters to allow and include in the search params.
 
 > `optional` **resolvePageUrl**: (`itemPath`) => `string`
 
-Defined in: [nuxt/src/route-handlers/editing-render-route.ts:40](https://github.com/weareyou/sitecore-nuxt-content-sdk/blob/fea536f819edb689aeb38530140c8bbd5b901091/packages/nuxt/src/route-handlers/editing-render-route.ts#L40)
+Defined in: [nuxt/src/route-handlers/editing-render-route.ts:40](https://github.com/weareyou/sitecore-nuxt-content-sdk/blob/0855a622b10e7f8f1a092bf930d8d53d3144a776/packages/nuxt/src/route-handlers/editing-render-route.ts#L40)
 
 Function used to determine route/page URL to render.
 This may be necessary for certain custom Nuxt routing configurations.
@@ -55,7 +55,7 @@ The URL to render
 
 > `optional` **sitecoreInternalEditingHostUrl**: `string`
 
-Defined in: [nuxt/src/route-handlers/editing-render-route.ts:55](https://github.com/weareyou/sitecore-nuxt-content-sdk/blob/fea536f819edb689aeb38530140c8bbd5b901091/packages/nuxt/src/route-handlers/editing-render-route.ts#L55)
+Defined in: [nuxt/src/route-handlers/editing-render-route.ts:55](https://github.com/weareyou/sitecore-nuxt-content-sdk/blob/0855a622b10e7f8f1a092bf930d8d53d3144a776/packages/nuxt/src/route-handlers/editing-render-route.ts#L55)
 
 Optional URL for the internal host of the Sitecore editing environment, used for CORS validation.
 If not provided, the route handler will attempt to resolve the internal host URL from the incoming request.

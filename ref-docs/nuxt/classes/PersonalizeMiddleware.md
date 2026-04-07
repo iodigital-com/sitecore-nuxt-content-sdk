@@ -6,7 +6,7 @@
 
 # Class: PersonalizeMiddleware
 
-Defined in: [nuxt/src/middleware/personalize-middleware.ts:123](https://github.com/weareyou/sitecore-nuxt-content-sdk/blob/fea536f819edb689aeb38530140c8bbd5b901091/packages/nuxt/src/middleware/personalize-middleware.ts#L123)
+Defined in: [nuxt/src/middleware/personalize-middleware.ts:123](https://github.com/weareyou/sitecore-nuxt-content-sdk/blob/0855a622b10e7f8f1a092bf930d8d53d3144a776/packages/nuxt/src/middleware/personalize-middleware.ts#L123)
 
 Middleware that integrates Sitecore Personalize into the Nuxt server middleware chain.
 
@@ -47,7 +47,7 @@ export default defineEventHandler((event) => middleware.handle(event));
 
 > **new PersonalizeMiddleware**(`config`): `PersonalizeMiddleware`
 
-Defined in: [nuxt/src/middleware/personalize-middleware.ts:131](https://github.com/weareyou/sitecore-nuxt-content-sdk/blob/fea536f819edb689aeb38530140c8bbd5b901091/packages/nuxt/src/middleware/personalize-middleware.ts#L131)
+Defined in: [nuxt/src/middleware/personalize-middleware.ts:131](https://github.com/weareyou/sitecore-nuxt-content-sdk/blob/0855a622b10e7f8f1a092bf930d8d53d3144a776/packages/nuxt/src/middleware/personalize-middleware.ts#L131)
 
 #### Parameters
 
@@ -69,7 +69,7 @@ Defined in: [nuxt/src/middleware/personalize-middleware.ts:131](https://github.c
 
 > `protected` **config**: [`PersonalizeMiddlewareConfig`](../type-aliases/PersonalizeMiddlewareConfig.md)
 
-Defined in: [nuxt/src/middleware/personalize-middleware.ts:131](https://github.com/weareyou/sitecore-nuxt-content-sdk/blob/fea536f819edb689aeb38530140c8bbd5b901091/packages/nuxt/src/middleware/personalize-middleware.ts#L131)
+Defined in: [nuxt/src/middleware/personalize-middleware.ts:131](https://github.com/weareyou/sitecore-nuxt-content-sdk/blob/0855a622b10e7f8f1a092bf930d8d53d3144a776/packages/nuxt/src/middleware/personalize-middleware.ts#L131)
 
 Personalize middleware configuration.
 When `contextId` and `clientContextId` are not provided, `personalizeService` is set
@@ -85,7 +85,7 @@ to `null` and personalization is disabled.
 
 > `protected` **defaultHostname**: `string`
 
-Defined in: [nuxt/src/middleware/middleware.ts:73](https://github.com/weareyou/sitecore-nuxt-content-sdk/blob/fea536f819edb689aeb38530140c8bbd5b901091/packages/nuxt/src/middleware/middleware.ts#L73)
+Defined in: [nuxt/src/middleware/middleware.ts:73](https://github.com/weareyou/sitecore-nuxt-content-sdk/blob/0855a622b10e7f8f1a092bf930d8d53d3144a776/packages/nuxt/src/middleware/middleware.ts#L73)
 
 #### Inherited from
 
@@ -97,7 +97,7 @@ Defined in: [nuxt/src/middleware/middleware.ts:73](https://github.com/weareyou/s
 
 > `protected` **personalizeService**: `PersonalizeService` \| `null`
 
-Defined in: [nuxt/src/middleware/personalize-middleware.ts:124](https://github.com/weareyou/sitecore-nuxt-content-sdk/blob/fea536f819edb689aeb38530140c8bbd5b901091/packages/nuxt/src/middleware/personalize-middleware.ts#L124)
+Defined in: [nuxt/src/middleware/personalize-middleware.ts:124](https://github.com/weareyou/sitecore-nuxt-content-sdk/blob/0855a622b10e7f8f1a092bf930d8d53d3144a776/packages/nuxt/src/middleware/personalize-middleware.ts#L124)
 
 ***
 
@@ -105,7 +105,7 @@ Defined in: [nuxt/src/middleware/personalize-middleware.ts:124](https://github.c
 
 > `protected` **siteResolver**: `SiteResolver`
 
-Defined in: [nuxt/src/middleware/middleware.ts:74](https://github.com/weareyou/sitecore-nuxt-content-sdk/blob/fea536f819edb689aeb38530140c8bbd5b901091/packages/nuxt/src/middleware/middleware.ts#L74)
+Defined in: [nuxt/src/middleware/middleware.ts:74](https://github.com/weareyou/sitecore-nuxt-content-sdk/blob/0855a622b10e7f8f1a092bf930d8d53d3144a776/packages/nuxt/src/middleware/middleware.ts#L74)
 
 #### Inherited from
 
@@ -117,7 +117,7 @@ Defined in: [nuxt/src/middleware/middleware.ts:74](https://github.com/weareyou/s
 
 > `protected` **disabled**(`event`): `boolean`
 
-Defined in: [nuxt/src/middleware/personalize-middleware.ts:306](https://github.com/weareyou/sitecore-nuxt-content-sdk/blob/fea536f819edb689aeb38530140c8bbd5b901091/packages/nuxt/src/middleware/personalize-middleware.ts#L306)
+Defined in: [nuxt/src/middleware/personalize-middleware.ts:306](https://github.com/weareyou/sitecore-nuxt-content-sdk/blob/0855a622b10e7f8f1a092bf930d8d53d3144a776/packages/nuxt/src/middleware/personalize-middleware.ts#L306)
 
 Determines whether the middleware should be skipped for the current request.
 
@@ -148,7 +148,7 @@ Also logs a debug message when skipping due to missing Edge configuration.
 
 > `protected` **getClientFactory**(`graphQLOptions`): [`GraphQLRequestClientFactory`](../type-aliases/GraphQLRequestClientFactory.md)
 
-Defined in: [nuxt/src/middleware/middleware.ts:205](https://github.com/weareyou/sitecore-nuxt-content-sdk/blob/fea536f819edb689aeb38530140c8bbd5b901091/packages/nuxt/src/middleware/middleware.ts#L205)
+Defined in: [nuxt/src/middleware/middleware.ts:205](https://github.com/weareyou/sitecore-nuxt-content-sdk/blob/0855a622b10e7f8f1a092bf930d8d53d3144a776/packages/nuxt/src/middleware/middleware.ts#L205)
 
 Creates a new GraphQLRequestClientFactory instance
 
@@ -174,7 +174,7 @@ GraphQLRequestClientFactory instance
 
 > `protected` **getExperienceParams**(`event`): [`ExperienceParams`](../type-aliases/ExperienceParams.md)
 
-Defined in: [nuxt/src/middleware/personalize-middleware.ts:324](https://github.com/weareyou/sitecore-nuxt-content-sdk/blob/fea536f819edb689aeb38530140c8bbd5b901091/packages/nuxt/src/middleware/personalize-middleware.ts#L324)
+Defined in: [nuxt/src/middleware/personalize-middleware.ts:324](https://github.com/weareyou/sitecore-nuxt-content-sdk/blob/0855a622b10e7f8f1a092bf930d8d53d3144a776/packages/nuxt/src/middleware/personalize-middleware.ts#L324)
 
 Builds the experience context params from the current request.
 
@@ -199,7 +199,7 @@ The experience params to pass to the CDP
 
 > `protected` **getHostHeader**(`event`): `string` \| `undefined`
 
-Defined in: [nuxt/src/middleware/middleware.ts:151](https://github.com/weareyou/sitecore-nuxt-content-sdk/blob/fea536f819edb689aeb38530140c8bbd5b901091/packages/nuxt/src/middleware/middleware.ts#L151)
+Defined in: [nuxt/src/middleware/middleware.ts:151](https://github.com/weareyou/sitecore-nuxt-content-sdk/blob/0855a622b10e7f8f1a092bf930d8d53d3144a776/packages/nuxt/src/middleware/middleware.ts#L151)
 
 Extract 'host' header.
 
@@ -225,7 +225,7 @@ The host header, `undefined` will be returned instead of the default value when 
 
 > `protected` **getLanguage**(`event`): `string`
 
-Defined in: [nuxt/src/middleware/middleware.ts:138](https://github.com/weareyou/sitecore-nuxt-content-sdk/blob/fea536f819edb689aeb38530140c8bbd5b901091/packages/nuxt/src/middleware/middleware.ts#L138)
+Defined in: [nuxt/src/middleware/middleware.ts:138](https://github.com/weareyou/sitecore-nuxt-content-sdk/blob/0855a622b10e7f8f1a092bf930d8d53d3144a776/packages/nuxt/src/middleware/middleware.ts#L138)
 
 Provides used language
 
@@ -251,7 +251,7 @@ language
 
 > `protected` **getPersonalizeExecutions**(`personalizeInfo`, `language`): `PersonalizeExecution`[]
 
-Defined in: [nuxt/src/middleware/personalize-middleware.ts:440](https://github.com/weareyou/sitecore-nuxt-content-sdk/blob/fea536f819edb689aeb38530140c8bbd5b901091/packages/nuxt/src/middleware/personalize-middleware.ts#L440)
+Defined in: [nuxt/src/middleware/personalize-middleware.ts:440](https://github.com/weareyou/sitecore-nuxt-content-sdk/blob/0855a622b10e7f8f1a092bf930d8d53d3144a776/packages/nuxt/src/middleware/personalize-middleware.ts#L440)
 
 Builds the list of CDP experience calls based on the personalize info for the current route.
 
@@ -277,7 +277,7 @@ The list of executions to run in parallel
 
 > `protected` **getSite**(`event`): `SiteInfo`
 
-Defined in: [nuxt/src/middleware/middleware.ts:164](https://github.com/weareyou/sitecore-nuxt-content-sdk/blob/fea536f819edb689aeb38530140c8bbd5b901091/packages/nuxt/src/middleware/middleware.ts#L164)
+Defined in: [nuxt/src/middleware/middleware.ts:164](https://github.com/weareyou/sitecore-nuxt-content-sdk/blob/0855a622b10e7f8f1a092bf930d8d53d3144a776/packages/nuxt/src/middleware/middleware.ts#L164)
 
 Get site information. If site name is stored in cookie, use it, otherwise resolve by hostname
 - If site can't be resolved by site name cookie use default site info based on provided parameters
@@ -305,7 +305,7 @@ site information
 
 > **handle**(`event`): `Promise`\<`void`\>
 
-Defined in: [nuxt/src/middleware/personalize-middleware.ts:181](https://github.com/weareyou/sitecore-nuxt-content-sdk/blob/fea536f819edb689aeb38530140c8bbd5b901091/packages/nuxt/src/middleware/personalize-middleware.ts#L181)
+Defined in: [nuxt/src/middleware/personalize-middleware.ts:181](https://github.com/weareyou/sitecore-nuxt-content-sdk/blob/0855a622b10e7f8f1a092bf930d8d53d3144a776/packages/nuxt/src/middleware/personalize-middleware.ts#L181)
 
 Handles an incoming request and applies personalization if applicable.
 
@@ -342,7 +342,7 @@ Errors are caught and logged without re-throwing, so the request continues norma
 
 > `protected` **initPersonalizeServer**(`params`): `Promise`\<`void`\>
 
-Defined in: [nuxt/src/middleware/personalize-middleware.ts:354](https://github.com/weareyou/sitecore-nuxt-content-sdk/blob/fea536f819edb689aeb38530140c8bbd5b901091/packages/nuxt/src/middleware/personalize-middleware.ts#L354)
+Defined in: [nuxt/src/middleware/personalize-middleware.ts:354](https://github.com/weareyou/sitecore-nuxt-content-sdk/blob/0855a622b10e7f8f1a092bf930d8d53d3144a776/packages/nuxt/src/middleware/personalize-middleware.ts#L354)
 
 Initializes the Sitecore Content SDK with analytics and personalize plugins
 for the current request context.
@@ -369,7 +369,7 @@ binds the analytics and personalize adapters to the current H3 event.
 
 > `protected` **isPrefetch**(`event`): `boolean`
 
-Defined in: [nuxt/src/middleware/middleware.ts:99](https://github.com/weareyou/sitecore-nuxt-content-sdk/blob/fea536f819edb689aeb38530140c8bbd5b901091/packages/nuxt/src/middleware/middleware.ts#L99)
+Defined in: [nuxt/src/middleware/middleware.ts:99](https://github.com/weareyou/sitecore-nuxt-content-sdk/blob/0855a622b10e7f8f1a092bf930d8d53d3144a776/packages/nuxt/src/middleware/middleware.ts#L99)
 
 Determines if the request is a Nuxt prefetch request
 
@@ -395,7 +395,7 @@ is prefetch
 
 > `protected` **isPreview**(`event`): `boolean`
 
-Defined in: [nuxt/src/middleware/middleware.ts:90](https://github.com/weareyou/sitecore-nuxt-content-sdk/blob/fea536f819edb689aeb38530140c8bbd5b901091/packages/nuxt/src/middleware/middleware.ts#L90)
+Defined in: [nuxt/src/middleware/middleware.ts:90](https://github.com/weareyou/sitecore-nuxt-content-sdk/blob/0855a622b10e7f8f1a092bf930d8d53d3144a776/packages/nuxt/src/middleware/middleware.ts#L90)
 
 Determines if mode is preview
 
@@ -421,7 +421,7 @@ is preview
 
 > `protected` **personalize**(`params`): `Promise`\<\{ `variantId`: `string`; \}\>
 
-Defined in: [nuxt/src/middleware/personalize-middleware.ts:398](https://github.com/weareyou/sitecore-nuxt-content-sdk/blob/fea536f819edb689aeb38530140c8bbd5b901091/packages/nuxt/src/middleware/personalize-middleware.ts#L398)
+Defined in: [nuxt/src/middleware/personalize-middleware.ts:398](https://github.com/weareyou/sitecore-nuxt-content-sdk/blob/0855a622b10e7f8f1a092bf930d8d53d3144a776/packages/nuxt/src/middleware/personalize-middleware.ts#L398)
 
 Calls the CDP to identify the variant for a single experience.
 
@@ -449,7 +449,7 @@ The identified variant ID
 
 > `protected` **rewrite**(`rewritePath`, `event`, `skipHeader?`): `void`
 
-Defined in: [nuxt/src/middleware/middleware.ts:191](https://github.com/weareyou/sitecore-nuxt-content-sdk/blob/fea536f819edb689aeb38530140c8bbd5b901091/packages/nuxt/src/middleware/middleware.ts#L191)
+Defined in: [nuxt/src/middleware/middleware.ts:191](https://github.com/weareyou/sitecore-nuxt-content-sdk/blob/0855a622b10e7f8f1a092bf930d8d53d3144a776/packages/nuxt/src/middleware/middleware.ts#L191)
 
 Rewrites the request path for subsequent handling.
 
