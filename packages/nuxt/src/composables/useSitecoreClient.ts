@@ -5,10 +5,10 @@ import type { SitecoreNuxtClientInit } from '../client/sitecore-nuxt-client';
 /**
  * Composable that initializes and returns a `SitecoreNuxtClient` instance
  * using the Nuxt runtime config.
+ * @public
  * @example
  * const client = useSitecoreClient();
  * const page = await client.getPage(route.params.slug);
- * @public
  */
 export function useSitecoreClient(): SitecoreNuxtClient {
   const config = useRuntimeConfig();

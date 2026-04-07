@@ -8,7 +8,7 @@
 
 > **analyticsMiddlewareAdapter**(`event`): [`AnalyticsMiddlewareAdapter`](../interfaces/AnalyticsMiddlewareAdapter.md)
 
-Defined in: [nuxt/src/initialization/middleware/analytics-adapter.ts:32](https://github.com/weareyou/sitecore-nuxt-content-sdk/blob/8963802a0d4f5d901b409afced72114460b0c2b1/packages/nuxt/src/initialization/middleware/analytics-adapter.ts#L32)
+Defined in: [nuxt/src/initialization/middleware/analytics-adapter.ts:32](https://github.com/weareyou/sitecore-nuxt-content-sdk/blob/fea536f819edb689aeb38530140c8bbd5b901091/packages/nuxt/src/initialization/middleware/analytics-adapter.ts#L32)
 
 Creates a middleware-based analytics adapter that reads and writes the visitor ID
 using cookies and can resolve a new client ID from the Edge proxy when needed.

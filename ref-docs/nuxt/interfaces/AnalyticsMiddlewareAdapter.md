@@ -6,7 +6,7 @@
 
 # Interface: AnalyticsMiddlewareAdapter
 
-Defined in: [nuxt/src/initialization/middleware/analytics-adapter.ts:17](https://github.com/weareyou/sitecore-nuxt-content-sdk/blob/8963802a0d4f5d901b409afced72114460b0c2b1/packages/nuxt/src/initialization/middleware/analytics-adapter.ts#L17)
+Defined in: [nuxt/src/initialization/middleware/analytics-adapter.ts:17](https://github.com/weareyou/sitecore-nuxt-content-sdk/blob/fea536f819edb689aeb38530140c8bbd5b901091/packages/nuxt/src/initialization/middleware/analytics-adapter.ts#L17)
 
 Defines the AnalyticsMiddlewareAdapter.
 
@@ -86,7 +86,7 @@ A promise that resolves when the client ID has been set.
 
 > **type**: `"middleware"`
 
-Defined in: [nuxt/src/initialization/middleware/analytics-adapter.ts:21](https://github.com/weareyou/sitecore-nuxt-content-sdk/blob/8963802a0d4f5d901b409afced72114460b0c2b1/packages/nuxt/src/initialization/middleware/analytics-adapter.ts#L21)
+Defined in: [nuxt/src/initialization/middleware/analytics-adapter.ts:21](https://github.com/weareyou/sitecore-nuxt-content-sdk/blob/fea536f819edb689aeb38530140c8bbd5b901091/packages/nuxt/src/initialization/middleware/analytics-adapter.ts#L21)
 
 The type of the adapter.
 

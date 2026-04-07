@@ -19,5 +19,7 @@ export {
 } from '../initialization/middleware/analytics-adapter';
 export {
   PersonalizeMiddleware as PersonalizeMiddleware,
+  PersonalizeGeoData as PersonalizeGeoData,
+  ExperienceParams as ExperienceParams,
   PersonalizeMiddlewareConfig,
 } from './personalize-middleware';
