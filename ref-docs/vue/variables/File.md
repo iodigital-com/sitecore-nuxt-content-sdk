@@ -8,7 +8,7 @@
 
 > `const` **File**: `DefineComponent`\<\{ `field`: [`FileFieldValue`](../interfaces/FileFieldValue.md) \| [`FileField`](../interfaces/FileField.md); \}\>
 
-Defined in: [vue/src/components/File.d.ts:37](https://github.com/weareyou/sitecore-nuxt-content-sdk/blob/48c762bc9cf81c584378a0392febd6eec2105b5e/packages/vue/src/components/File.d.ts#L37)
+Defined in: [vue/src/components/File.d.ts:37](https://github.com/weareyou/sitecore-nuxt-content-sdk/blob/939b9532e027006a3fef28bbca7e95ac5310a49f/packages/vue/src/components/File.d.ts#L37)
 
 Renders a Sitecore File field as an anchor tag.
 Falls back to `title` or `displayName` as link text when no slot content is provided.

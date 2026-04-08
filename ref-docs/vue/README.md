@@ -20,7 +20,13 @@
 
 ## Variables
 
+- [AppPlaceholder](variables/AppPlaceholder.md)
+- [DEFAULT\_EXPORT\_NAME](variables/DEFAULT_EXPORT_NAME.md)
 - [File](variables/File.md)
+- [HiddenRendering](variables/HiddenRendering.md)
+- [MissingComponent](variables/MissingComponent.md)
+- [Placeholder](variables/Placeholder.md)
+- [PlaceholderMetadata](variables/PlaceholderMetadata.md)
 - [SitecoreProvider](variables/SitecoreProvider.md)
 
 ## Functions

@@ -2,6 +2,11 @@
 import { Component } from 'vue';
 
 /**
+ * SXA uses custom default export name
+ */
+export const DEFAULT_EXPORT_NAME = 'Default';
+
+/**
  * Vue component import with account for custom exports
  * @public
  */

@@ -52,3 +52,7 @@ export { default as File } from './components/File.vue';
 export type { FileField, FileFieldValue } from './components/File';
 export { default as SitecoreProvider } from './components/SitecoreProvider.vue';
 export type { SitecoreProviderProps } from './components/SitecoreProvider';
+export * from './components/Placeholder';
+export { MissingComponentProps } from './components/MissingComponent';
+export { default as MissingComponent } from './components/MissingComponent.vue';
+export { default as HiddenRendering } from './components/HiddenRendering.vue';
