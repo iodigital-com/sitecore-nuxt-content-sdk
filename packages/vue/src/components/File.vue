@@ -41,14 +41,11 @@ const hasDefaultSlot = computed(() => !!slots.default);
 </script>
 
 <template>
-  <!-- Render nothing if field is empty or no file resolved -->
   <template v-if="file && file.src">
     <a :href="file.src" v-bind="$attrs">
-      <!-- Als er geen slot is, toon title/displayName als linktekst -->
       <template v-if="!hasDefaultSlot && linkText">
         {{ linkText }}
       </template>
-      <!-- Kind-content equivalent van React's children -->
       <slot></slot>
     </a>
   </template>
