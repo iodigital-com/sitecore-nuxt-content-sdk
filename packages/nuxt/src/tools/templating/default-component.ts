@@ -1,0 +1,54 @@
+import chalk from 'chalk';
+import { ScaffoldTemplate, ComponentTemplateType } from '@sitecore-content-sdk/content/config';
+import { COMPONENT_FILE_EXTENSION } from './constants';
+
+/**
+ * Vue SFC component boilerplate
+ * @param {string} componentName - the component name
+ * @returns component generated template
+ */
+const generateTemplate = (componentName: string): string => {
+  return `<script setup lang="ts">
+import type { ComponentParams, ComponentRendering } from '@sitecore-content-sdk/vue';
+
+interface Props {
+  rendering: ComponentRendering & { params: ComponentParams };
+  params: ComponentParams;
+}
+
+const props = defineProps<Props>();
+
+const id = props.params.RenderingIdentifier;
+</script>
+
+<template>
+  <div :class="\`component \${params.styles}\`" :id="id || undefined">
+    <div class="component-content">
+      <p>${componentName} Component</p>
+    </div>
+  </div>
+</template>
+`;
+};
+
+/**
+ * Generates a list of next steps when scaffolding a component.
+ * @param {string} componentOutputPath - The file path where the component file is generated.
+ * @returns {string[]} An array of strings, each representing a next step.
+ */
+const getNextSteps = (componentOutputPath: string): string[] => {
+  const nextSteps = [];
+
+  if (componentOutputPath) {
+    nextSteps.push(`* Implement the Vue component in ${chalk.green(componentOutputPath)}`);
+  }
+
+  return nextSteps;
+};
+
+export const defaultTemplate: ScaffoldTemplate = {
+  name: ComponentTemplateType.DEFAULT,
+  fileExtension: COMPONENT_FILE_EXTENSION,
+  generateTemplate,
+  getNextSteps,
+};

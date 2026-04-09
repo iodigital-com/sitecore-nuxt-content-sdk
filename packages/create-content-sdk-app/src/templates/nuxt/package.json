@@ -10,10 +10,10 @@
     "postinstall": "nuxt prepare"
   },
   "dependencies": {
-    "@sitecore-content-sdk/nuxt": "file:../../../../nuxt",
-    "@sitecore-content-sdk/vue": "file:../../../../vue",
+     "@sitecore-content-sdk/nuxt": "<%- version %>",
     "@types/node": "^24.10.4",
     "nuxt": "^4.4.2",
+    "nitro": "^3.0.260311-beta",
     "vue": "^3.5.32",
     "vue-router": "^5.0.4"
   }
