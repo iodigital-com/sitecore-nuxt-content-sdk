@@ -1,12 +1,11 @@
 {
   "name": "@sitecore-content-sdk/vue",
-  "type": "module",
   "version": "2.0.0-canary.20",
   "main": "dist/cjs/index.js",
   "module": "dist/esm/index.js",
   "sideEffects": false,
   "scripts": {
-    "build": "npm run clean && vite build && vue-tsc -p tsconfig.json --emitDeclarationOnly",
+    "build": "npm run clean && tsc -p tsconfig.json && tsc -p tsconfig-esm.json",
     "clean": "del-cli dist types",
     "lint": "eslint \"./src/**/*.ts\"",
     "test": "vitest run",
@@ -37,8 +36,7 @@
     "typescript": "~5.8.3",
     "vite": "^5.0.0",
     "vitest": "^2.0.0",
-    "vue": "^3.0.0",
-    "vue-tsc": "^2.0.0"
+    "vue": "^3.0.0"
   },
   "peerDependencies": {
     "typescript": "^5.4.0",

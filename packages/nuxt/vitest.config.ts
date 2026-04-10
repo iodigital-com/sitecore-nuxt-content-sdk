@@ -12,7 +12,6 @@ export default defineConfig({
       '@sitecore-content-sdk/content': path.resolve(__dirname, '../content/src'),
       '@sitecore-content-sdk/core': path.resolve(__dirname, '../core/src'),
       '@sitecore-content-sdk/vue': path.resolve(__dirname, '../vue/src'),
-      'nitro/cache': path.resolve(__dirname, 'node_modules/nitro/dist/runtime/cache.mjs'),
     },
   },
 });
