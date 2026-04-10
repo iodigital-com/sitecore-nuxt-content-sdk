@@ -31,6 +31,7 @@
     "cross-env": "^10.1.0",
     "del-cli": "^6.0.0",
     "eslint": "^9.32.0",
+    "h3": "^1.0.0",
     "nitro": "^3.0.260311-beta",
     "nuxt": "^4.4.2",
     "regex-parser": "^2.3.1",
@@ -45,6 +46,7 @@
   "peerDependencies": {
     "@sitecore-content-sdk/analytics-core": "^2.0.0-canary.20",
     "@sitecore-content-sdk/personalize": "^2.0.0-canary.20",
+    "h3": "^1.0.0",
     "nuxt": "^4.0.0",
     "typescript": "^5.4.0"
   },
@@ -57,57 +59,62 @@
     "@sitecore-content-sdk/content": "workspace:*",
     "@sitecore-content-sdk/core": "workspace:*",
     "@sitecore-content-sdk/vue": "workspace:*",
-    "h3": "^1.0.0",
     "std-env": "^4.0.0"
   },
   "exports": {
     ".": {
       "import": "./dist/index.js",
+      "default": "./dist/index.js",
       "types": "./types/index.d.ts"
     },
     "./client": {
-      "import": "./dist/esm/client/index.js",
-      "require": "./dist/cjs/client/index.js",
+      "import": "./dist/client/index.js",
+      "default": "./dist/client/index.js",
       "types": "./types/client/index.d.ts"
     },
-     "./config": {
-      "import": "./dist/esm/config/index.js",
-      "require": "./dist/cjs/config/index.js",
+    "./composables": {
+      "import": "./dist/composables/index.js",
+      "default": "./dist/composables/index.js",
+      "types": "./types/composables/index.d.ts"
+    },
+    "./config": {
+      "import": "./dist/config/index.js",
+      "default": "./dist/config/index.js",
       "types": "./types/config/index.d.ts"
     },
     "./config-cli": {
-      "import": "./dist/esm/config-cli/index.js",
-      "require": "./dist/cjs/config-cli/index.js",
+      "import": "./dist/config-cli/index.js",
+      "default": "./dist/config-cli/index.js",
       "types": "./types/config-cli/index.d.ts"
     },
     "./middleware": {
-      "import": "./dist/esm/middleware/index.js",
-      "require": "./dist/cjs/middleware/index.js",
+      "import": "./dist/middleware/index.js",
+      "default": "./dist/middleware/index.js",
       "types": "./types/middleware/index.d.ts"
     },
     "./monitoring": {
-      "import": "./dist/esm/monitoring/index.js",
-      "require": "./dist/cjs/monitoring/index.js",
+      "import": "./dist/monitoring/index.js",
+      "default": "./dist/monitoring/index.js",
       "types": "./types/monitoring/index.d.ts"
     },
-    "./route-handler": {
-      "import": "./dist/esm/route-handler/index.js",
-      "require": "./dist/cjs/route-handler/index.js",
-      "types": "./types/route-handler/index.d.ts"
+    "./routes": {
+      "import": "./dist/route-handlers/index.js",
+      "default": "./dist/routes-handlers/index.js",
+      "types": "./types/routes-handlers/index.d.ts"
     },
     "./search": {
-      "import": "./dist/esm/search/index.js",
-      "require": "./dist/cjs/search/index.js",
+      "import": "./dist/search/index.js",
+      "default": "./dist/search/index.js",
       "types": "./types/search/index.d.ts"
     },
     "./tools": {
-      "import": "./dist/esm/tools/index.js",
-      "require": "./dist/cjs/tools/index.js",
+      "import": "./dist/tools/index.js",
+      "default": "./dist/tools/index.js",
       "types": "./types/tools/index.d.ts"
     },
     "./utils": {
-      "import": "./dist/esm/utils/index.js",
-      "require": "./dist/cjs/utils/index.js",
+      "import": "./dist/utils/index.js",
+      "default": "./dist/utils/index.js",
       "types": "./types/utils/index.d.ts"
     }
   },

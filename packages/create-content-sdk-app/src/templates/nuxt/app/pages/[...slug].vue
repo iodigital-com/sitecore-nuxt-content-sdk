@@ -1,7 +1,8 @@
-<!-- app/pages/[...slug].vue -->
 <script setup lang="ts">
+import { computed } from 'vue';
 import { createError } from 'nuxt/app';
-import { useSitecorePage, SitecoreProvider, Placeholder } from '@sitecore-content-sdk/nuxt';
+import { SitecoreProvider, Placeholder } from '@sitecore-content-sdk/nuxt';
+import { useSitecorePage } from '@sitecore-content-sdk/nuxt/composables';
 import componentMap from '../components/componentMap';
 
 const { page, error } = await useSitecorePage();
@@ -13,10 +14,12 @@ if (error.value) {
 if (!page.value) {
   throw createError({ statusCode: 404, message: 'Page not found' });
 }
+
+const route = computed(() => page.value?.layout?.sitecore?.route);
 </script>
 
 <template>
-  <SitecoreProvider :page="page" :componentMap="componentMap">
-    <Placeholder name="jss-main" :rendering="page.layout.sitecore.route" />
+  <SitecoreProvider :page="page.value" :componentMap="componentMap">
+    <Placeholder name="jss-main" :rendering="route!" />
   </SitecoreProvider>
 </template>

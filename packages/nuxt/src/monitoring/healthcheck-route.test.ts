@@ -1,4 +1,4 @@
-import { describe, it, expect, vi, beforeEach, afterEach, beforeAll, afterAll } from 'vitest';
+import { describe, it, expect } from 'vitest';
 import { createEvent } from 'h3';
 import { IncomingMessage, ServerResponse } from 'http';
 import { createHealthcheckRoute } from './healthcheck-route';

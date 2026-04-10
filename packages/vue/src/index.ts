@@ -3,46 +3,27 @@ export {
   constants,
   enableDebug,
   ClientError,
-  CacheClient,
-  CacheOptions,
   MemoryCacheClient,
   NativeDataFetcher,
-  NativeDataFetcherResponse,
-  NativeDataFetcherConfig,
 } from '@sitecore-content-sdk/core';
-export { EnhancedOmit } from '@sitecore-content-sdk/core/tools';
 export { isEditorActive, resetEditorChromes } from '@sitecore-content-sdk/content/editing';
 export {
   getContentStylesheetLink,
   getDesignLibraryStylesheetLinks,
-  LayoutServiceData,
   LayoutServicePageState,
-  LayoutServiceContext,
-  LayoutServiceContextData,
   LayoutService,
-  RouteData,
-  Field,
-  Item,
   getChildPlaceholder,
   getFieldValue,
-  ComponentRendering,
-  ComponentFields,
-  ComponentParams,
   EditMode,
 } from '@sitecore-content-sdk/content/layout';
-export { DictionaryPhrases, DictionaryService } from '@sitecore-content-sdk/content/i18n';
+export { DictionaryService } from '@sitecore-content-sdk/content/i18n';
 export {
-  GraphQLClientError,
-  RetryStrategy,
   DefaultRetryStrategy,
-  GraphQLRequestClientFactoryConfig,
   GraphQLRequestClient,
-  PageMode,
   ErrorPage,
-  Page,
 } from '@sitecore-content-sdk/content/client';
 export { mediaApi } from '@sitecore-content-sdk/content/media';
-export { SitePathService, SitePathServiceConfig } from '@sitecore-content-sdk/content/site';
+export { SitePathService } from '@sitecore-content-sdk/content/site';
 export type {
   useSitecoreContext,
   SitecoreProviderState,
@@ -53,6 +34,39 @@ export type { FileField, FileFieldValue } from './components/File';
 export { default as SitecoreProvider } from './components/SitecoreProvider.vue';
 export type { SitecoreProviderProps } from './components/SitecoreProvider';
 export * from './components/Placeholder';
-export { MissingComponentProps } from './components/MissingComponent';
+export type { MissingComponentProps } from './components/MissingComponent';
 export { default as MissingComponent } from './components/MissingComponent.vue';
 export { default as HiddenRendering } from './components/HiddenRendering.vue';
+
+export type {
+  CacheClient,
+  CacheOptions,
+  NativeDataFetcherConfig,
+  NativeDataFetcherResponse,
+} from '@sitecore-content-sdk/core';
+
+export type { EnhancedOmit } from '@sitecore-content-sdk/core/tools';
+
+export type {
+  ComponentFields,
+  ComponentParams,
+  ComponentRendering,
+  Field,
+  Item,
+  LayoutServiceContext,
+  LayoutServiceContextData,
+  LayoutServiceData,
+  RouteData,
+} from '@sitecore-content-sdk/content/layout';
+
+export type { DictionaryPhrases } from '@sitecore-content-sdk/content/i18n';
+
+export type {
+  GraphQLClientError,
+  GraphQLRequestClientFactoryConfig,
+  Page,
+  PageMode,
+  RetryStrategy,
+} from '@sitecore-content-sdk/content/client';
+
+export type { SitePathServiceConfig } from '@sitecore-content-sdk/content/site';

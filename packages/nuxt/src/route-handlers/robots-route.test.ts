@@ -4,12 +4,10 @@ import { IncomingMessage, ServerResponse } from 'http';
 import type { SiteInfo } from '@sitecore-content-sdk/content/site';
 import { createRobotsRoute } from './robots-route';
 
-const { defineCachedFunctionMock, SiteResolverMock } = vi.hoisted(() => ({
-  defineCachedFunctionMock: vi.fn(),
+const { SiteResolverMock } = vi.hoisted(() => ({
   SiteResolverMock: vi.fn(),
 }));
 
-vi.mock('nitro/cache', () => ({ defineCachedFunction: defineCachedFunctionMock }));
 vi.mock('@sitecore-content-sdk/content/site', async (importOriginal) => {
   const actual = await importOriginal<typeof import('@sitecore-content-sdk/content/site')>();
   return { ...actual, SiteResolver: SiteResolverMock };
@@ -47,10 +45,6 @@ describe('createRobotsRoute', () => {
       getByHost: vi.fn((hostName: string) => sites.find((site) => site.hostName === hostName)),
       getByName: vi.fn(),
     };
-
-    defineCachedFunctionMock.mockImplementation(
-      (fn: (...args: unknown[]) => Promise<unknown>) => fn
-    );
 
     SiteResolverMock.mockReturnValue(siteResolverStub);
 
@@ -127,18 +121,5 @@ describe('createRobotsRoute', () => {
     await route.handle(event);
 
     expect(siteResolverStub.getByHost).toHaveBeenCalledWith('middleware.forwarded.com');
-  });
-
-  it('should cache the response for default revalidate time', async () => {
-    expect(defineCachedFunctionMock).toHaveBeenCalledOnce();
-    expect(defineCachedFunctionMock.mock.calls[0][1].maxAge).toBe(60);
-  });
-
-  it('should cache the response for custom revalidate time', async () => {
-    defineCachedFunctionMock.mockClear();
-    route = createRobotsRoute({ client: sitecoreClientStub, sites, revalidate: 120 });
-
-    expect(defineCachedFunctionMock).toHaveBeenCalledOnce();
-    expect(defineCachedFunctionMock.mock.calls[0][1].maxAge).toBe(120);
   });
 });

@@ -23,3 +23,4 @@ export {
   ExperienceParams as ExperienceParams,
   PersonalizeMiddlewareConfig,
 } from './personalize-middleware';
+export { LocaleMiddleware as LocaleMiddleware, LocaleMiddlewareConfig } from './locale-middleware';

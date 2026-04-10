@@ -1,11 +1,6 @@
 import { defineEventHandler } from 'h3';
-import { createHealthcheckRoute } from '@sitecore-content-sdk/nuxt/routes';
-import { useSitecoreClient } from '@sitecore-content-sdk/nuxt';
-import sites from '../../.sitecore/sites.json';
+import { createHealthcheckRoute } from '@sitecore-content-sdk/nuxt/monitoring';
 
-const { handle } = createHealthcheckRoute({
-  client: useSitecoreClient(),
-  sites,
-});
+const { handle } = createHealthcheckRoute();
 
 export default defineEventHandler(handle);

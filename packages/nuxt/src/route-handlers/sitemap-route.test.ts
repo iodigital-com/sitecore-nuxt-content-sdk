@@ -7,12 +7,10 @@ import { createSitemapRoute } from './sitemap-route';
 
 const { ERROR_MESSAGES } = constants;
 
-const { defineCachedFunctionMock, SiteResolverMock } = vi.hoisted(() => ({
-  defineCachedFunctionMock: vi.fn(),
+const { SiteResolverMock } = vi.hoisted(() => ({
   SiteResolverMock: vi.fn(),
 }));
 
-vi.mock('nitro/cache', () => ({ defineCachedFunction: defineCachedFunctionMock }));
 vi.mock('@sitecore-content-sdk/content/site', async (importOriginal) => {
   const actual = await importOriginal<typeof import('@sitecore-content-sdk/content/site')>();
   return { ...actual, SiteResolver: SiteResolverMock };
@@ -67,10 +65,6 @@ describe('createSitemapRoute', () => {
       ),
       getByName: vi.fn(),
     };
-
-    defineCachedFunctionMock.mockImplementation(
-      (fn: (...args: unknown[]) => Promise<unknown>) => fn
-    );
 
     SiteResolverMock.mockReturnValue(siteResolverStub);
 
@@ -175,20 +169,6 @@ describe('createSitemapRoute', () => {
         reqHost: '',
         reqProtocol: 'https',
       });
-    });
-
-    it('should cache the response for default revalidate time', async () => {
-      expect(defineCachedFunctionMock).toHaveBeenCalledOnce();
-      expect(defineCachedFunctionMock.mock.calls[0][1].maxAge).toBe(60);
-    });
-
-    it('should cache the response for custom revalidate time', async () => {
-      defineCachedFunctionMock.mockClear();
-
-      route = createSitemapRoute({ client: sitecoreClientStub, sites, revalidate: 10 });
-
-      expect(defineCachedFunctionMock).toHaveBeenCalledOnce();
-      expect(defineCachedFunctionMock.mock.calls[0][1].maxAge).toBe(10);
     });
 
     it('should return 404 when REDIRECT_404 error is thrown', async () => {
