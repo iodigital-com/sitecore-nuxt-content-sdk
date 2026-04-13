@@ -4,4 +4,37 @@ import { defineConfig } from '@sitecore-content-sdk/nuxt/config';
  * See the documentation for `defineConfig`:
  * https://doc.sitecore.com/xmc/en/developers/content-sdk/the-sitecore-configuration-file.html
  */
-export default defineConfig({});
+export default defineConfig({
+  api: {
+    edge: {
+      contextId:
+        process.env.SITECORE_EDGE_CONTEXT_ID ||
+        process.env.NUXT_PUBLIC_SITECORE_EDGE_CONTEXT_ID ||
+        'placeholder',
+      clientContextId: process.env.NUXT_PUBLIC_SITECORE_EDGE_CONTEXT_ID,
+      edgeUrl:
+        process.env.NUXT_PUBLIC_SITECORE_EDGE_PLATFORM_HOSTNAME ||
+        process.env.SITECORE_EDGE_PLATFORM_HOSTNAME,
+    },
+    local: {
+      apiKey: process.env.NUXT_PUBLIC_SITECORE_API_KEY || '',
+      apiHost: process.env.NUXT_PUBLIC_SITECORE_API_HOST || '',
+    },
+  },
+  defaultSite: process.env.NUXT_PUBLIC_DEFAULT_SITE_NAME,
+  defaultLanguage: process.env.NUXT_PUBLIC_DEFAULT_LANGUAGE || 'en',
+  editingSecret: process.env.SITECORE_EDITING_SECRET,
+  redirects: {
+    enabled: true,
+    locales: ['en'],
+  },
+  multisite: {
+    enabled: true,
+    useCookieResolution: () => process.env.NUXT_ENV === 'preview',
+  },
+  personalize: {
+    scope: process.env.NUXT_PUBLIC_PERSONALIZE_SCOPE,
+    edgeTimeout: parseInt(process.env.PERSONALIZE_PROXY_EDGE_TIMEOUT!, 10),
+    cdpTimeout: parseInt(process.env.PERSONALIZE_PROXY_EDGE_TIMEOUT!, 10),
+  },
+});

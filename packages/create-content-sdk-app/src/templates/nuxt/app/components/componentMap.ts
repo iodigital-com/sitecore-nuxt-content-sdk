@@ -2,7 +2,7 @@
 import type { ComponentMap } from '@sitecore-content-sdk/nuxt';
 
 const componentMap: ComponentMap = new Map([
-  // Voeg hier je componenten toe:
+  // Add here your components to be used in the app, for example:
   // ['ContentBlock', ContentBlock],
 ]);
 
