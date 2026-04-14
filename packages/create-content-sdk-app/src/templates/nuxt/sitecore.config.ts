@@ -1,9 +1,5 @@
 import { defineConfig } from '@sitecore-content-sdk/nuxt/config';
-/**
- * @type {import('@sitecore-content-sdk/nuxt/config').SitecoreConfig}
- * See the documentation for `defineConfig`:
- * https://doc.sitecore.com/xmc/en/developers/content-sdk/the-sitecore-configuration-file.html
- */
+
 export default defineConfig({
   api: {
     edge: {
@@ -11,7 +7,10 @@ export default defineConfig({
         process.env.SITECORE_EDGE_CONTEXT_ID ||
         process.env.NUXT_PUBLIC_SITECORE_EDGE_CONTEXT_ID ||
         'placeholder',
-      clientContextId: process.env.NUXT_PUBLIC_SITECORE_EDGE_CONTEXT_ID,
+      clientContextId:
+        process.env.NUXT_PUBLIC_SITECORE_EDGE_CONTEXT_ID ||
+        process.env.SITECORE_EDGE_CONTEXT_ID ||
+        'placeholder',
       edgeUrl:
         process.env.NUXT_PUBLIC_SITECORE_EDGE_PLATFORM_HOSTNAME ||
         process.env.SITECORE_EDGE_PLATFORM_HOSTNAME,
@@ -29,12 +28,14 @@ export default defineConfig({
     locales: ['en'],
   },
   multisite: {
-    enabled: true,
+    enabled: false,
     useCookieResolution: () => process.env.NUXT_ENV === 'preview',
   },
   personalize: {
     scope: process.env.NUXT_PUBLIC_PERSONALIZE_SCOPE,
-    edgeTimeout: parseInt(process.env.PERSONALIZE_PROXY_EDGE_TIMEOUT!, 10),
-    cdpTimeout: parseInt(process.env.PERSONALIZE_PROXY_EDGE_TIMEOUT!, 10),
+    channel: process.env.NUXT_PUBLIC_PERSONALIZE_CHANNEL || '',
+    currency: process.env.NUXT_PUBLIC_PERSONALIZE_CURRENCY || '',
+    edgeTimeout: parseInt(process.env.PERSONALIZE_MIDDLEWARE_EDGE_TIMEOUT || '400', 10),
+    cdpTimeout: parseInt(process.env.PERSONALIZE_MIDDLEWARE_CDP_TIMEOUT || '400', 10),
   },
 });

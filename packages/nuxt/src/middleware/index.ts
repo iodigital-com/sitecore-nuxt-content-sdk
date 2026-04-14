@@ -24,3 +24,7 @@ export {
   PersonalizeMiddlewareConfig,
 } from './personalize-middleware';
 export { LocaleMiddleware as LocaleMiddleware, LocaleMiddlewareConfig } from './locale-middleware';
+export {
+  RedirectsMiddleware as RedirectsMiddleware,
+  RedirectsMiddlewareConfig,
+} from './redirects-middleware';
