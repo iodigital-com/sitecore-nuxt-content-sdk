@@ -37,6 +37,7 @@ export * from './components/Placeholder';
 export type { MissingComponentProps } from './components/MissingComponent';
 export { default as MissingComponent } from './components/MissingComponent.vue';
 export { default as HiddenRendering } from './components/HiddenRendering.vue';
+export * from './components/DesignLibrary';
 
 export type {
   CacheClient,

@@ -6,7 +6,7 @@
 
 # Interface: FileField
 
-Defined in: [vue/src/components/File.d.ts:18](https://github.com/weareyou/sitecore-nuxt-content-sdk/blob/72aeb1eaa60da06de28ae18eec24752fffcf3e0f/packages/vue/src/components/File.d.ts#L18)
+Defined in: [vue/src/components/File.d.ts:18](https://github.com/weareyou/sitecore-nuxt-content-sdk/blob/0eb4be91f4260a1106102aacfc2513e02bf1778f/packages/vue/src/components/File.d.ts#L18)
 
 Represents a File field from Sitecore.
 
@@ -16,4 +16,4 @@ Represents a File field from Sitecore.
 
 > **value**: [`FileFieldValue`](FileFieldValue.md)
 
-Defined in: [vue/src/components/File.d.ts:19](https://github.com/weareyou/sitecore-nuxt-content-sdk/blob/72aeb1eaa60da06de28ae18eec24752fffcf3e0f/packages/vue/src/components/File.d.ts#L19)
+Defined in: [vue/src/components/File.d.ts:19](https://github.com/weareyou/sitecore-nuxt-content-sdk/blob/0eb4be91f4260a1106102aacfc2513e02bf1778f/packages/vue/src/components/File.d.ts#L19)
