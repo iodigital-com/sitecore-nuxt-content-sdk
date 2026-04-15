@@ -8,7 +8,7 @@
 
 > `const` **SitecoreProvider**: `DefineComponent`\<[`SitecoreProviderProps`](../interfaces/SitecoreProviderProps.md)\>
 
-Defined in: [vue/src/components/SitecoreProvider.d.ts:28](https://github.com/weareyou/sitecore-nuxt-content-sdk/blob/72aeb1eaa60da06de28ae18eec24752fffcf3e0f/packages/vue/src/components/SitecoreProvider.d.ts#L28)
+Defined in: [vue/src/components/SitecoreProvider.d.ts:28](https://github.com/weareyou/sitecore-nuxt-content-sdk/blob/0eb4be91f4260a1106102aacfc2513e02bf1778f/packages/vue/src/components/SitecoreProvider.d.ts#L28)
 
 Provides the Sitecore page context to all child components via Vue's provide/inject mechanism.
 Wrap your application or page with this component to make `useSitecoreContext` available
