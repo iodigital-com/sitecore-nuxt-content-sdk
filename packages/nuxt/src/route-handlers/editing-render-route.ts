@@ -62,7 +62,7 @@ export type EditingRenderRouteConfig = {
  * @returns The route handler object with handleGet and handlePost methods.
  * @example
  * // server/api/editing/render.get.ts
- * import { createEditingRenderRoute } from '@sitecore-content-sdk/nuxt/editing';
+ * import { createEditingRenderRoute } from '@sitecore-content-sdk/nuxt/routes';
  * import componentMap from '~/components/component-map';
  *
  * const { handleGet } = createEditingRenderRoute();
@@ -70,11 +70,18 @@ export type EditingRenderRouteConfig = {
  * export default defineEventHandler(handleGet);
  * @example
  * // server/api/editing/render.post.ts
- * import { createEditingRenderRoute } from '@sitecore-content-sdk/nuxt/editing';
+ * import { createEditingRenderRoute } from '@sitecore-content-sdk/nuxt/routes';
  *
  * const { handlePost } = createEditingRenderRoute();
  *
  * export default defineEventHandler(handlePost);
+ * @example
+ * // server/api/editing/render.options.ts
+ * import { createEditingRenderRoute } from '@sitecore-content-sdk/nuxt/routes';
+ *
+ * const { handleOptions } = createEditingRenderRoute();
+ *
+ * export default defineEventHandler(handleOptions);
  * @public
  */
 export const createEditingRenderRoute = (config: EditingRenderRouteConfig = {}) => {
@@ -328,5 +335,44 @@ export const createEditingRenderRoute = (config: EditingRenderRouteConfig = {}) 
     });
   };
 
-  return { handleGet, handlePost };
+  /**
+   * Handles an incoming OPTIONS preflight request.
+   * Validates the origin and returns the appropriate CORS headers.
+   *
+   * Returns 401 if the origin is not allowed.
+   * Returns 204 if the origin is valid.
+   * @param {H3Event} event - The incoming H3 event
+   * @returns {Promise<void>}
+   */
+  const handleOptions = async (event: H3Event): Promise<void> => {
+    debug.editing('preflight request');
+
+    try {
+      const corsHeaders = getCorsHeaders(event);
+
+      if (!corsHeaders) {
+        setResponseStatus(event, 401);
+        await send(
+          event,
+          `<html><body>Requests from origin ${
+            getRequestHeader(event, 'origin') || ''
+          } not allowed</body></html>`
+        );
+        return;
+      }
+
+      Object.entries(corsHeaders).forEach(([key, value]) => setResponseHeader(event, key, value));
+      setResponseStatus(event, 204);
+      await send(event, '');
+    } catch (error) {
+      console.error(
+        'Editing render OPTIONS route handler failed:',
+        error instanceof Error ? error.message : String(error)
+      );
+      setResponseStatus(event, 500);
+      await send(event, 'Internal Server Error');
+    }
+  };
+
+  return { handleGet, handlePost, handleOptions };
 };

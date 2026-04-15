@@ -12,11 +12,15 @@ import { getEditingSecret } from '../utils/utils';
 import { getEnforcedCorsHeaders } from '@sitecore-content-sdk/core/tools';
 import { createEditingConfigRoute } from './editing-config-route';
 
-const createMockEvent = (headers: Record<string, string> = {}, path: string = '/'): H3Event => {
+const createMockEvent = (
+  headers: Record<string, string> = {},
+  path: string = '/',
+  method: string = 'GET'
+): H3Event => {
   const req = new IncomingMessage(null as any);
   req.headers = headers;
   req.url = path;
-  req.method = 'GET';
+  req.method = method;
   const res = new ServerResponse(req);
   return createEvent(req, res);
 };
@@ -39,7 +43,7 @@ const readBody = (event: H3Event): Promise<string> => {
 };
 
 describe('createEditingConfigRoute', () => {
-    let route: any;
+  let route: any;
 
   const allowedOrigin = 'https://allowed.com';
   const secret = 'jss-editing-secret-mock';
@@ -74,6 +78,65 @@ describe('createEditingConfigRoute', () => {
   afterEach(() => {
     vi.restoreAllMocks();
     vi.clearAllMocks();
+  });
+
+  describe('OPTIONS handler', () => {
+    it('should return 401 for invalid origin', async () => {
+      vi.mocked(getEnforcedCorsHeaders).mockReturnValue(null);
+
+      const event = createMockEvent({ origin: allowedOrigin }, '/', 'OPTIONS');
+      const bodyPromise = readBody(event);
+
+      await route.handleOptions(event);
+      const body = await bodyPromise;
+
+      expect(event.node.res.statusCode).toBe(401);
+      expect(body).toBe(JSON.stringify({ message: 'Invalid origin' }));
+      expect(event.node.res.getHeader('Content-Type')).toBe('application/json');
+    });
+
+    it('should return 204 for valid preflight request', async () => {
+      const event = createMockEvent({ origin: allowedOrigin }, '/', 'OPTIONS');
+      const bodyPromise = readBody(event);
+
+      await route.handleOptions(event);
+      await bodyPromise;
+
+      expect(event.node.res.statusCode).toBe(204);
+      expect(event.node.res.getHeader('Access-Control-Allow-Origin')).toBe(allowedOrigin);
+      expect(event.node.res.getHeader('Access-Control-Allow-Methods')).toBe(
+        corsHeaders['Access-Control-Allow-Methods']
+      );
+      expect(event.node.res.getHeader('Access-Control-Allow-Headers')).toBe(
+        corsHeaders['Access-Control-Allow-Headers']
+      );
+    });
+
+    it('should call getEnforcedCorsHeaders with correct parameters', async () => {
+      const event = createMockEvent({ origin: allowedOrigin }, '/', 'OPTIONS');
+
+      await route.handleOptions(event);
+
+      expect(vi.mocked(getEnforcedCorsHeaders)).toHaveBeenCalledOnce();
+      const args = vi.mocked(getEnforcedCorsHeaders).mock.calls[0][0];
+      expect(args.requestMethod).toBe('OPTIONS');
+      expect((args.headers as Headers).get('origin')).toBe(allowedOrigin);
+    });
+
+    it('should return 500 for unexpected errors', async () => {
+      vi.mocked(getEnforcedCorsHeaders).mockImplementation(() => {
+        throw new Error('Unexpected error');
+      });
+
+      const event = createMockEvent({ origin: allowedOrigin }, '/', 'OPTIONS');
+      const bodyPromise = readBody(event);
+
+      await route.handleOptions(event);
+      const body = await bodyPromise;
+
+      expect(event.node.res.statusCode).toBe(500);
+      expect(body).toBe('Internal Server Error');
+    });
   });
 
   describe('GET handler', () => {

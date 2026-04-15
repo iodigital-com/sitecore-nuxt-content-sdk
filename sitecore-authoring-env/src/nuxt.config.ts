@@ -1,10 +1,19 @@
 import { defineNuxtConfig } from 'nuxt/config';
 
 export default defineNuxtConfig({
+  experimental: {
+    serverAppConfig: false,
+  },
   compatibilityDate: '2026-04-10',
   routeRules: {
     '/robots.txt': { cache: { maxAge: 60 } },
     '/sitemap.xml': { cache: { maxAge: 60 } },
+    '/api/editing/**': {
+      headers: {
+        'Access-Control-Allow-Methods': 'GET, POST, OPTIONS',
+        'Access-Control-Allow-Headers': 'Content-Type, Authorization',
+      },
+    },
   },
   runtimeConfig: {
     sitecore: {
@@ -44,4 +53,3 @@ export default defineNuxtConfig({
     },
   },
 });
-

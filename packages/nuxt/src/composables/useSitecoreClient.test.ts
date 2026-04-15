@@ -1,50 +1,24 @@
-import { describe, it, afterEach, vi } from 'vitest';
+import { describe, it, afterEach, vi, expect } from 'vitest';
 import { SitecoreNuxtClient } from '../client/sitecore-nuxt-client';
 
-const mockConfig = {
-  api: {
-    edge: {
-      contextId: 'test-context-id',
-      clientContextId: 'client-context-id',
-      edgeUrl: 'https://edge.example.com',
-    },
-  },
-  defaultSite: 'default-site',
-  defaultLanguage: 'en',
-  retries: {
-    count: 3,
-    retryStrategy: undefined,
-  },
-  layout: {
-    formatLayoutQuery: undefined,
-  },
-  dictionary: {
-    caching: {
-      enabled: false,
-      timeout: 0,
-    },
-  },
-} as any;
+const mockClient = {
+  getPage: vi.fn(),
+  getPages: vi.fn(),
+} as unknown as SitecoreNuxtClient;
 
 vi.mock('nuxt/app', () => ({
-  useRuntimeConfig: () => ({ sitecore: mockConfig }),
+  useNuxtApp: () => ({ $sitecoreClient: mockClient }),
 }));
 
 import { useSitecoreClient } from './useSitecoreClient';
 
 describe('useSitecoreClient', () => {
-    afterEach(() => {
+  afterEach(() => {
     vi.restoreAllMocks();
   });
 
-  it('returns a SitecoreNuxtClient instance', () => {
+  it('returns the sitecoreClient instance from the Nuxt app', () => {
     const client = useSitecoreClient();
-    expect(client).to.be.instanceOf(SitecoreNuxtClient);
-  });
-
-  it('initializes client with runtime config', () => {
-    const client = useSitecoreClient();
-    expect((client as any).initOptions.defaultSite).toBe('default-site');
-    expect((client as any).initOptions.defaultLanguage).toBe('en');
+    expect(client).toBe(mockClient);
   });
 });

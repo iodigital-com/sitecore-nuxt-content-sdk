@@ -36,7 +36,7 @@ export type EditingConfigRouteConfig = {
  * Creates a route handler for the editing config API route (e.g. /api/editing/config).
  * Provides configuration information to determine feature compatibility on the Sitecore Page Builder side.
  * @param {EditingConfigRouteConfig} config - The configuration for the editing config route.
- * @returns The route handler object with handle method.
+ * @returns The route handler object with handle and handleOptions methods.
  * @example
  * // server/api/editing/config.get.ts
  * import { createEditingConfigRoute } from '@sitecore-content-sdk/nuxt/editing';
@@ -46,6 +46,15 @@ export type EditingConfigRouteConfig = {
  * const { handle } = createEditingConfigRoute({ components: componentMap, metadata });
  *
  * export default defineEventHandler(handle);
+ * @example
+ * // server/api/editing/config.options.ts
+ * import { createEditingConfigRoute } from '@sitecore-content-sdk/nuxt/editing';
+ * import componentMap from '~/components/component-map';
+ * import metadata from '~/package.json';
+ *
+ * const { handleOptions } = createEditingConfigRoute({ components: componentMap, metadata });
+ *
+ * export default defineEventHandler(handleOptions);
  * @public
  */
 export const createEditingConfigRoute = (config: EditingConfigRouteConfig) => {
@@ -85,6 +94,44 @@ export const createEditingConfigRoute = (config: EditingConfigRouteConfig) => {
       presetCorsHeader: undefined,
       allowedOrigins: EDITING_ALLOWED_ORIGINS,
     });
+  };
+
+  /**
+   * Handles an incoming OPTIONS preflight request.
+   * Validates the origin and returns the appropriate CORS headers.
+   *
+   * Returns 401 if the origin is not allowed.
+   * Returns 204 if the origin is valid.
+   * @param {H3Event} event - The incoming H3 event
+   * @returns {Promise<void>}
+   */
+  const handleOptions = async (event: H3Event): Promise<void> => {
+    debug.editing('preflight request');
+
+    try {
+      const corsHeaders = getEnforcedCorsHeaders(event);
+
+      if (!corsHeaders) {
+        debug.editing(
+          'invalid origin host - set allowed origins in JSS_ALLOWED_ORIGINS environment variable'
+        );
+        setResponseStatus(event, 401);
+        setResponseHeader(event, 'Content-Type', 'application/json');
+        await send(event, JSON.stringify({ message: 'Invalid origin' }));
+        return;
+      }
+
+      Object.entries(corsHeaders).forEach(([key, value]) => setResponseHeader(event, key, value));
+      setResponseStatus(event, 204);
+      await send(event, '');
+    } catch (error) {
+      console.error(
+        'Editing config OPTIONS route handler failed:',
+        error instanceof Error ? error.message : String(error)
+      );
+      setResponseStatus(event, 500);
+      await send(event, 'Internal Server Error');
+    }
   };
 
   /**
@@ -150,5 +197,5 @@ export const createEditingConfigRoute = (config: EditingConfigRouteConfig) => {
     }
   };
 
-  return { handle };
+  return { handle, handleOptions };
 };

@@ -12,7 +12,7 @@ if (error.value) {
 }
 
 if (!page.value) {
-  throw createError({ statusCode: 404, message: 'Page not found' });
+  throw createError({ statusCode: 404, message: 'Page not found: was checked by slug though!' });
 }
 
 const route = computed(() => page.value?.layout?.sitecore?.route);
