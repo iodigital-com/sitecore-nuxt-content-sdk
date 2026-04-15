@@ -1,0 +1,10 @@
+{
+  "extends": "./.nuxt/tsconfig.json",
+  "compilerOptions": {
+    "paths": {
+      "@sitecore-content-sdk/nuxt": ["./node_modules/@sitecore-content-sdk/nuxt/types/index.d.ts"],
+      "@sitecore-content-sdk/nuxt/*": ["./node_modules/@sitecore-content-sdk/nuxt/types/*"]
+    }
+  }
+}
+

@@ -1,6 +1,5 @@
-import { useRuntimeConfig } from 'nuxt/app';
+import { useNuxtApp } from 'nuxt/app';
 import { SitecoreNuxtClient } from '../client/sitecore-nuxt-client';
-import type { SitecoreNuxtClientInit } from '../client/sitecore-nuxt-client';
 
 /**
  * Composable that initializes and returns a `SitecoreNuxtClient` instance
@@ -11,7 +10,5 @@ import type { SitecoreNuxtClientInit } from '../client/sitecore-nuxt-client';
  * const page = await client.getPage(route.params.slug);
  */
 export function useSitecoreClient(): SitecoreNuxtClient {
-  const config = useRuntimeConfig();
-
-  return new SitecoreNuxtClient(config.sitecore as SitecoreNuxtClientInit);
+  return useNuxtApp().$sitecoreClient as SitecoreNuxtClient;
 }

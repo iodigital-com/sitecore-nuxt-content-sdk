@@ -1,8 +1,8 @@
 {
   "editor.fontSize": 13,
   "editor.tabSize": 2,
-  "javascript.validate.enable": false,
-  "javascript.format.insertSpaceAfterOpeningAndBeforeClosingNonemptyParenthesis": false,
+  "js/ts.validate.enabled": false,
+  "js/ts.format.insertSpaceAfterOpeningAndBeforeClosingNonemptyParenthesis": false,
   "editor.detectIndentation": false,
   "prettier.enable": true,
   "editor.defaultFormatter": "esbenp.prettier-vscode",
@@ -12,4 +12,3 @@
   },
   "js/ts.tsdk.path": "node_modules\\typescript\\lib"
 }
-

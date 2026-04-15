@@ -2,10 +2,9 @@
   "name": "@sitecore-content-sdk/vue",
   "version": "2.0.0-canary.20",
   "main": "dist/cjs/index.js",
-  "module": "dist/esm/index.js",
   "sideEffects": false,
   "scripts": {
-    "build": "npm run clean && tsc -p tsconfig.json && tsc -p tsconfig-esm.json",
+    "build": "npm run clean && tsc -p tsconfig.json && vite build",
     "clean": "del-cli dist types",
     "lint": "eslint \"./src/**/*.ts\"",
     "test": "vitest run",

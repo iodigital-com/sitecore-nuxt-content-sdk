@@ -178,7 +178,20 @@ export abstract class MiddlewareBase extends MiddlewareHandler {
       );
     }
 
-    return this.siteResolver.getByHost(hostName);
+    try {
+      return this.siteResolver.getByHost(hostName);
+    } catch {
+      // Host not found in sites config — typical during local development
+      // with empty sites.json. Fall back to first configured site, or
+      // return a default site info when no sites are configured.
+      return (
+        this.siteResolver.sites[0] || {
+          name: 'default',
+          language: this.getLanguage(event),
+          hostName,
+        }
+      );
+    }
   }
 
   /**

@@ -8,4 +8,8 @@ const middleware = new MultisiteMiddleware({
   ...scConfig.multisite,
 });
 
-export default defineEventHandler((event) => middleware.handle(event));
+// If you're not using multisite features, you should remove this file to avoid unnecessary overhead.
+export default defineEventHandler((event) => {
+  if (!scConfig.multisite?.enabled) return;
+  middleware.handle(event);
+});

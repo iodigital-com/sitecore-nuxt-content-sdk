@@ -906,6 +906,64 @@ describe('createEditingRenderRoute', () => {
     });
   });
 
+  describe('OPTIONS handler', () => {
+    it('should return 401 for invalid origin', async () => {
+      vi.mocked(getEnforcedCorsHeaders).mockReturnValue(null);
+
+      const event = createMockEvent({ origin: allowedOrigin }, '/');
+      const bodyPromise = readBody(event);
+
+      await handlers.handleOptions(event);
+      const body = await bodyPromise;
+
+      expect(event.node.res.statusCode).toBe(401);
+      expect(body).toContain('not allowed');
+    });
+
+    it('should return 204 for valid preflight request', async () => {
+      const event = createMockEvent({ origin: allowedOrigin }, '/');
+      const bodyPromise = readBody(event);
+
+      await handlers.handleOptions(event);
+      await bodyPromise;
+
+      expect(event.node.res.statusCode).toBe(204);
+      expect(event.node.res.getHeader('Access-Control-Allow-Origin')).toBe(allowedOrigin);
+      expect(event.node.res.getHeader('Access-Control-Allow-Methods')).toBe(
+        corsHeaders['Access-Control-Allow-Methods']
+      );
+      expect(event.node.res.getHeader('Access-Control-Allow-Headers')).toBe(
+        corsHeaders['Access-Control-Allow-Headers']
+      );
+    });
+
+    it('should call getEnforcedCorsHeaders with correct parameters', async () => {
+      const event = createMockEvent({ origin: allowedOrigin }, '/');
+
+      await handlers.handleOptions(event);
+
+      expect(vi.mocked(getEnforcedCorsHeaders)).toHaveBeenCalledOnce();
+      const args = vi.mocked(getEnforcedCorsHeaders).mock.calls[0][0];
+      expect(args.requestMethod).toBe('GET');
+      expect((args.headers as Headers).get('origin')).toBe(allowedOrigin);
+    });
+
+    it('should return 500 for unexpected errors', async () => {
+      vi.mocked(getEnforcedCorsHeaders).mockImplementation(() => {
+        throw new Error('Unexpected error');
+      });
+
+      const event = createMockEvent({ origin: allowedOrigin }, '/');
+      const bodyPromise = readBody(event);
+
+      await handlers.handleOptions(event);
+      const body = await bodyPromise;
+
+      expect(event.node.res.statusCode).toBe(500);
+      expect(body).toBe('Internal Server Error');
+    });
+  });
+
   describe('Design Library handling', () => {
     it('should handle request with mode=library', async () => {
       const mockLibraryHtml =

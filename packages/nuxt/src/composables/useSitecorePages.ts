@@ -1,5 +1,5 @@
 /* eslint-disable react-hooks/rules-of-hooks */
-import { useRoute, useAsyncData, useHead, NuxtError } from 'nuxt/app';
+import { useRoute, useAsyncData, useHead, useNuxtApp, callWithNuxt, NuxtError } from 'nuxt/app';
 import type { Ref } from 'vue';
 import type { Page } from '@sitecore-content-sdk/content/client';
 import { isDesignLibraryMode } from '@sitecore-content-sdk/content/editing';
@@ -53,6 +53,7 @@ export type UseSitecorePageResult = {
  * @returns {Promise<UseSitecorePageResult>} The reactive page result containing `page`, `error`, and `status`.
  */
 export async function useSitecorePage(): Promise<UseSitecorePageResult> {
+  const nuxtApp = useNuxtApp();
   const route = useRoute();
   const client = useSitecoreClient();
 
@@ -78,11 +79,13 @@ export async function useSitecorePage(): Promise<UseSitecorePageResult> {
 
   if (page.value) {
     const headLinks = client.getHeadLinks(page.value.layout);
-    useHead({
-      link: headLinks.map((link) => ({
-        rel: link.rel,
-        href: link.href,
-      })),
+    callWithNuxt(nuxtApp, () => {
+      useHead({
+        link: headLinks.map((link) => ({
+          rel: link.rel,
+          href: link.href,
+        })),
+      });
     });
   }
 
