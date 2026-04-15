@@ -28,7 +28,7 @@ export default defineConfig({
     locales: ['en'],
   },
   multisite: {
-    enabled: false,
+    enabled: true,
     useCookieResolution: () => process.env.NUXT_ENV === 'preview',
   },
   personalize: {

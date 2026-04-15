@@ -54,7 +54,16 @@ export const createRobotsRoute = (options: RobotsRouteOptions) => {
       getRequestHeader(event, 'host')?.split(':')[0] ||
       'localhost';
 
-    const site = siteResolver.getByHost(hostName);
+    const site = hostName
+      ? siteResolver.getByHost(hostName)
+      : siteResolver.getByName(process.env.NUXT_PUBLIC_DEFAULT_SITE_NAME || '');
+
+    if (!site) {
+      console.warn(`No site found for hostname "${hostName}". Unable to serve robots.txt.`);
+      setResponseStatus(event, 404);
+      await send(event, 'User-agent: *\nDisallow: /');
+      return;
+    }
 
     const startTimestamp = Date.now();
     debug.robots('robots route handler start: %o', { hostName, siteName: site.name });

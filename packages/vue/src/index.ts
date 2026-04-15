@@ -37,6 +37,10 @@ export * from './components/Placeholder';
 export type { MissingComponentProps } from './components/MissingComponent';
 export { default as MissingComponent } from './components/MissingComponent.vue';
 export { default as HiddenRendering } from './components/HiddenRendering.vue';
+export { default as RichText } from './components/RichText.vue';
+export type { RichTextField, RichTextFieldValue } from './components/RichText';
+export { default as Text } from './components/Text.vue';
+export type { TextField, TextFieldValue } from './components/Text';
 
 export type {
   CacheClient,

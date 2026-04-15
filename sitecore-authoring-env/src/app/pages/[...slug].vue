@@ -16,10 +16,13 @@ if (!page.value) {
 }
 
 const route = computed(() => page.value?.layout?.sitecore?.route);
+console.log('Page data:', page.value);
 </script>
 
 <template>
-  <SitecoreProvider :page="page.value" :componentMap="componentMap">
-    <Placeholder name="jss-main" :rendering="route!" />
+  <SitecoreProvider :page="page" :componentMap="componentMap">
+    <Placeholder name="headless-header" :rendering="route" />
+    <Placeholder name="headless-main" :rendering="route" />
+    <Placeholder name="headless-footer" :rendering="route" />
   </SitecoreProvider>
 </template>

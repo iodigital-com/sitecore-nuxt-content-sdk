@@ -5,7 +5,25 @@ export default defineNuxtConfig({
     serverAppConfig: false,
   },
   compatibilityDate: '2026-04-10',
+  vite: {
+    optimizeDeps: {
+      include: [
+        '@vue/devtools-core',
+        '@vue/devtools-kit',
+        'graphql-request',
+        'debug',
+        'url-parse',
+        'memory-cache',
+        'regex-parser',
+      ],
+    },
+  },
   routeRules: {
+    '*': {
+      headers: {
+        'X-Frame-Options': 'ALLOWALL',
+      },
+    },
     '/robots.txt': { cache: { maxAge: 60 } },
     '/sitemap.xml': { cache: { maxAge: 60 } },
     '/api/editing/**': {

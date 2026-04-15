@@ -38,16 +38,21 @@ vi.mock('./useSitecoreClient', () => ({
   }),
 }));
 
-const { mockUseRoute, mockUseAsyncData, mockUseHead } = vi.hoisted(() => ({
-  mockUseRoute: vi.fn(),
-  mockUseAsyncData: vi.fn(),
-  mockUseHead: vi.fn(),
-}));
+const { mockUseRoute, mockUseAsyncData, mockUseHead, mockUseNuxtApp, mockCallWithNuxt } =
+  vi.hoisted(() => ({
+    mockUseRoute: vi.fn(),
+    mockUseAsyncData: vi.fn(),
+    mockUseHead: vi.fn(),
+    mockUseNuxtApp: vi.fn(),
+    mockCallWithNuxt: vi.fn(),
+  }));
 
 vi.mock('nuxt/app', () => ({
   useRoute: mockUseRoute,
   useAsyncData: mockUseAsyncData,
   useHead: mockUseHead,
+  useNuxtApp: mockUseNuxtApp,
+  callWithNuxt: mockCallWithNuxt,
 }));
 
 describe('useSitecorePage', () => {
@@ -57,6 +62,8 @@ describe('useSitecorePage', () => {
     getDesignLibraryDataStub.mockResolvedValue(mockPage);
     getHeadLinksStub.mockReturnValue([]);
     mockUseHead.mockReturnValue(undefined);
+    mockUseNuxtApp.mockReturnValue({});
+    mockCallWithNuxt.mockImplementation((_app: unknown, fn: () => void) => fn());
     mockUseAsyncData.mockImplementation((_key: string, fetcher: () => Promise<Page | null>) =>
       fetcher().then((data) => ({
         data: { value: data },
@@ -74,6 +81,8 @@ describe('useSitecorePage', () => {
     getHeadLinksStub.mockClear();
     mockUseAsyncData.mockReset();
     mockUseHead.mockReset();
+    mockUseNuxtApp.mockReset();
+    mockCallWithNuxt.mockReset();
   });
 
   describe('normal page', () => {
@@ -154,7 +163,7 @@ describe('useSitecorePage', () => {
   });
 
   describe('head links', () => {
-    it('calls useHead with head links when page is returned', async () => {
+    it('calls useHead via callWithNuxt when page is returned', async () => {
       const headLinks = [{ rel: 'stylesheet', href: 'https://example.com/style.css' }];
       getHeadLinksStub.mockReturnValue(headLinks);
 
@@ -165,6 +174,7 @@ describe('useSitecorePage', () => {
 
       await useSitecorePage();
 
+      expect(mockCallWithNuxt).toHaveBeenCalledOnce();
       expect(mockUseHead).toHaveBeenCalledOnce();
       expect(mockUseHead).toHaveBeenCalledWith({
         link: [{ rel: 'stylesheet', href: 'https://example.com/style.css' }],
@@ -181,6 +191,7 @@ describe('useSitecorePage', () => {
 
       await useSitecorePage();
 
+      expect(mockCallWithNuxt).not.toHaveBeenCalled();
       expect(mockUseHead).not.toHaveBeenCalled();
     });
   });

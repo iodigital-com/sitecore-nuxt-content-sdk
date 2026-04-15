@@ -2,7 +2,6 @@
   "name": "@sitecore-content-sdk/vue",
   "version": "2.0.0-canary.20",
   "main": "dist/cjs/index.js",
-  "module": "dist/esm/index.js",
   "sideEffects": false,
   "scripts": {
     "build": "npm run clean && tsc -p tsconfig.json && vite build",

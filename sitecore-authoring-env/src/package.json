@@ -3,8 +3,9 @@
   "type": "module",
   "private": true,
   "scripts": {
-    "build": "nuxt build",
-    "dev": "nuxt dev",
+    "bootstrap": "sitecore-tools project build",
+    "build": "npm run bootstrap && nuxt build",
+    "dev": "npm run bootstrap && nuxt dev",
     "generate": "nuxt generate",
     "preview": "nuxt preview",
     "start": "node .output/server/index.mjs",
@@ -17,5 +18,8 @@
     "nitro": "^3.0.260311-beta",
     "vue": "^3.5.32",
     "vue-router": "^5.0.4"
+  },
+  "devDependencies": {
+    "@sitecore-content-sdk/cli": "file:./../../packages/cli"
   }
 }
