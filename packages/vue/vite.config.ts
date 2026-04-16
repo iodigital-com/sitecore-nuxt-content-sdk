@@ -7,8 +7,7 @@ export default defineConfig({
   build: {
     lib: {
       entry: resolve('src/index.ts'),
-      formats: ['es', 'cjs'],
-      fileName: (format) => (format === 'es' ? 'esm/index.js' : 'cjs/index.js'),
+      formats: ['es'],
     },
     rollupOptions: {
       external: (id) =>
@@ -18,9 +17,10 @@ export default defineConfig({
       output: {
         preserveModules: true,
         preserveModulesRoot: 'src',
+        entryFileNames: '[name].mjs',
       },
     },
-    outDir: 'dist',
+    outDir: 'dist/esm',
   },
   resolve: {
     extensions: ['.ts', '.vue', '.js'],

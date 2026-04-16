@@ -12,14 +12,14 @@ if (error.value) {
 }
 
 if (!page.value) {
-  throw createError({ statusCode: 404, message: 'Page not found: was checked by slug though!' });
+  throw createError({ statusCode: 404, message: 'Page not found' });
 }
 
 const route = computed(() => page.value?.layout?.sitecore?.route);
-console.log('Page data:', page.value);
 </script>
 
 <template>
+  <pre>{{ JSON.stringify(page, null, 2) }}</pre>
   <SitecoreProvider :page="page" :componentMap="componentMap">
     <Placeholder name="headless-header" :rendering="route" />
     <Placeholder name="headless-main" :rendering="route" />

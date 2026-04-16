@@ -103,7 +103,13 @@ export function getChildComponentProps<T extends PlaceholderProps>(
   placeholderProps: T,
   componentRendering: ComponentRendering
 ): ChildComponentProps {
-  const fields = { ...(placeholderProps.fields || {}), ...(componentRendering.fields || {}) };
+  const renderingFields =
+    componentRendering.fields ||
+    (!componentRendering.dataSource
+      ? (placeholderProps.rendering as RouteData)?.fields
+      : undefined);
+
+  const fields = { ...(placeholderProps.fields || {}), ...(renderingFields || {}) };
   const params = { ...(placeholderProps.params || {}), ...(componentRendering.params || {}) };
   return {
     fields,
