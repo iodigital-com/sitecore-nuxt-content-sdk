@@ -174,8 +174,13 @@ export const getEditingRequestHtml = async (
     });
 
   const html = pageRes.data;
-  if (!html || html.length === 0) {
+
+  if (!html || (typeof html === 'string' && html.length === 0)) {
     throw new Error(`Failed to render html for ${requestUrl.toString()}`);
+  }
+
+  if (typeof html !== 'string') {
+    throw new Error(`Expected HTML but received ${typeof html} for ${requestUrl.toString()}`);
   }
 
   return html;
