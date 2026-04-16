@@ -35,11 +35,11 @@
     "typescript": "~5.8.3",
     "vite": "^5.0.0",
     "vitest": "^2.0.0",
-    "vue": "^3.0.0"
+    "vue": "^3.5.31"
   },
   "peerDependencies": {
     "typescript": "^5.4.0",
-    "vue": "^3.0.0"
+    "vue": "^3.5.31"
   },
   "peerDependenciesMeta": {
     "typescript": {
@@ -51,15 +51,14 @@
     "@sitecore-content-sdk/core": "2.0.0-canary.20",
     "@sitecore-content-sdk/search": "0.2.0-canary.30"
   },
+  "type": "module",
   "exports": {
     ".": {
       "import": "./dist/esm/index.js",
-      "require": "./dist/cjs/index.js",
       "types": "./types/index.d.ts"
     },
     "./search": {
       "import": "./dist/esm/search/index.js",
-      "require": "./dist/cjs/search/index.js",
       "types": "./types/search/index.d.ts"
     }
   },

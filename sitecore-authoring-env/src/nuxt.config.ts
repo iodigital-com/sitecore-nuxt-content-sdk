@@ -1,4 +1,5 @@
 import { defineNuxtConfig } from 'nuxt/config';
+import { resolve } from 'path';
 
 export default defineNuxtConfig({
   experimental: {
@@ -68,6 +69,12 @@ export default defineNuxtConfig({
   nitro: {
     rollupConfig: {
       external: ['/^@sitecore-content-sdk/.*/'],
+    },
+    alias: {
+      vue: resolve('./node_modules/vue'),
+      '@vue/runtime-core': resolve('./node_modules/@vue/runtime-core'),
+      '@vue/runtime-dom': resolve('./node_modules/@vue/runtime-dom'),
+      '@vue/reactivity': resolve('./node_modules/@vue/reactivity'),
     },
   },
 });

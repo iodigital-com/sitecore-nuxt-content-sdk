@@ -17,7 +17,8 @@ export default defineConfig({
       output: {
         preserveModules: true,
         preserveModulesRoot: 'src',
-        entryFileNames: '[name].mjs',
+        entryFileNames: '[name].js',
+        format: 'es',
       },
     },
     outDir: 'dist/esm',
