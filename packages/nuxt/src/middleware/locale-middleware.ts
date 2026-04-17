@@ -63,8 +63,23 @@ export class LocaleMiddleware extends MiddlewareBase {
       }
 
       setResponseHeader(event, LOCALE_HEADER_NAME, locale);
+      event.node.req.headers[LOCALE_HEADER_NAME] = locale;
 
-      debug.locale('locale middleware end: %o', { pathname, locale });
+      const matchedLocale = this.config.locales.find(
+        (l) => pathname.startsWith(`/${l}/`) || pathname === `/${l}`
+      );
+
+      let rewrittenPath: string | undefined;
+
+      if (matchedLocale) {
+        const strippedPath =
+          pathname === `/${matchedLocale}` ? '/' : pathname.replace(`/${matchedLocale}/`, '/');
+        const qs = event.path.includes('?') ? '?' + event.path.split('?')[1] : '';
+        rewrittenPath = strippedPath + qs;
+        event.node.req.url = rewrittenPath;
+      }
+
+      debug.locale('locale middleware end: %o', { pathname, locale, rewrittenPath });
     } catch (error) {
       console.log('Locale middleware failed:');
       console.log(error);

@@ -1,9 +1,18 @@
 /* eslint-disable react-hooks/rules-of-hooks */
-import { useRoute, useAsyncData, useHead, useNuxtApp, callWithNuxt, NuxtError } from 'nuxt/app';
+import {
+  useRoute,
+  useAsyncData,
+  useHead,
+  useNuxtApp,
+  callWithNuxt,
+  NuxtError,
+  useRequestHeaders,
+} from 'nuxt/app';
 import type { Ref } from 'vue';
 import type { Page } from '@sitecore-content-sdk/content/client';
 import { isDesignLibraryMode } from '@sitecore-content-sdk/content/editing';
 import { useSitecoreClient } from './useSitecoreClient';
+import { LOCALE_HEADER_NAME } from '../middleware/middleware';
 
 /**
  * Return type of the useSitecorePage composable.
@@ -58,7 +67,11 @@ export async function useSitecorePage(): Promise<UseSitecorePageResult> {
   const client = useSitecoreClient();
 
   const slug = route.params.slug;
-  const path = Array.isArray(slug) ? slug : slug ? [slug] : [];
+  const locales = (nuxtApp.$config?.public?.locales as string[]) ?? ['en'];
+  const rawPath = Array.isArray(slug) ? slug : slug ? [slug] : [];
+  const path = locales.includes(rawPath[0])
+    ? rawPath.slice(1).filter(Boolean)
+    : rawPath.filter(Boolean);
   const query = route.query as Record<string, string | undefined>;
 
   const {
@@ -74,7 +87,10 @@ export async function useSitecorePage(): Promise<UseSitecorePageResult> {
       return client.getPreview(query as any);
     }
 
-    return client.getPage(path);
+    const headers = useRequestHeaders([LOCALE_HEADER_NAME]);
+    const locale = headers[LOCALE_HEADER_NAME as keyof typeof headers] as string | undefined;
+
+    return client.getPage(path, { locale });
   });
 
   if (page.value) {

@@ -35,6 +35,9 @@ export default defineNuxtConfig({
     },
   },
   runtimeConfig: {
+    public: {
+      locales: ['en', 'nl-NL'],
+    },
     sitecore: {
       api: {
         edge: {
