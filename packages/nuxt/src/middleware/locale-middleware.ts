@@ -101,7 +101,7 @@ export class LocaleMiddleware extends MiddlewareBase {
   /**
    * Extracts the active locale from the request path by matching against the configured locales.
    * @example
-   * // '/nl/about' → 'nl'
+   * // '/nl-NL/about' → 'nl-NL'
    * // '/en' → 'en'
    * // '/about' → undefined
    * @param {string} path - The request pathname

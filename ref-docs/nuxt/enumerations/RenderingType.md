@@ -1,0 +1,19 @@
+[**@sitecore-content-sdk/nuxt**](../README.md)
+
+***
+
+[@sitecore-content-sdk/nuxt](../README.md) / RenderingType
+
+# Enumeration: RenderingType
+
+Defined in: packages/content/types/layout/models.d.ts:153
+
+Editing rendering type
+
+## Enumeration Members
+
+### Component
+
+> **Component**: `"component"`
+
+Defined in: packages/content/types/layout/models.d.ts:154

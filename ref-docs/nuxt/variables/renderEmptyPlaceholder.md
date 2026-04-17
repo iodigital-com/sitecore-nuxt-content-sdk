@@ -1,0 +1,25 @@
+[**@sitecore-content-sdk/nuxt**](../README.md)
+
+***
+
+[@sitecore-content-sdk/nuxt](../README.md) / renderEmptyPlaceholder
+
+# Variable: renderEmptyPlaceholder()
+
+> `const` **renderEmptyPlaceholder**: (`node`) => `VNode`
+
+Defined in: packages/vue/types/components/Placeholder/placeholder-utils.d.ts:27
+
+Renders an empty placeholder wrapped in a div with the required CSS class for Page Builder edit mode.
+
+## Parameters
+
+| Parameter | Type | Description |
+| ------ | ------ | ------ |
+| `node` | `VNode` \| `VNode`[] | vue node(s) |
+
+## Returns
+
+`VNode`
+
+wrapped node

@@ -6,7 +6,7 @@
 
 # Interface: AnalyticsMiddlewareAdapter
 
-Defined in: [nuxt/src/initialization/middleware/analytics-adapter.ts:17](https://github.com/weareyou/sitecore-nuxt-content-sdk/blob/0855a622b10e7f8f1a092bf930d8d53d3144a776/packages/nuxt/src/initialization/middleware/analytics-adapter.ts#L17)
+Defined in: [packages/nuxt/src/initialization/middleware/analytics-adapter.ts:17](https://github.com/weareyou/sitecore-nuxt-content-sdk/blob/f9df27f3b8d16cd24df156046de00eadab843a8d/packages/nuxt/src/initialization/middleware/analytics-adapter.ts#L17)
 
 Defines the AnalyticsMiddlewareAdapter.
 
@@ -20,7 +20,7 @@ Defines the AnalyticsMiddlewareAdapter.
 
 > **getClientId**: () => `string` \| `null`
 
-Defined in: analytics-core/types/src/initialization/types.d.ts:13
+Defined in: packages/analytics-core/types/src/initialization/types.d.ts:13
 
 Gets the client ID.
 
@@ -40,7 +40,7 @@ The client ID, or null if it is not set.
 
 > **location**: `object`
 
-Defined in: analytics-core/types/src/initialization/types.d.ts:22
+Defined in: packages/analytics-core/types/src/initialization/types.d.ts:22
 
 The location object, which provides a method for getting search parameters.
 
@@ -66,7 +66,7 @@ The search parameters from the location.
 
 > **setClientId**: () => `Promise`\<`void`\>
 
-Defined in: analytics-core/types/src/initialization/types.d.ts:18
+Defined in: packages/analytics-core/types/src/initialization/types.d.ts:18
 
 Sets the client ID.
 
@@ -86,7 +86,7 @@ A promise that resolves when the client ID has been set.
 
 > **type**: `"middleware"`
 
-Defined in: [nuxt/src/initialization/middleware/analytics-adapter.ts:21](https://github.com/weareyou/sitecore-nuxt-content-sdk/blob/0855a622b10e7f8f1a092bf930d8d53d3144a776/packages/nuxt/src/initialization/middleware/analytics-adapter.ts#L21)
+Defined in: [packages/nuxt/src/initialization/middleware/analytics-adapter.ts:21](https://github.com/weareyou/sitecore-nuxt-content-sdk/blob/f9df27f3b8d16cd24df156046de00eadab843a8d/packages/nuxt/src/initialization/middleware/analytics-adapter.ts#L21)
 
 The type of the adapter.
 
