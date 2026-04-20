@@ -38,14 +38,23 @@ vi.mock('./useSitecoreClient', () => ({
   }),
 }));
 
-const { mockUseRoute, mockUseAsyncData, mockUseHead, mockUseNuxtApp, mockCallWithNuxt } =
-  vi.hoisted(() => ({
-    mockUseRoute: vi.fn(),
-    mockUseAsyncData: vi.fn(),
-    mockUseHead: vi.fn(),
-    mockUseNuxtApp: vi.fn(),
-    mockCallWithNuxt: vi.fn(),
-  }));
+const {
+  mockUseRoute,
+  mockUseAsyncData,
+  mockUseHead,
+  mockUseNuxtApp,
+  mockCallWithNuxt,
+  mockUseRequestHeaders,
+  mockUseCookie,
+} = vi.hoisted(() => ({
+  mockUseRoute: vi.fn(),
+  mockUseAsyncData: vi.fn(),
+  mockUseHead: vi.fn(),
+  mockUseNuxtApp: vi.fn(),
+  mockCallWithNuxt: vi.fn(),
+  mockUseRequestHeaders: vi.fn().mockReturnValue({}),
+  mockUseCookie: vi.fn().mockReturnValue({ value: undefined }),
+}));
 
 vi.mock('nuxt/app', () => ({
   useRoute: mockUseRoute,
@@ -53,6 +62,8 @@ vi.mock('nuxt/app', () => ({
   useHead: mockUseHead,
   useNuxtApp: mockUseNuxtApp,
   callWithNuxt: mockCallWithNuxt,
+  useRequestHeaders: mockUseRequestHeaders,
+  useCookie: mockUseCookie,
 }));
 
 describe('useSitecorePage', () => {
@@ -62,8 +73,10 @@ describe('useSitecorePage', () => {
     getDesignLibraryDataStub.mockResolvedValue(mockPage);
     getHeadLinksStub.mockReturnValue([]);
     mockUseHead.mockReturnValue(undefined);
-    mockUseNuxtApp.mockReturnValue({});
+    mockUseNuxtApp.mockReturnValue({ $config: { public: { locales: ['en', 'nl-NL'] } } });
     mockCallWithNuxt.mockImplementation((_app: unknown, fn: () => void) => fn());
+    mockUseRequestHeaders.mockReturnValue({});
+    mockUseCookie.mockReturnValue({ value: undefined });
     mockUseAsyncData.mockImplementation((_key: string, fetcher: () => Promise<Page | null>) =>
       fetcher().then((data) => ({
         data: { value: data },
@@ -83,6 +96,8 @@ describe('useSitecorePage', () => {
     mockUseHead.mockReset();
     mockUseNuxtApp.mockReset();
     mockCallWithNuxt.mockReset();
+    mockUseRequestHeaders.mockReset();
+    mockUseCookie.mockReset();
   });
 
   describe('normal page', () => {
@@ -94,7 +109,10 @@ describe('useSitecorePage', () => {
 
       const { page } = await useSitecorePage();
 
-      expect(getPageStub).toHaveBeenCalledWith(['producten', 'stoel', 'rood']);
+      expect(getPageStub).toHaveBeenCalledWith(['producten', 'stoel', 'rood'], {
+        locale: undefined,
+        site: undefined,
+      });
       expect(page.value).toEqual(mockPage);
     });
 
@@ -106,7 +124,7 @@ describe('useSitecorePage', () => {
 
       await useSitecorePage();
 
-      expect(getPageStub).toHaveBeenCalledWith([]);
+      expect(getPageStub).toHaveBeenCalledWith([], { locale: undefined, site: undefined });
     });
 
     it('calls getPage with single string slug wrapped in array', async () => {
@@ -117,7 +135,43 @@ describe('useSitecorePage', () => {
 
       await useSitecorePage();
 
-      expect(getPageStub).toHaveBeenCalledWith(['about']);
+      expect(getPageStub).toHaveBeenCalledWith(['about'], { locale: undefined, site: undefined });
+    });
+
+    it('calls getPage with locale from x-sc-locale header', async () => {
+      mockUseRequestHeaders.mockReturnValue({ 'x-sc-locale': 'nl-NL' });
+      mockUseRoute.mockReturnValue({
+        params: { slug: ['about'] },
+        query: {},
+      });
+
+      await useSitecorePage();
+
+      expect(getPageStub).toHaveBeenCalledWith(['about'], { locale: 'nl-NL', site: undefined });
+    });
+
+    it('calls getPage with site from sc_site cookie', async () => {
+      mockUseCookie.mockReturnValue({ value: 'test-site' });
+      mockUseRoute.mockReturnValue({
+        params: { slug: ['about'] },
+        query: {},
+      });
+
+      await useSitecorePage();
+
+      expect(getPageStub).toHaveBeenCalledWith(['about'], { locale: undefined, site: 'test-site' });
+    });
+
+    it('strips locale prefix from path', async () => {
+      mockUseNuxtApp.mockReturnValue({ $config: { public: { locales: ['en', 'nl-NL'] } } });
+      mockUseRoute.mockReturnValue({
+        params: { slug: ['nl-NL', 'about'] },
+        query: {},
+      });
+
+      await useSitecorePage();
+
+      expect(getPageStub).toHaveBeenCalledWith(['about'], { locale: undefined, site: undefined });
     });
   });
 

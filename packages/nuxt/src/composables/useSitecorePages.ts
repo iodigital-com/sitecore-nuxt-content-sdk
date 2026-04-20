@@ -7,6 +7,7 @@ import {
   callWithNuxt,
   NuxtError,
   useRequestHeaders,
+  useCookie,
 } from 'nuxt/app';
 import type { Ref } from 'vue';
 import type { Page } from '@sitecore-content-sdk/content/client';
@@ -66,12 +67,17 @@ export async function useSitecorePage(): Promise<UseSitecorePageResult> {
   const route = useRoute();
   const client = useSitecoreClient();
 
-  const slug = route.params.slug;
   const locales = (nuxtApp.$config?.public?.locales as string[]) ?? ['en'];
+  const slug = route.params.slug;
   const rawPath = Array.isArray(slug) ? slug : slug ? [slug] : [];
   const path = locales.includes(rawPath[0])
     ? rawPath.slice(1).filter(Boolean)
     : rawPath.filter(Boolean);
+
+  const headers = useRequestHeaders([LOCALE_HEADER_NAME]);
+  const locale = headers[LOCALE_HEADER_NAME as keyof typeof headers] as string | undefined;
+  const siteCookie = useCookie('sc_site');
+  const site = siteCookie.value ?? undefined;
   const query = route.query as Record<string, string | undefined>;
 
   const {
@@ -87,10 +93,7 @@ export async function useSitecorePage(): Promise<UseSitecorePageResult> {
       return client.getPreview(query as any);
     }
 
-    const headers = useRequestHeaders([LOCALE_HEADER_NAME]);
-    const locale = headers[LOCALE_HEADER_NAME as keyof typeof headers] as string | undefined;
-
-    return client.getPage(path, { locale });
+    return client.getPage(path, { locale, site });
   });
 
   if (page.value) {
