@@ -84,26 +84,50 @@ export async function useSitecorePage(): Promise<UseSitecorePageResult> {
     data: page,
     error,
     status,
-  } = await useAsyncData<Page | null>(`sitecore-page-${path.join('/')}`, async () => {
-    if (isDesignLibraryMode(query.mode)) {
-      return client.getDesignLibraryData(query as any);
-    }
+  } = await useAsyncData<Page | null>(
+    `sitecore-page-${path.join('/')}${query.sc_itemid ? `-editing-${query.sc_itemid}` : ''}`,
+    async () => {
+      if (isDesignLibraryMode(query.mode)) {
+        return client.getDesignLibraryData(query as any);
+      }
 
-    if (query.sc_itemid) {
-      return client.getPreview(query as any);
-    }
+      if (query.itemId) {
+        return client.getPreview(query as any);
+      }
 
-    return client.getPage(path, { locale, site });
-  });
+      return client.getPage(path, { locale, site });
+    }
+  );
 
   if (page.value) {
     const headLinks = client.getHeadLinks(page.value.layout);
+    const context = page.value.layout?.sitecore?.context;
+    const clientScripts = (context?.clientScripts as string[]) ?? [];
+    const clientData = (context?.clientData as Record<string, unknown>) ?? {};
+
     callWithNuxt(nuxtApp, () => {
       useHead({
         link: headLinks.map((link) => ({
           rel: link.rel,
           href: link.href,
         })),
+        script: [
+          // Editing marker — Page Builder uses this to detect editing mode
+          ...(query.itemId
+            ? [{ id: 'jss-hrz-editing', type: 'application/json', innerHTML: '{}' }]
+            : []),
+          // Sitecore editor scripts (xa-inline-editor.js, feaas page.js, etc.)
+          ...clientScripts.map((src, i) => ({
+            key: `sc-client-script-${i}`,
+            src,
+          })),
+          // Client data blobs
+          ...Object.keys(clientData).map((id) => ({
+            id,
+            type: 'application/json',
+            innerHTML: JSON.stringify(clientData[id]),
+          })),
+        ],
       });
     });
   }

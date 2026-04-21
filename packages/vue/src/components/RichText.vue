@@ -56,9 +56,13 @@ const { showEmpty, emptyComponent } = useEmptyFieldEditingComponent(
         v-else
         :is="tag"
         :suppressHydrationWarning="showMetadata || undefined"
-        v-html="field?.value"
+        v-html="editable && field?.editable ? field.editable : field?.value"
       />
     </FieldMetadataComponent>
-    <component v-else :is="tag" v-html="field?.value" />
+    <component
+      v-else
+      :is="tag"
+      v-html="editable && field?.editable ? field.editable : field?.value"
+    />
   </template>
 </template>

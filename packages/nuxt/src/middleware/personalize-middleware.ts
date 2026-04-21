@@ -179,6 +179,8 @@ export class PersonalizeMiddleware extends MiddlewareBase {
    * @returns {Promise<void>}
    */
   handle = async (event: H3Event): Promise<void> => {
+    console.log('[Personalize] handle method called');
+    console.log('[Personalize] handling:', getRequestURL(event).pathname);
     if (!this.config.enabled) {
       debug.personalize('skipped (personalize middleware is disabled globally)');
       return;
@@ -203,11 +205,13 @@ export class PersonalizeMiddleware extends MiddlewareBase {
 
       if (this.disabled(event)) {
         debug.personalize('skipped (personalize middleware is disabled)');
+        console.log('[Personalize] skipped (personalize middleware is disabled)');
         return;
       }
 
       if (this.isPreview(event)) {
         debug.personalize('skipped (preview)');
+        console.log('[Personalize] skipped (preview)');
         return;
       }
 
@@ -225,11 +229,13 @@ export class PersonalizeMiddleware extends MiddlewareBase {
 
       if (!personalizeInfo) {
         debug.personalize('skipped (personalize info not found)');
+        console.log('[Personalize] skipped (personalize info not found)');
         return;
       }
 
       if (personalizeInfo.variantIds.length === 0) {
         debug.personalize('skipped (no personalization configured)');
+        console.log('[Personalize] skipped (no personalization configured)');
         return;
       }
 
@@ -237,6 +243,7 @@ export class PersonalizeMiddleware extends MiddlewareBase {
         debug.personalize('skipped (prefetch)');
         setResponseHeader(event, 'x-proxy-cache', 'no-cache');
         setResponseHeader(event, 'Cache-Control', 'no-store, must-revalidate');
+        console.log('[Personalize] skipped (prefetch)');
         return;
       }
 
@@ -264,6 +271,7 @@ export class PersonalizeMiddleware extends MiddlewareBase {
             if (variantId) {
               if (!execution.variantIds.includes(variantId)) {
                 debug.personalize('invalid variant %s', variantId);
+                console.log(`[Personalize] invalid variant ${variantId}`);
               } else {
                 identifiedVariantIds.push(variantId);
               }
@@ -274,6 +282,7 @@ export class PersonalizeMiddleware extends MiddlewareBase {
 
       if (identifiedVariantIds.length === 0) {
         debug.personalize('skipped (no variant(s) identified)');
+        console.log('[Personalize] skipped (no variant(s) identified)');
         return;
       }
 
@@ -287,6 +296,7 @@ export class PersonalizeMiddleware extends MiddlewareBase {
       debug.personalize('personalize middleware end in %dms: %o', Date.now() - startTimestamp, {
         rewritePath,
       });
+      console.log(`[Personalize] personalized path: ${rewritePath}`);
     } catch (error) {
       console.log('Personalize middleware failed:');
       console.log(error);
@@ -306,6 +316,9 @@ export class PersonalizeMiddleware extends MiddlewareBase {
   protected disabled(event: H3Event): boolean {
     if (!this.personalizeService) {
       debug.personalize('skipped (personalize service not configured - edge config required)');
+      console.log(
+        '[Personalize] skipped (personalize service not configured - edge config required)'
+      );
       return true;
     }
 

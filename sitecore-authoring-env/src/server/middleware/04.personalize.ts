@@ -5,7 +5,7 @@ import sites from '../../.sitecore/sites.json';
 
 const middleware = new PersonalizeMiddleware({
   sites,
-  enabled: true,
+  enabled: scConfig.personalize?.enabled,
   contextId: scConfig.api.edge?.contextId,
   clientContextId: scConfig.api.edge?.clientContextId,
   edgeUrl: scConfig.api.edge?.edgeUrl,
@@ -16,4 +16,6 @@ const middleware = new PersonalizeMiddleware({
   currency: scConfig.personalize?.currency,
 });
 
-export default defineEventHandler((event) => middleware.handle(event));
+export default defineEventHandler((event) => {
+  return middleware.handle(event);
+});
