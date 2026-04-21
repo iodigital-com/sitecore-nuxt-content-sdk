@@ -1,5 +1,4 @@
 <script setup lang="ts">
-// Default import van de SDK, niet van zichzelf
 import { RichText as SitecoreRichText } from '@sitecore-content-sdk/nuxt';
 
 defineOptions({ inheritAttrs: false });
@@ -12,5 +11,5 @@ const props = defineProps<{
 </script>
 
 <template>
-  <SitecoreRichText :field="props.fields?.Content" />
+  <SitecoreRichText :field="props.fields?.Text" />
 </template>
