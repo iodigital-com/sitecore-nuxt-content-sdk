@@ -53,6 +53,11 @@ export type {
 export { default as Text } from './components/Text.vue';
 export type { TextField, TextProps } from './components/Text';
 
+export { default as Form } from './components/Form.vue';
+export type { FormProps } from './components/Form';
+export { default as ErrorBoundary } from './components/ErrorBoundary.vue';
+export type { ErrorBoundaryProps } from './components/ErrorBoundary';
+
 export type {
   CacheClient,
   CacheOptions,

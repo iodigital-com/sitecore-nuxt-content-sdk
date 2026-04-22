@@ -13,6 +13,8 @@
   },
   "dependencies": {
     "@sitecore-content-sdk/nuxt": "file:./../../packages/nuxt",
+    "@sitecore-content-sdk/events": "file:./../../packages/events",
+    "@sitecore-content-sdk/analytics-core": "file:./../../packages/analytics-core",
     "@types/node": "^24.10.4",
     "nuxt": "^4.4.2",
     "nitro": "^3.0.260311-beta",

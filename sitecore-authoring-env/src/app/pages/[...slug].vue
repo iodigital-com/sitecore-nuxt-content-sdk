@@ -19,8 +19,7 @@ const route = computed(() => page.value?.layout?.sitecore?.route);
 </script>
 
 <template>
-  <SitecoreProvider v-if="page" :page="page" :componentMap="componentMap">
-    <!-- <pre> {{ page }}</pre> -->
+  <SitecoreProvider :page="page" :api="($sitecoreConfig as any).api" :componentMap="componentMap">
     <Placeholder name="headless-header" :rendering="route" />
     <Placeholder name="headless-main" :rendering="route" />
     <Placeholder name="headless-footer" :rendering="route" />

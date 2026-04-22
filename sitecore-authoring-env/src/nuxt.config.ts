@@ -37,6 +37,11 @@ export default defineNuxtConfig({
   runtimeConfig: {
     public: {
       locales: ['en', 'nl-NL'],
+      sitecoreEdgeContextId: process.env.NUXT_PUBLIC_SITECORE_EDGE_CONTEXT_ID || '',
+      sitecoreEdgeUrl:
+        process.env.NUXT_PUBLIC_SITECORE_EDGE_PLATFORM_HOSTNAME ||
+        'https://edge-platform.sitecorecloud.io',
+      sitecoreDefaultSite: process.env.NUXT_PUBLIC_DEFAULT_SITE_NAME || '',
     },
     sitecore: {
       api: {
