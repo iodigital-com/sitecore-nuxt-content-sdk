@@ -5,7 +5,8 @@ import sites from '../../.sitecore/sites.json';
 
 const middleware = new PersonalizeMiddleware({
   sites,
-  enabled: scConfig.personalize?.enabled,
+  enabled: true,
+  locales: scConfig.redirects?.locales ?? [],
   contextId: scConfig.api.edge?.contextId,
   clientContextId: scConfig.api.edge?.clientContextId,
   edgeUrl: scConfig.api.edge?.edgeUrl,
@@ -14,6 +15,12 @@ const middleware = new PersonalizeMiddleware({
   scope: scConfig.personalize?.scope,
   channel: scConfig.personalize?.channel,
   currency: scConfig.personalize?.currency,
+  extractGeoDataCb: () => ({
+    country:
+      // getRequestHeader(event, 'x-vercel-ip-country') ||
+      // getRequestHeader(event, 'cf-ipcountry') ||
+      'NL', // Default to NL for local development, change it to any other country for a different personalization result
+  }),
 });
 
 export default defineEventHandler((event) => {

@@ -33,7 +33,6 @@ export default defineConfig({
     useCookieResolution: () => process.env.NUXT_ENV === 'preview',
   },
   personalize: {
-    enabled: true,
     scope: process.env.NUXT_PUBLIC_PERSONALIZE_SCOPE,
     channel: process.env.NUXT_PUBLIC_PERSONALIZE_CHANNEL || '',
     currency: process.env.NUXT_PUBLIC_PERSONALIZE_CURRENCY || '',

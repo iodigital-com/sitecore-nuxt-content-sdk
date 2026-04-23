@@ -14,6 +14,7 @@ import type { Page } from '@sitecore-content-sdk/content/client';
 import { isDesignLibraryMode } from '@sitecore-content-sdk/content/editing';
 import { useSitecoreClient } from './useSitecoreClient';
 import { LOCALE_HEADER_NAME } from '../middleware/middleware';
+import { getPersonalizedRewriteData } from '@sitecore-content-sdk/content/personalize';
 
 /**
  * Return type of the useSitecorePage composable.
@@ -74,7 +75,9 @@ export async function useSitecorePage(): Promise<UseSitecorePageResult> {
     ? rawPath.slice(1).filter(Boolean)
     : rawPath.filter(Boolean);
 
-  const headers = useRequestHeaders([LOCALE_HEADER_NAME]);
+  const headers = useRequestHeaders([LOCALE_HEADER_NAME, 'x-sc-rewrite']);
+  const rewrittenPath = headers['x-sc-rewrite'] as string | undefined;
+  const personalizeData = rewrittenPath ? getPersonalizedRewriteData(rewrittenPath) : undefined;
   const locale = headers[LOCALE_HEADER_NAME as keyof typeof headers] as string | undefined;
   const siteCookie = useCookie('sc_site');
   const site = siteCookie.value ?? undefined;
@@ -95,7 +98,7 @@ export async function useSitecorePage(): Promise<UseSitecorePageResult> {
         return client.getPreview(query as any);
       }
 
-      return client.getPage(path, { locale, site });
+      return client.getPage(path, { locale, site, personalize: personalizeData });
     }
   );
 

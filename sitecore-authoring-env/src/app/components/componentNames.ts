@@ -6,4 +6,5 @@ export const componentNames = [
   'ColumnSplitter',
   'RowSplitter',
   'Form',
+  'PartialDesignDynamicPlaceholder',
 ];

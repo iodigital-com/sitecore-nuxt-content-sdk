@@ -65,6 +65,11 @@ export type PersonalizeMiddlewareConfig = MiddlewareBaseConfig &
      * @returns {Promise<PersonalizeGeoData> | PersonalizeGeoData} Geolocation data
      */
     extractGeoDataCb?: (event?: H3Event) => Promise<PersonalizeGeoData> | PersonalizeGeoData;
+    /**
+     * List of locale prefixes to strip from the pathname before personalization lookup.
+     * @example ['en', 'nl-NL']
+     */
+    locales?: string[];
   };
 
 /**
@@ -179,8 +184,6 @@ export class PersonalizeMiddleware extends MiddlewareBase {
    * @returns {Promise<void>}
    */
   handle = async (event: H3Event): Promise<void> => {
-    console.log('[Personalize] handle method called');
-    console.log('[Personalize] handling:', getRequestURL(event).pathname);
     if (!this.config.enabled) {
       debug.personalize('skipped (personalize middleware is disabled globally)');
       return;
@@ -189,6 +192,14 @@ export class PersonalizeMiddleware extends MiddlewareBase {
     try {
       const pathname = getRequestURL(event).pathname;
       const language = this.getLanguage(event);
+
+      // Strip locale prefix from pathname
+      const locales: string[] = this.config.locales || [];
+      const strippedPathname = locales.some(
+        (locale: string) => pathname.startsWith(`/${locale}/`) || pathname === `/${locale}`
+      )
+        ? '/' + pathname.split('/').slice(2).join('/') || '/'
+        : pathname;
       const hostname = this.getHostHeader(event) || this.defaultHostname;
       const startTimestamp = Date.now();
       const cdpTimeout = this.config.cdpTimeout;
@@ -205,13 +216,11 @@ export class PersonalizeMiddleware extends MiddlewareBase {
 
       if (this.disabled(event)) {
         debug.personalize('skipped (personalize middleware is disabled)');
-        console.log('[Personalize] skipped (personalize middleware is disabled)');
         return;
       }
 
       if (this.isPreview(event)) {
         debug.personalize('skipped (preview)');
-        console.log('[Personalize] skipped (preview)');
         return;
       }
 
@@ -222,20 +231,18 @@ export class PersonalizeMiddleware extends MiddlewareBase {
       }
 
       const personalizeInfo = await this.personalizeService.getPersonalizeInfo(
-        pathname,
+        strippedPathname,
         language,
         site.name
       );
 
       if (!personalizeInfo) {
         debug.personalize('skipped (personalize info not found)');
-        console.log('[Personalize] skipped (personalize info not found)');
         return;
       }
 
       if (personalizeInfo.variantIds.length === 0) {
         debug.personalize('skipped (no personalization configured)');
-        console.log('[Personalize] skipped (no personalization configured)');
         return;
       }
 
@@ -243,7 +250,6 @@ export class PersonalizeMiddleware extends MiddlewareBase {
         debug.personalize('skipped (prefetch)');
         setResponseHeader(event, 'x-proxy-cache', 'no-cache');
         setResponseHeader(event, 'Cache-Control', 'no-store, must-revalidate');
-        console.log('[Personalize] skipped (prefetch)');
         return;
       }
 
@@ -271,7 +277,6 @@ export class PersonalizeMiddleware extends MiddlewareBase {
             if (variantId) {
               if (!execution.variantIds.includes(variantId)) {
                 debug.personalize('invalid variant %s', variantId);
-                console.log(`[Personalize] invalid variant ${variantId}`);
               } else {
                 identifiedVariantIds.push(variantId);
               }
@@ -282,7 +287,6 @@ export class PersonalizeMiddleware extends MiddlewareBase {
 
       if (identifiedVariantIds.length === 0) {
         debug.personalize('skipped (no variant(s) identified)');
-        console.log('[Personalize] skipped (no variant(s) identified)');
         return;
       }
 
@@ -291,12 +295,12 @@ export class PersonalizeMiddleware extends MiddlewareBase {
 
       this.rewrite(rewritePath, event);
 
+      event.node.req.headers['x-sc-rewrite'] = rewritePath;
       setResponseHeader(event, 'x-proxy-cache', 'no-cache');
 
       debug.personalize('personalize middleware end in %dms: %o', Date.now() - startTimestamp, {
         rewritePath,
       });
-      console.log(`[Personalize] personalized path: ${rewritePath}`);
     } catch (error) {
       console.log('Personalize middleware failed:');
       console.log(error);
@@ -425,7 +429,7 @@ export class PersonalizeMiddleware extends MiddlewareBase {
   }) {
     debug.personalize('executing experience for %s %o', friendlyId, params);
 
-    return (await personalize(
+    const result = (await personalize(
       {
         channel: this.config.channel || 'WEB',
         currency: this.config.currency ?? 'USD',
@@ -436,9 +440,9 @@ export class PersonalizeMiddleware extends MiddlewareBase {
         ...(geo && { geo }),
       },
       { timeout }
-    )) as {
-      variantId: string;
-    };
+    )) as { variantId: string };
+
+    return result;
   }
 
   /**

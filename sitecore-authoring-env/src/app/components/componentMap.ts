@@ -6,6 +6,7 @@ import Container from './Container.vue';
 import ColumnSplitter from './ColumnSplitter.vue';
 import RowSplitter from './RowSplitter.vue';
 import Form from './Form.vue';
+import PartialDesignDynamicPlaceholder from './PartialDesignDynamicPlaceholder.vue';
 
 const componentMap: ComponentMap = new Map([
   ['RichText', RichText],
@@ -14,6 +15,7 @@ const componentMap: ComponentMap = new Map([
   ['ColumnSplitter', ColumnSplitter],
   ['RowSplitter', RowSplitter],
   ['Form', Form],
+  ['PartialDesignDynamicPlaceholder', PartialDesignDynamicPlaceholder],
 ]);
 
 export default componentMap;

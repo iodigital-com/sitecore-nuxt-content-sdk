@@ -20,6 +20,7 @@ const route = computed(() => page.value?.layout?.sitecore?.route);
 
 <template>
   <SitecoreProvider :page="page" :api="($sitecoreConfig as any).api" :componentMap="componentMap">
+    <!-- <pre> {{ page }}</pre> -->
     <Placeholder name="headless-header" :rendering="route" />
     <Placeholder name="headless-main" :rendering="route" />
     <Placeholder name="headless-footer" :rendering="route" />
