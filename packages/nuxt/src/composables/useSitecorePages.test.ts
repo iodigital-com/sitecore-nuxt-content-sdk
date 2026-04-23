@@ -176,13 +176,13 @@ describe('useSitecorePage', () => {
   });
 
   describe('preview mode', () => {
-    it('calls getPreview when sc_itemid is present in query', async () => {
+    it('calls getPreview when itemId is present in query', async () => {
       mockUseRoute.mockReturnValue({
         params: { slug: ['home'] },
         query: {
-          sc_itemid: 'item-id',
-          sc_lang: 'en',
-          sc_site: 'my-site',
+          itemId: 'item-id',
+          language: 'en',
+          site: 'my-site',
           mode: 'edit',
         },
       });
@@ -232,6 +232,7 @@ describe('useSitecorePage', () => {
       expect(mockUseHead).toHaveBeenCalledOnce();
       expect(mockUseHead).toHaveBeenCalledWith({
         link: [{ rel: 'stylesheet', href: 'https://example.com/style.css' }],
+        script: [],
       });
     });
 

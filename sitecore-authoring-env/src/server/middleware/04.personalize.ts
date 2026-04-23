@@ -19,7 +19,7 @@ const middleware = new PersonalizeMiddleware({
     country:
       // getRequestHeader(event, 'x-vercel-ip-country') ||
       // getRequestHeader(event, 'cf-ipcountry') ||
-      'NL', // Default to NL for local development, change it to any other country for a different personalization result
+      'UK', // For localhost: change to 'NL' for country-based personalization testing
   }),
 });
 

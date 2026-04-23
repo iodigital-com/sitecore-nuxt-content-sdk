@@ -6,7 +6,7 @@
 
 # Class: SitecoreClient
 
-Defined in: [packages/nuxt/src/client/sitecore-nuxt-client.ts:38](https://github.com/weareyou/sitecore-nuxt-content-sdk/blob/f9df27f3b8d16cd24df156046de00eadab843a8d/packages/nuxt/src/client/sitecore-nuxt-client.ts#L38)
+Defined in: [packages/nuxt/src/client/sitecore-nuxt-client.ts:38](https://github.com/weareyou/sitecore-nuxt-content-sdk/blob/9012ccaea91e6d12c9995dfa53c658f7debe0ac8/packages/nuxt/src/client/sitecore-nuxt-client.ts#L38)
 
 Nuxt-specific extension of SitecoreClient.
 
@@ -38,7 +38,7 @@ export default client;
 
 > **new SitecoreClient**(`initOptions`): `SitecoreNuxtClient`
 
-Defined in: [packages/nuxt/src/client/sitecore-nuxt-client.ts:42](https://github.com/weareyou/sitecore-nuxt-content-sdk/blob/f9df27f3b8d16cd24df156046de00eadab843a8d/packages/nuxt/src/client/sitecore-nuxt-client.ts#L42)
+Defined in: [packages/nuxt/src/client/sitecore-nuxt-client.ts:42](https://github.com/weareyou/sitecore-nuxt-content-sdk/blob/9012ccaea91e6d12c9995dfa53c658f7debe0ac8/packages/nuxt/src/client/sitecore-nuxt-client.ts#L42)
 
 #### Parameters
 
@@ -132,7 +132,7 @@ Defined in: packages/content/types/client/sitecore-client.d.ts:215
 
 > `protected` **initOptions**: `SitecoreNuxtClientInit`
 
-Defined in: [packages/nuxt/src/client/sitecore-nuxt-client.ts:42](https://github.com/weareyou/sitecore-nuxt-content-sdk/blob/f9df27f3b8d16cd24df156046de00eadab843a8d/packages/nuxt/src/client/sitecore-nuxt-client.ts#L42)
+Defined in: [packages/nuxt/src/client/sitecore-nuxt-client.ts:42](https://github.com/weareyou/sitecore-nuxt-content-sdk/blob/9012ccaea91e6d12c9995dfa53c658f7debe0ac8/packages/nuxt/src/client/sitecore-nuxt-client.ts#L42)
 
 Nuxt client configuration
 
@@ -411,7 +411,7 @@ An array of `<link>` elements for stylesheets.
 
 > **getPage**(`path`, `pageOptions?`, `fetchOptions?`): `Promise`\<[`Page`](../type-aliases/Page.md) \| `null`\>
 
-Defined in: [packages/nuxt/src/client/sitecore-nuxt-client.ts:82](https://github.com/weareyou/sitecore-nuxt-content-sdk/blob/f9df27f3b8d16cd24df156046de00eadab843a8d/packages/nuxt/src/client/sitecore-nuxt-client.ts#L82)
+Defined in: [packages/nuxt/src/client/sitecore-nuxt-client.ts:82](https://github.com/weareyou/sitecore-nuxt-content-sdk/blob/9012ccaea91e6d12c9995dfa53c658f7debe0ac8/packages/nuxt/src/client/sitecore-nuxt-client.ts#L82)
 
 Fetches page layout data for the given route path.
 
@@ -578,7 +578,7 @@ Throws 'REDIRECT_404' if requested sitemap is not found
 
 > **getSiteNameFromPath**(`path`): `string`
 
-Defined in: [packages/nuxt/src/client/sitecore-nuxt-client.ts:53](https://github.com/weareyou/sitecore-nuxt-content-sdk/blob/f9df27f3b8d16cd24df156046de00eadab843a8d/packages/nuxt/src/client/sitecore-nuxt-client.ts#L53)
+Defined in: [packages/nuxt/src/client/sitecore-nuxt-client.ts:53](https://github.com/weareyou/sitecore-nuxt-content-sdk/blob/9012ccaea91e6d12c9995dfa53c658f7debe0ac8/packages/nuxt/src/client/sitecore-nuxt-client.ts#L53)
 
 Resolves the site name from a rewritten path.
 The `MultisiteMiddleware` rewrites paths to include the site segment (e.g. `/mysite/about`).
@@ -602,7 +602,7 @@ The resolved site name, or the default site if not found
 
 > **parsePath**(`path`): `string`
 
-Defined in: [packages/nuxt/src/client/sitecore-nuxt-client.ts:67](https://github.com/weareyou/sitecore-nuxt-content-sdk/blob/f9df27f3b8d16cd24df156046de00eadab843a8d/packages/nuxt/src/client/sitecore-nuxt-client.ts#L67)
+Defined in: [packages/nuxt/src/client/sitecore-nuxt-client.ts:67](https://github.com/weareyou/sitecore-nuxt-content-sdk/blob/9012ccaea91e6d12c9995dfa53c658f7debe0ac8/packages/nuxt/src/client/sitecore-nuxt-client.ts#L67)
 
 Normalizes a Nuxt route path by stripping multisite and personalization
 rewrite segments added by the middleware chain.

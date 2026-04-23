@@ -8,7 +8,7 @@
 
 > **LocaleMiddlewareConfig** = [`MiddlewareBaseConfig`](MiddlewareBaseConfig.md) & `object`
 
-Defined in: [packages/nuxt/src/middleware/locale-middleware.ts:9](https://github.com/weareyou/sitecore-nuxt-content-sdk/blob/f9df27f3b8d16cd24df156046de00eadab843a8d/packages/nuxt/src/middleware/locale-middleware.ts#L9)
+Defined in: [packages/nuxt/src/middleware/locale-middleware.ts:9](https://github.com/weareyou/sitecore-nuxt-content-sdk/blob/9012ccaea91e6d12c9995dfa53c658f7debe0ac8/packages/nuxt/src/middleware/locale-middleware.ts#L9)
 
 Configuration for the LocaleMiddleware.
 
