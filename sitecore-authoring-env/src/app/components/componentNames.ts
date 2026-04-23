@@ -7,4 +7,5 @@ export const componentNames = [
   'RowSplitter',
   'Form',
   'PartialDesignDynamicPlaceholder',
+  'Link',
 ];

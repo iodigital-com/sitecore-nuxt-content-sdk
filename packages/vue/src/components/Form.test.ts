@@ -1,6 +1,6 @@
 import { mount, flushPromises } from '@vue/test-utils';
 import { describe, it, expect, vi, beforeEach } from 'vitest';
-import { h } from 'vue';
+import { h, nextTick } from 'vue';
 import { LayoutServicePageState } from '@sitecore-content-sdk/content/layout';
 import Form, { mockFormModule } from './Form.vue';
 import SitecoreProvider from './SitecoreProvider.vue';
@@ -106,6 +106,7 @@ describe('Form', () => {
 
     const wrapper = createWrapper(ctx.page.normal);
     await flushPromises();
+    await nextTick();
 
     expect(loadFormSpy).toHaveBeenCalledTimes(1);
     expect(subscribeSpy).toHaveBeenCalledTimes(1);

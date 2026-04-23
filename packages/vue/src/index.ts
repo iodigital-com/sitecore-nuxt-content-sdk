@@ -42,6 +42,9 @@ export * from './components/DesignLibrary';
 export { default as RichText } from './components/RichText.vue';
 export type { RichTextField, RichTextProps } from './components/RichText';
 
+export { default as Link } from './components/Link.vue';
+export type { LinkField, LinkFieldValue, LinkProps } from './components/Link';
+
 export { default as Image } from './components/Image.vue';
 export type {
   ImageField,
