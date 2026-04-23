@@ -8,7 +8,7 @@
 
 > **ComponentPropsFetchFunction**\<`FetchedProps`\> = (`rendering`, `layoutData`) => `Promise`\<`FetchedProps`\>
 
-Defined in: [nuxt/src/sharedTypes/component-props.ts:23](https://github.com/weareyou/sitecore-nuxt-content-sdk/blob/0855a622b10e7f8f1a092bf930d8d53d3144a776/packages/nuxt/src/sharedTypes/component-props.ts#L23)
+Defined in: [packages/nuxt/src/sharedTypes/component-props.ts:23](https://github.com/weareyou/sitecore-nuxt-content-sdk/blob/f9df27f3b8d16cd24df156046de00eadab843a8d/packages/nuxt/src/sharedTypes/component-props.ts#L23)
 
 Type of side effect function which could be invoked on component level via useComponentServerProps composable.
 
@@ -22,8 +22,8 @@ Type of side effect function which could be invoked on component level via useCo
 
 | Parameter | Type |
 | ------ | ------ |
-| `rendering` | `ComponentRendering` |
-| `layoutData` | `LayoutServiceData` |
+| `rendering` | [`ComponentRendering`](../interfaces/ComponentRendering.md) |
+| `layoutData` | [`LayoutServiceData`](../interfaces/LayoutServiceData.md) |
 
 ## Returns
 

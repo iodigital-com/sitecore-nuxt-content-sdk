@@ -6,7 +6,7 @@
 
 # Class: SitecoreClient
 
-Defined in: [nuxt/src/client/sitecore-nuxt-client.ts:38](https://github.com/weareyou/sitecore-nuxt-content-sdk/blob/0855a622b10e7f8f1a092bf930d8d53d3144a776/packages/nuxt/src/client/sitecore-nuxt-client.ts#L38)
+Defined in: [packages/nuxt/src/client/sitecore-nuxt-client.ts:38](https://github.com/weareyou/sitecore-nuxt-content-sdk/blob/f9df27f3b8d16cd24df156046de00eadab843a8d/packages/nuxt/src/client/sitecore-nuxt-client.ts#L38)
 
 Nuxt-specific extension of SitecoreClient.
 
@@ -38,7 +38,7 @@ export default client;
 
 > **new SitecoreClient**(`initOptions`): `SitecoreNuxtClient`
 
-Defined in: [nuxt/src/client/sitecore-nuxt-client.ts:42](https://github.com/weareyou/sitecore-nuxt-content-sdk/blob/0855a622b10e7f8f1a092bf930d8d53d3144a776/packages/nuxt/src/client/sitecore-nuxt-client.ts#L42)
+Defined in: [packages/nuxt/src/client/sitecore-nuxt-client.ts:42](https://github.com/weareyou/sitecore-nuxt-content-sdk/blob/f9df27f3b8d16cd24df156046de00eadab843a8d/packages/nuxt/src/client/sitecore-nuxt-client.ts#L42)
 
 #### Parameters
 
@@ -60,7 +60,7 @@ Defined in: [nuxt/src/client/sitecore-nuxt-client.ts:42](https://github.com/wear
 
 > `protected` **clientFactory**: [`GraphQLRequestClientFactory`](../type-aliases/GraphQLRequestClientFactory.md)
 
-Defined in: content/types/client/sitecore-client.d.ts:211
+Defined in: packages/content/types/client/sitecore-client.d.ts:211
 
 #### Inherited from
 
@@ -70,9 +70,9 @@ Defined in: content/types/client/sitecore-client.d.ts:211
 
 ### componentService
 
-> `protected` **componentService**: `ComponentLayoutService`
+> `protected` **componentService**: [`ComponentLayoutService`](ComponentLayoutService.md)
 
-Defined in: content/types/client/sitecore-client.d.ts:213
+Defined in: packages/content/types/client/sitecore-client.d.ts:213
 
 #### Inherited from
 
@@ -82,9 +82,9 @@ Defined in: content/types/client/sitecore-client.d.ts:213
 
 ### dictionaryService
 
-> `protected` **dictionaryService**: `DictionaryService`
+> `protected` **dictionaryService**: [`DictionaryService`](DictionaryService.md)
 
-Defined in: content/types/client/sitecore-client.d.ts:209
+Defined in: packages/content/types/client/sitecore-client.d.ts:209
 
 #### Inherited from
 
@@ -96,7 +96,7 @@ Defined in: content/types/client/sitecore-client.d.ts:209
 
 > `protected` **editingService**: `EditingService`
 
-Defined in: content/types/client/sitecore-client.d.ts:210
+Defined in: packages/content/types/client/sitecore-client.d.ts:210
 
 #### Inherited from
 
@@ -106,9 +106,9 @@ Defined in: content/types/client/sitecore-client.d.ts:210
 
 ### errorPagesService
 
-> `protected` **errorPagesService**: `ErrorPagesService`
+> `protected` **errorPagesService**: [`ErrorPagesService`](ErrorPagesService.md)
 
-Defined in: content/types/client/sitecore-client.d.ts:212
+Defined in: packages/content/types/client/sitecore-client.d.ts:212
 
 #### Inherited from
 
@@ -120,7 +120,7 @@ Defined in: content/types/client/sitecore-client.d.ts:212
 
 > `protected` **graphQLClient**: `GraphQLClient`
 
-Defined in: content/types/client/sitecore-client.d.ts:215
+Defined in: packages/content/types/client/sitecore-client.d.ts:215
 
 #### Inherited from
 
@@ -132,7 +132,7 @@ Defined in: content/types/client/sitecore-client.d.ts:215
 
 > `protected` **initOptions**: `SitecoreNuxtClientInit`
 
-Defined in: [nuxt/src/client/sitecore-nuxt-client.ts:42](https://github.com/weareyou/sitecore-nuxt-content-sdk/blob/0855a622b10e7f8f1a092bf930d8d53d3144a776/packages/nuxt/src/client/sitecore-nuxt-client.ts#L42)
+Defined in: [packages/nuxt/src/client/sitecore-nuxt-client.ts:42](https://github.com/weareyou/sitecore-nuxt-content-sdk/blob/f9df27f3b8d16cd24df156046de00eadab843a8d/packages/nuxt/src/client/sitecore-nuxt-client.ts#L42)
 
 Nuxt client configuration
 
@@ -144,9 +144,9 @@ Nuxt client configuration
 
 ### layoutService
 
-> `protected` **layoutService**: `LayoutService`
+> `protected` **layoutService**: [`LayoutService`](LayoutService.md)
 
-Defined in: content/types/client/sitecore-client.d.ts:208
+Defined in: packages/content/types/client/sitecore-client.d.ts:208
 
 #### Inherited from
 
@@ -156,9 +156,9 @@ Defined in: content/types/client/sitecore-client.d.ts:208
 
 ### sitePathService
 
-> `protected` **sitePathService**: `SitePathService`
+> `protected` **sitePathService**: [`SitePathService`](SitePathService.md)
 
-Defined in: content/types/client/sitecore-client.d.ts:214
+Defined in: packages/content/types/client/sitecore-client.d.ts:214
 
 #### Inherited from
 
@@ -168,9 +168,9 @@ Defined in: content/types/client/sitecore-client.d.ts:214
 
 ### applyContentRewrite()
 
-> `protected` **applyContentRewrite**(`layout`): `LayoutServiceData`
+> `protected` **applyContentRewrite**(`layout`): [`LayoutServiceData`](../interfaces/LayoutServiceData.md)
 
-Defined in: content/types/client/sitecore-client.d.ts:335
+Defined in: packages/content/types/client/sitecore-client.d.ts:335
 
 **`Internal`**
 
@@ -181,11 +181,11 @@ When true, uses default Edge host rewriter; when a function, transforms each str
 
 | Parameter | Type | Description |
 | ------ | ------ | ------ |
-| `layout` | `LayoutServiceData` | Layout data from layout/editing/component/error service |
+| `layout` | [`LayoutServiceData`](../interfaces/LayoutServiceData.md) | Layout data from layout/editing/component/error service |
 
 #### Returns
 
-`LayoutServiceData`
+[`LayoutServiceData`](../interfaces/LayoutServiceData.md)
 
 Rewritten layout (or same reference if rewrite disabled)
 
@@ -199,7 +199,7 @@ Rewritten layout (or same reference if rewrite disabled)
 
 > `protected` **getBaseServiceOptions**(): `BaseServiceOptions`
 
-Defined in: content/types/client/sitecore-client.d.ts:321
+Defined in: packages/content/types/client/sitecore-client.d.ts:321
 
 #### Returns
 
@@ -215,7 +215,7 @@ Defined in: content/types/client/sitecore-client.d.ts:321
 
 > **getData**\<`T`\>(`query`, `variables?`, `fetchOptions?`): `Promise`\<`T`\>
 
-Defined in: content/types/client/sitecore-client.d.ts:234
+Defined in: packages/content/types/client/sitecore-client.d.ts:234
 
 Execute a raw GraphQL request using the client's configured GraphQL Edge endpoint.
 This is a thin pass-through to the underlying `GraphQLClient.request` method,
@@ -246,9 +246,9 @@ This is a thin pass-through to the underlying `GraphQLClient.request` method,
 
 ### getDesignLibraryData()
 
-> **getDesignLibraryData**(`designLibData`, `fetchOptions?`): `Promise`\<`Page`\>
+> **getDesignLibraryData**(`designLibData`, `fetchOptions?`): `Promise`\<[`Page`](../type-aliases/Page.md)\>
 
-Defined in: content/types/client/sitecore-client.d.ts:282
+Defined in: packages/content/types/client/sitecore-client.d.ts:282
 
 Get design library page details for Design Library mode of your app
 
@@ -261,7 +261,7 @@ Get design library page details for Design Library mode of your app
 
 #### Returns
 
-`Promise`\<`Page`\>
+`Promise`\<[`Page`](../type-aliases/Page.md)\>
 
 preview page for Design Library
 
@@ -273,9 +273,9 @@ preview page for Design Library
 
 ### getDictionary()
 
-> **getDictionary**(`routeOptions?`, `fetchOptions?`): `Promise`\<`DictionaryPhrases`\>
+> **getDictionary**(`routeOptions?`, `fetchOptions?`): `Promise`\<[`DictionaryPhrases`](../interfaces/DictionaryPhrases.md)\>
 
-Defined in: content/types/client/sitecore-client.d.ts:261
+Defined in: packages/content/types/client/sitecore-client.d.ts:261
 
 Retrieves dictionary phrases for a given site and locale.
 
@@ -288,7 +288,7 @@ Retrieves dictionary phrases for a given site and locale.
 
 #### Returns
 
-`Promise`\<`DictionaryPhrases`\>
+`Promise`\<[`DictionaryPhrases`](../interfaces/DictionaryPhrases.md)\>
 
 A promise that resolves to the dictionary phrases.
 
@@ -300,9 +300,9 @@ A promise that resolves to the dictionary phrases.
 
 ### getErrorPage()
 
-> **getErrorPage**(`code`, `pageOptions?`, `fetchOptions?`): `Promise`\<`Page` \| `null`\>
+> **getErrorPage**(`code`, `pageOptions?`, `fetchOptions?`): `Promise`\<[`Page`](../type-aliases/Page.md) \| `null`\>
 
-Defined in: content/types/client/sitecore-client.d.ts:290
+Defined in: packages/content/types/client/sitecore-client.d.ts:290
 
 Get error page details for a given error code
 
@@ -310,13 +310,13 @@ Get error page details for a given error code
 
 | Parameter | Type | Description |
 | ------ | ------ | ------ |
-| `code` | `ErrorPage` | The error code to get the error page for |
+| `code` | [`ErrorPage`](../enumerations/ErrorPage.md) | The error code to get the error page for |
 | `pageOptions?` | `Partial`\<`RouteOptions`\> | The page options to get the error page for |
 | `fetchOptions?` | `FetchOptions` | Additional fetch fetch options to override GraphQL requests |
 
 #### Returns
 
-`Promise`\<`Page` \| `null`\>
+`Promise`\<[`Page`](../type-aliases/Page.md) \| `null`\>
 
 A promise that resolves to the error page details or null if not found
 
@@ -328,9 +328,9 @@ A promise that resolves to the error page details or null if not found
 
 ### getErrorPages()
 
-> **getErrorPages**(`routeOptions?`, `fetchOptions?`): `Promise`\<`ErrorPages` \| `null`\>
+> **getErrorPages**(`routeOptions?`, `fetchOptions?`): `Promise`\<[`ErrorPages`](../type-aliases/ErrorPages.md) \| `null`\>
 
-Defined in: content/types/client/sitecore-client.d.ts:268
+Defined in: packages/content/types/client/sitecore-client.d.ts:268
 
 Retrieves error pages for a given site and locale.
 
@@ -343,7 +343,7 @@ Retrieves error pages for a given site and locale.
 
 #### Returns
 
-`Promise`\<`ErrorPages` \| `null`\>
+`Promise`\<[`ErrorPages`](../type-aliases/ErrorPages.md) \| `null`\>
 
 A promise that resolves to the error pages or null if not found.
 
@@ -355,9 +355,9 @@ A promise that resolves to the error pages or null if not found.
 
 ### getGraphqlSitemapXMLService()
 
-> `protected` **getGraphqlSitemapXMLService**(`siteName`): `SitemapXmlService`
+> `protected` **getGraphqlSitemapXMLService**(`siteName`): [`SitemapXmlService`](SitemapXmlService.md)
 
-Defined in: content/types/client/sitecore-client.d.ts:319
+Defined in: packages/content/types/client/sitecore-client.d.ts:319
 
 Factory methods for creating dependencies
 Subclasses can override these to provide custom implementations.
@@ -370,7 +370,7 @@ Subclasses can override these to provide custom implementations.
 
 #### Returns
 
-`SitemapXmlService`
+[`SitemapXmlService`](SitemapXmlService.md)
 
 #### Inherited from
 
@@ -380,9 +380,9 @@ Subclasses can override these to provide custom implementations.
 
 ### getHeadLinks()
 
-> **getHeadLinks**(`layoutData`, `options?`): `HTMLLink`[]
+> **getHeadLinks**(`layoutData`, `options?`): [`HTMLLink`](../type-aliases/HTMLLink.md)[]
 
-Defined in: content/types/client/sitecore-client.d.ts:251
+Defined in: packages/content/types/client/sitecore-client.d.ts:251
 
 Retrieves the head `<link>` elements for Sitecore styles and themes.
 
@@ -390,14 +390,14 @@ Retrieves the head `<link>` elements for Sitecore styles and themes.
 
 | Parameter | Type | Description |
 | ------ | ------ | ------ |
-| `layoutData` | `LayoutServiceData` | The layout data containing styles and themes. |
+| `layoutData` | [`LayoutServiceData`](../interfaces/LayoutServiceData.md) | The layout data containing styles and themes. |
 | `options?` | \{ `enableStyles?`: `boolean`; `enableThemes?`: `boolean`; \} | Optional configuration for enabling styles and themes. |
 | `options.enableStyles?` | `boolean` | Whether to include content styles. |
 | `options.enableThemes?` | `boolean` | Whether to include theme styles. |
 
 #### Returns
 
-`HTMLLink`[]
+[`HTMLLink`](../type-aliases/HTMLLink.md)[]
 
 An array of `<link>` elements for stylesheets.
 
@@ -409,9 +409,9 @@ An array of `<link>` elements for stylesheets.
 
 ### getPage()
 
-> **getPage**(`path`, `pageOptions?`, `fetchOptions?`): `Promise`\<`Page` \| `null`\>
+> **getPage**(`path`, `pageOptions?`, `fetchOptions?`): `Promise`\<[`Page`](../type-aliases/Page.md) \| `null`\>
 
-Defined in: [nuxt/src/client/sitecore-nuxt-client.ts:82](https://github.com/weareyou/sitecore-nuxt-content-sdk/blob/0855a622b10e7f8f1a092bf930d8d53d3144a776/packages/nuxt/src/client/sitecore-nuxt-client.ts#L82)
+Defined in: [packages/nuxt/src/client/sitecore-nuxt-client.ts:82](https://github.com/weareyou/sitecore-nuxt-content-sdk/blob/f9df27f3b8d16cd24df156046de00eadab843a8d/packages/nuxt/src/client/sitecore-nuxt-client.ts#L82)
 
 Fetches page layout data for the given route path.
 
@@ -428,7 +428,7 @@ from the rewritten path before calling Sitecore.
 
 #### Returns
 
-`Promise`\<`Page` \| `null`\>
+`Promise`\<[`Page`](../type-aliases/Page.md) \| `null`\>
 
 The page data, or null if the route is not found
 
@@ -440,9 +440,9 @@ The page data, or null if the route is not found
 
 ### getPagePaths()
 
-> **getPagePaths**(`sites`, `languages?`, `fetchOptions?`): `Promise`\<`StaticPath`[]\>
+> **getPagePaths**(`sites`, `languages?`, `fetchOptions?`): `Promise`\<[`StaticPath`](../type-aliases/StaticPath.md)[]\>
 
-Defined in: content/types/client/sitecore-client.d.ts:298
+Defined in: packages/content/types/client/sitecore-client.d.ts:298
 
 Retrieves the static paths for pages based on the given languages.
 
@@ -456,7 +456,7 @@ Retrieves the static paths for pages based on the given languages.
 
 #### Returns
 
-`Promise`\<`StaticPath`[]\>
+`Promise`\<[`StaticPath`](../type-aliases/StaticPath.md)[]\>
 
 A promise that resolves to an array of static paths.
 
@@ -468,9 +468,9 @@ A promise that resolves to an array of static paths.
 
 ### getPreview()
 
-> **getPreview**(`previewData`, `fetchOptions?`): `Promise`\<`Page` \| `null`\>
+> **getPreview**(`previewData`, `fetchOptions?`): `Promise`\<[`Page`](../type-aliases/Page.md) \| `null`\>
 
-Defined in: content/types/client/sitecore-client.d.ts:275
+Defined in: packages/content/types/client/sitecore-client.d.ts:275
 
 Retrieves preview page and layout details
 
@@ -483,7 +483,7 @@ Retrieves preview page and layout details
 
 #### Returns
 
-`Promise`\<`Page` \| `null`\>
+`Promise`\<[`Page`](../type-aliases/Page.md) \| `null`\>
 
 preview page details
 
@@ -497,7 +497,7 @@ preview page details
 
 > **getRobots**(`siteName`, `fetchOptions?`): `Promise`\<`string` \| `null`\>
 
-Defined in: content/types/client/sitecore-client.d.ts:314
+Defined in: packages/content/types/client/sitecore-client.d.ts:314
 
 Retrieves the robots.txt content for a given site name.
 
@@ -523,9 +523,9 @@ or null if no content is found.
 
 ### getRobotsService()
 
-> `protected` **getRobotsService**(`siteName`): `RobotsService`
+> `protected` **getRobotsService**(`siteName`): [`RobotsService`](RobotsService.md)
 
-Defined in: content/types/client/sitecore-client.d.ts:320
+Defined in: packages/content/types/client/sitecore-client.d.ts:320
 
 #### Parameters
 
@@ -535,7 +535,7 @@ Defined in: content/types/client/sitecore-client.d.ts:320
 
 #### Returns
 
-`RobotsService`
+[`RobotsService`](RobotsService.md)
 
 #### Inherited from
 
@@ -547,7 +547,7 @@ Defined in: content/types/client/sitecore-client.d.ts:320
 
 > **getSiteMap**(`reqOptions`, `fetchOptions?`): `Promise`\<`string`\>
 
-Defined in: content/types/client/sitecore-client.d.ts:306
+Defined in: packages/content/types/client/sitecore-client.d.ts:306
 
 Retrieves sitemap XML content - either a specific sitemap or the index of all sitemaps.
 
@@ -578,7 +578,7 @@ Throws 'REDIRECT_404' if requested sitemap is not found
 
 > **getSiteNameFromPath**(`path`): `string`
 
-Defined in: [nuxt/src/client/sitecore-nuxt-client.ts:53](https://github.com/weareyou/sitecore-nuxt-content-sdk/blob/0855a622b10e7f8f1a092bf930d8d53d3144a776/packages/nuxt/src/client/sitecore-nuxt-client.ts#L53)
+Defined in: [packages/nuxt/src/client/sitecore-nuxt-client.ts:53](https://github.com/weareyou/sitecore-nuxt-content-sdk/blob/f9df27f3b8d16cd24df156046de00eadab843a8d/packages/nuxt/src/client/sitecore-nuxt-client.ts#L53)
 
 Resolves the site name from a rewritten path.
 The `MultisiteMiddleware` rewrites paths to include the site segment (e.g. `/mysite/about`).
@@ -602,7 +602,7 @@ The resolved site name, or the default site if not found
 
 > **parsePath**(`path`): `string`
 
-Defined in: [nuxt/src/client/sitecore-nuxt-client.ts:67](https://github.com/weareyou/sitecore-nuxt-content-sdk/blob/0855a622b10e7f8f1a092bf930d8d53d3144a776/packages/nuxt/src/client/sitecore-nuxt-client.ts#L67)
+Defined in: [packages/nuxt/src/client/sitecore-nuxt-client.ts:67](https://github.com/weareyou/sitecore-nuxt-content-sdk/blob/f9df27f3b8d16cd24df156046de00eadab843a8d/packages/nuxt/src/client/sitecore-nuxt-client.ts#L67)
 
 Normalizes a Nuxt route path by stripping multisite and personalization
 rewrite segments added by the middleware chain.

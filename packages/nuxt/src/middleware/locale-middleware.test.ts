@@ -85,7 +85,7 @@ describe('LocaleMiddleware', () => {
   });
 
   describe('request passed', () => {
-    it('should set locale header when locale is found in path', async () => {
+    it('should set locale header and rewrite path when locale is found in path', async () => {
       const event = createMockEvent({}, '/de-DE/about');
       const { middleware } = createMiddleware();
 
@@ -98,12 +98,30 @@ describe('LocaleMiddleware', () => {
       validateDebugLog('locale middleware end: %o', {
         pathname: '/de-DE/about',
         locale: 'de-DE',
+        rewrittenPath: '/about',
       });
 
       expect(event.node.res.getHeader(LOCALE_HEADER_NAME)).toBe('de-DE');
+      expect(event.node.req.url).toBe('/about');
     });
 
-    it('should set locale header with fallback to en when locale is not in path', async () => {
+    it('should rewrite locale-only path to root', async () => {
+      const event = createMockEvent({}, '/en');
+      const { middleware } = createMiddleware();
+
+      await middleware.handle(event);
+
+      validateDebugLog('locale middleware end: %o', {
+        pathname: '/en',
+        locale: 'en',
+        rewrittenPath: '/',
+      });
+
+      expect(event.node.res.getHeader(LOCALE_HEADER_NAME)).toBe('en');
+      expect(event.node.req.url).toBe('/');
+    });
+
+    it('should not rewrite path when locale is not in path', async () => {
       const event = createMockEvent({}, '/about');
       const { middleware } = createMiddleware();
 
@@ -116,9 +134,11 @@ describe('LocaleMiddleware', () => {
       validateDebugLog('locale middleware end: %o', {
         pathname: '/about',
         locale: 'en',
+        rewrittenPath: undefined,
       });
 
       expect(event.node.res.getHeader(LOCALE_HEADER_NAME)).toBe('en');
+      expect(event.node.req.url).toBe('/about');
     });
 
     it('should set locale header with defaultLanguage when locale is not in path', async () => {
@@ -134,18 +154,21 @@ describe('LocaleMiddleware', () => {
       validateDebugLog('locale middleware end: %o', {
         pathname: '/about',
         locale: 'de-DE',
+        rewrittenPath: undefined,
       });
 
       expect(event.node.res.getHeader(LOCALE_HEADER_NAME)).toBe('de-DE');
+      expect(event.node.req.url).toBe('/about');
     });
 
-    it('should match locale at end of path', async () => {
-      const event = createMockEvent({}, '/en');
+    it('should preserve query string when rewriting path', async () => {
+      const event = createMockEvent({}, '/de-DE/about?foo=bar');
       const { middleware } = createMiddleware();
 
       await middleware.handle(event);
 
-      expect(event.node.res.getHeader(LOCALE_HEADER_NAME)).toBe('en');
+      expect(event.node.res.getHeader(LOCALE_HEADER_NAME)).toBe('de-DE');
+      expect(event.node.req.url).toBe('/about?foo=bar');
     });
   });
 

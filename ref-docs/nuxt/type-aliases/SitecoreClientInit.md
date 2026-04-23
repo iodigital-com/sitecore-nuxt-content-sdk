@@ -8,7 +8,7 @@
 
 > **SitecoreClientInit** = `Omit`\<`SitecoreConfig`, `"multisite"` \| `"redirects"` \| `"personalize"`\> & `object`
 
-Defined in: content/types/client/models.d.ts:11
+Defined in: packages/content/types/client/models.d.ts:11
 
 Init options for Sitecore Client that allows you to override services too
 
@@ -20,11 +20,11 @@ Init options for Sitecore Client that allows you to override services too
 
 #### custom.componentService?
 
-> `optional` **componentService**: `ComponentLayoutService`
+> `optional` **componentService**: [`ComponentLayoutService`](../classes/ComponentLayoutService.md)
 
 #### custom.dictionaryService?
 
-> `optional` **dictionaryService**: `DictionaryService`
+> `optional` **dictionaryService**: [`DictionaryService`](../classes/DictionaryService.md)
 
 #### custom.editingService?
 
@@ -32,12 +32,12 @@ Init options for Sitecore Client that allows you to override services too
 
 #### custom.errorPagesService?
 
-> `optional` **errorPagesService**: `ErrorPagesService`
+> `optional` **errorPagesService**: [`ErrorPagesService`](../classes/ErrorPagesService.md)
 
 #### custom.layoutService?
 
-> `optional` **layoutService**: `LayoutService`
+> `optional` **layoutService**: [`LayoutService`](../classes/LayoutService.md)
 
 #### custom.sitePathService?
 
-> `optional` **sitePathService**: `SitePathService`
+> `optional` **sitePathService**: [`SitePathService`](../classes/SitePathService.md)

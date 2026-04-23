@@ -6,9 +6,9 @@
 
 # Type Alias: PersonalizeMiddlewareConfig
 
-> **PersonalizeMiddlewareConfig** = [`MiddlewareBaseConfig`](MiddlewareBaseConfig.md) & `SitecoreConfig`\[`"api"`\]\[`"edge"`\] & `SitecoreConfig`\[`"personalize"`\] & `object`
+> **PersonalizeMiddlewareConfig** = [`MiddlewareBaseConfig`](MiddlewareBaseConfig.md) & [`SitecoreConfig`](SitecoreConfig.md)\[`"api"`\]\[`"edge"`\] & [`SitecoreConfig`](SitecoreConfig.md)\[`"personalize"`\] & `object`
 
-Defined in: [nuxt/src/middleware/personalize-middleware.ts:47](https://github.com/weareyou/sitecore-nuxt-content-sdk/blob/0855a622b10e7f8f1a092bf930d8d53d3144a776/packages/nuxt/src/middleware/personalize-middleware.ts#L47)
+Defined in: [packages/nuxt/src/middleware/personalize-middleware.ts:47](https://github.com/weareyou/sitecore-nuxt-content-sdk/blob/f9df27f3b8d16cd24df156046de00eadab843a8d/packages/nuxt/src/middleware/personalize-middleware.ts#L47)
 
 Configuration for the PersonalizeMiddleware.
 
@@ -57,7 +57,7 @@ Additional UTM parameters to merge
 
 ### personalizeService?
 
-> `optional` **personalizeService**: `PersonalizeService`
+> `optional` **personalizeService**: [`PersonalizeService`](../classes/PersonalizeService.md)
 
 Optional override for the personalize service. When provided, the default
 PersonalizeService is not instantiated.

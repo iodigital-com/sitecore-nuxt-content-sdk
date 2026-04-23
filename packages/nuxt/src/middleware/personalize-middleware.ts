@@ -65,6 +65,11 @@ export type PersonalizeMiddlewareConfig = MiddlewareBaseConfig &
      * @returns {Promise<PersonalizeGeoData> | PersonalizeGeoData} Geolocation data
      */
     extractGeoDataCb?: (event?: H3Event) => Promise<PersonalizeGeoData> | PersonalizeGeoData;
+    /**
+     * List of locale prefixes to strip from the pathname before personalization lookup.
+     * @example ['en', 'nl-NL']
+     */
+    locales?: string[];
   };
 
 /**
@@ -187,6 +192,14 @@ export class PersonalizeMiddleware extends MiddlewareBase {
     try {
       const pathname = getRequestURL(event).pathname;
       const language = this.getLanguage(event);
+
+      // Strip locale prefix from pathname
+      const locales: string[] = this.config.locales || [];
+      const strippedPathname = locales.some(
+        (locale: string) => pathname.startsWith(`/${locale}/`) || pathname === `/${locale}`
+      )
+        ? '/' + pathname.split('/').slice(2).join('/') || '/'
+        : pathname;
       const hostname = this.getHostHeader(event) || this.defaultHostname;
       const startTimestamp = Date.now();
       const cdpTimeout = this.config.cdpTimeout;
@@ -218,7 +231,7 @@ export class PersonalizeMiddleware extends MiddlewareBase {
       }
 
       const personalizeInfo = await this.personalizeService.getPersonalizeInfo(
-        pathname,
+        strippedPathname,
         language,
         site.name
       );
@@ -282,6 +295,7 @@ export class PersonalizeMiddleware extends MiddlewareBase {
 
       this.rewrite(rewritePath, event);
 
+      event.node.req.headers['x-sc-rewrite'] = rewritePath;
       setResponseHeader(event, 'x-proxy-cache', 'no-cache');
 
       debug.personalize('personalize middleware end in %dms: %o', Date.now() - startTimestamp, {
@@ -306,6 +320,9 @@ export class PersonalizeMiddleware extends MiddlewareBase {
   protected disabled(event: H3Event): boolean {
     if (!this.personalizeService) {
       debug.personalize('skipped (personalize service not configured - edge config required)');
+      console.log(
+        '[Personalize] skipped (personalize service not configured - edge config required)'
+      );
       return true;
     }
 
@@ -412,7 +429,7 @@ export class PersonalizeMiddleware extends MiddlewareBase {
   }) {
     debug.personalize('executing experience for %s %o', friendlyId, params);
 
-    return (await personalize(
+    const result = (await personalize(
       {
         channel: this.config.channel || 'WEB',
         currency: this.config.currency ?? 'USD',
@@ -423,9 +440,9 @@ export class PersonalizeMiddleware extends MiddlewareBase {
         ...(geo && { geo }),
       },
       { timeout }
-    )) as {
-      variantId: string;
-    };
+    )) as { variantId: string };
+
+    return result;
   }
 
   /**

@@ -1,6 +1,8 @@
 {
   "extends": "../../tsconfig.json",
   "compilerOptions": {
+    "declaration": true,
+    "emitDeclarationOnly": true,
     "target": "ES2017",
     "module": "commonjs",
     "moduleResolution": "node10",

@@ -1,0 +1,26 @@
+[**@sitecore-content-sdk/nuxt**](../README.md)
+
+***
+
+[@sitecore-content-sdk/nuxt](../README.md) / getPersonalizedRewrite
+
+# Function: getPersonalizedRewrite()
+
+> **getPersonalizedRewrite**(`pathname`, `variantIds`): `string`
+
+Defined in: packages/content/types/personalize/utils.d.ts:17
+
+Get a personalized rewrite path for given pathname
+
+## Parameters
+
+| Parameter | Type | Description |
+| ------ | ------ | ------ |
+| `pathname` | `string` | the pathname |
+| `variantIds` | `string`[] | the variantIds to include in the rewrite |
+
+## Returns
+
+`string`
+
+the rewrite path

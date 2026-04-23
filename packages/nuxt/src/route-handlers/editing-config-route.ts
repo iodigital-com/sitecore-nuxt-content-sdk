@@ -20,7 +20,7 @@ export type EditingConfigRouteConfig = {
    * Components available in the application.
    * Used to report available components to the Sitecore Page Builder.
    */
-  components: ComponentMap<NuxtContentSdkComponent>;
+  components: ComponentMap<NuxtContentSdkComponent> | string[];
   /**
    * Application metadata containing package information.
    */
@@ -29,7 +29,7 @@ export type EditingConfigRouteConfig = {
    * Contains only client and universal components that can be used in client bundles.
    * When provided, Page Builder can distinguish between server and client components.
    */
-  clientComponents?: ComponentMap<NuxtContentSdkComponent>;
+  clientComponents?: ComponentMap<NuxtContentSdkComponent> | string[];
 };
 
 /**
@@ -169,8 +169,12 @@ export const createEditingConfigRoute = (config: EditingConfigRouteConfig) => {
         return;
       }
 
-      const componentNames = Array.from(config.components.keys());
-      const clientComponentNames = config.clientComponents
+      const componentNames = Array.isArray(config.components)
+        ? config.components
+        : Array.from(config.components.keys());
+      const clientComponentNames = Array.isArray(config.clientComponents)
+        ? config.clientComponents
+        : config.clientComponents
         ? Array.from(config.clientComponents.keys())
         : [];
 

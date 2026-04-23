@@ -1,4 +1,5 @@
 import { defineNuxtConfig } from 'nuxt/config';
+import { resolve } from 'path';
 
 export default defineNuxtConfig({
   experimental: {
@@ -34,6 +35,14 @@ export default defineNuxtConfig({
     },
   },
   runtimeConfig: {
+    public: {
+      locales: ['en', 'nl-NL'],
+      sitecoreEdgeContextId: process.env.NUXT_PUBLIC_SITECORE_EDGE_CONTEXT_ID || '',
+      sitecoreEdgeUrl:
+        process.env.NUXT_PUBLIC_SITECORE_EDGE_PLATFORM_HOSTNAME ||
+        'https://edge-platform.sitecorecloud.io',
+      sitecoreDefaultSite: process.env.NUXT_PUBLIC_DEFAULT_SITE_NAME || '',
+    },
     sitecore: {
       api: {
         edge: {
@@ -68,6 +77,12 @@ export default defineNuxtConfig({
   nitro: {
     rollupConfig: {
       external: ['/^@sitecore-content-sdk/.*/'],
+    },
+    alias: {
+      vue: resolve('./node_modules/vue'),
+      '@vue/runtime-core': resolve('./node_modules/@vue/runtime-core'),
+      '@vue/runtime-dom': resolve('./node_modules/@vue/runtime-dom'),
+      '@vue/reactivity': resolve('./node_modules/@vue/reactivity'),
     },
   },
 });
