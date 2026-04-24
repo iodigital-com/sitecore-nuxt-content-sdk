@@ -8,9 +8,11 @@ import RowSplitter from './RowSplitter.vue';
 import Form from './Form.vue';
 import PartialDesignDynamicPlaceholder from './PartialDesignDynamicPlaceholder.vue';
 import Link from './Link.vue';
+import Text from './Text.vue';
 
 const componentMap: ComponentMap = new Map([
   ['RichText', RichText],
+  ['Text', Text],
   ['Image', Image],
   ['Container', Container],
   ['ColumnSplitter', ColumnSplitter],
