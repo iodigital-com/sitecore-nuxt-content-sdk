@@ -1,4 +1,5 @@
 export * from './sharedTypes';
+export * from './components/FEaaS';
 export {
   constants,
   enableDebug,

@@ -15,6 +15,7 @@ import {
 import { ChildComponentProps, ComponentForRendering, PlaceholderProps } from './models';
 import MissingComponent from '../MissingComponent.vue';
 import HiddenRendering from '../HiddenRendering.vue';
+import FEaaSWrapper from '../FEaaS/FEaaSWrapper.vue';
 
 /**
  * Get the renderings for the specified placeholder from the rendering layout data.
@@ -171,8 +172,20 @@ export const getComponentForRendering = (
   }
 
   if (!component) {
-    logUnknownComponentError();
+    const builtInFallbacks: Record<string, VueContentSdkComponent> = {
+      FEaaSWrapper,
+    };
 
+    const fallback = builtInFallbacks[renderingDefinition.componentName ?? ''];
+    if (fallback) {
+      return {
+        component: fallback,
+        isEmpty: false,
+        componentType: 'universal',
+      };
+    }
+
+    logUnknownComponentError();
     return {
       component: missingComponentComponent ?? MissingComponent,
       isEmpty: true,

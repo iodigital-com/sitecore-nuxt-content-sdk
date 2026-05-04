@@ -1,4 +1,4 @@
-export { FEaaSWrapper } from './FEaaSWrapper.vue';
+export { default as FEaaSWrapper } from './FEaaSWrapper.vue';
 export { fetchFEaaSComponentServerProps, composeComponentEndpoint } from './feaas-utils';
 export {
   FEAAS_WRAPPER_RENDERING_NAME,

@@ -16,6 +16,7 @@ export default defineNuxtConfig({
         'url-parse',
         'memory-cache',
         'regex-parser',
+        '@sitecore-feaas/clientside',
       ],
     },
   },
