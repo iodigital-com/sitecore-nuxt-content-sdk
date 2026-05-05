@@ -6,7 +6,7 @@
 
 # Interface: UseSitecoreContextOptions
 
-Defined in: [vue/src/composables/useSitecoreContext.ts:32](https://github.com/weareyou/sitecore-nuxt-content-sdk/blob/677763bd13fc6440bc1d20be57294a7e4e5a1602/packages/vue/src/composables/useSitecoreContext.ts#L32)
+Defined in: [vue/src/composables/useSitecoreContext.ts:32](https://github.com/weareyou/sitecore-nuxt-content-sdk/blob/74db850835f95819bdce9b617dd0388c1911d154/packages/vue/src/composables/useSitecoreContext.ts#L32)
 
 Options for the useSitecore composable.
 
@@ -16,6 +16,6 @@ Options for the useSitecore composable.
 
 > `optional` **updatable**: `boolean`
 
-Defined in: [vue/src/composables/useSitecoreContext.ts:36](https://github.com/weareyou/sitecore-nuxt-content-sdk/blob/677763bd13fc6440bc1d20be57294a7e4e5a1602/packages/vue/src/composables/useSitecoreContext.ts#L36)
+Defined in: [vue/src/composables/useSitecoreContext.ts:36](https://github.com/weareyou/sitecore-nuxt-content-sdk/blob/74db850835f95819bdce9b617dd0388c1911d154/packages/vue/src/composables/useSitecoreContext.ts#L36)
 
 If set to true, the `setPage` method will be exposed.

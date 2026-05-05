@@ -30,6 +30,8 @@ export type {
   SitecoreProviderState,
   UseSitecoreContextOptions,
 } from './composables/useSitecoreContext';
+export { useDatasourceCheck } from './composables/useDatasourceCheck';
+export type { UseDatasourceCheckOptions } from './composables/useDatasourceCheck';
 export { default as File } from './components/File.vue';
 export type { FileField, FileFieldValue } from './components/File';
 export { default as SitecoreProvider } from './components/SitecoreProvider.vue';

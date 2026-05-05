@@ -1,5 +1,7 @@
 <script setup lang="ts">
+import { toRef } from 'vue';
 import { Text as SitecoreText } from '@sitecore-content-sdk/nuxt';
+import { useDatasourceCheck } from '@sitecore-content-sdk/nuxt';
 
 defineOptions({ inheritAttrs: false });
 
@@ -8,8 +10,11 @@ const props = defineProps<{
   params?: Record<string, any>;
   rendering?: any;
 }>();
+
+const { renderState, errorComponent } = useDatasourceCheck(toRef(props, 'rendering'));
 </script>
 
 <template>
-  <SitecoreText :field="props.fields?.Text" />
+  <component :is="errorComponent" v-if="renderState === 'error'" />
+  <SitecoreText v-else-if="renderState === 'component'" :field="props.fields?.Text" />
 </template>
