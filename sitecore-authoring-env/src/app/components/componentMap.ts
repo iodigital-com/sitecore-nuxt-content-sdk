@@ -9,6 +9,7 @@ import Form from './Form.vue';
 import PartialDesignDynamicPlaceholder from './PartialDesignDynamicPlaceholder.vue';
 import Link from './Link.vue';
 import Text from './Text.vue';
+import FEaaSWrapper from './FEaaSWrapper.vue';
 
 const componentMap: ComponentMap = new Map([
   ['RichText', RichText],
@@ -20,6 +21,7 @@ const componentMap: ComponentMap = new Map([
   ['Form', Form],
   ['PartialDesignDynamicPlaceholder', PartialDesignDynamicPlaceholder],
   ['Link', Link],
+  ['FEaaSWrapper', FEaaSWrapper],
 ]);
 
 export default componentMap;

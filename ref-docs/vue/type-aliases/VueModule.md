@@ -8,7 +8,7 @@
 
 > **VueModule** = `object`
 
-Defined in: [vue/src/sharedTypes/components.ts:13](https://github.com/weareyou/sitecore-nuxt-content-sdk/blob/0eb4be91f4260a1106102aacfc2513e02bf1778f/packages/vue/src/sharedTypes/components.ts#L13)
+Defined in: [vue/src/sharedTypes/components.ts:13](https://github.com/weareyou/sitecore-nuxt-content-sdk/blob/677763bd13fc6440bc1d20be57294a7e4e5a1602/packages/vue/src/sharedTypes/components.ts#L13)
 
 Vue component import with account for custom exports
 
@@ -22,7 +22,7 @@ Vue component import with account for custom exports
 
 > `optional` **default**: `Component`
 
-Defined in: [vue/src/sharedTypes/components.ts:15](https://github.com/weareyou/sitecore-nuxt-content-sdk/blob/0eb4be91f4260a1106102aacfc2513e02bf1778f/packages/vue/src/sharedTypes/components.ts#L15)
+Defined in: [vue/src/sharedTypes/components.ts:15](https://github.com/weareyou/sitecore-nuxt-content-sdk/blob/677763bd13fc6440bc1d20be57294a7e4e5a1602/packages/vue/src/sharedTypes/components.ts#L15)
 
 ***
 
@@ -30,4 +30,4 @@ Defined in: [vue/src/sharedTypes/components.ts:15](https://github.com/weareyou/s
 
 > `optional` **Default**: `Component`
 
-Defined in: [vue/src/sharedTypes/components.ts:16](https://github.com/weareyou/sitecore-nuxt-content-sdk/blob/0eb4be91f4260a1106102aacfc2513e02bf1778f/packages/vue/src/sharedTypes/components.ts#L16)
+Defined in: [vue/src/sharedTypes/components.ts:16](https://github.com/weareyou/sitecore-nuxt-content-sdk/blob/677763bd13fc6440bc1d20be57294a7e4e5a1602/packages/vue/src/sharedTypes/components.ts#L16)
