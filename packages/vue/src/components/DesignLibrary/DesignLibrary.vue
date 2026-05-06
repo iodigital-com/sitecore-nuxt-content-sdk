@@ -17,6 +17,14 @@ import PlaceholderMetadata from '../Placeholder/PlaceholderMetadata.vue';
 import DesignLibraryErrorBoundary from './DesignLibraryErrorBoundary.vue';
 import type { DynamicComponent } from './models';
 
+const props = defineProps<{
+  /**
+   * Optional callback invoked when a component update is received from Design Library.
+   * Use this to trigger server-side cache invalidation (e.g. in Nuxt via useDesignLibraryActions).
+   */
+  onServerComponentUpdate?: (rendering: ComponentRendering) => Promise<void> | void;
+}>();
+
 /**
  * Design Library component.
  *
@@ -70,6 +78,7 @@ onMounted(async () => {
   unsubUpdate = addComponentUpdateHandler(rendering, (updated) => {
     propsState.value = { fields: updated.fields, params: updated.params };
     renderKey.value += 1;
+    props.onServerComponentUpdate?.(updated);
   });
 
   if (isDesignLibrary && isVariantGeneration) {

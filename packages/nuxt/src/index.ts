@@ -5,6 +5,7 @@ export * from './utils/utils';
 export * from './monitoring';
 export * from './client';
 export * from './config';
+export * from './components';
 export { default as debug } from './debug';
 
 export {
