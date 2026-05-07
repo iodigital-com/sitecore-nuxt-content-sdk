@@ -73,6 +73,12 @@
       "default": "./dist/client/index.js",
       "types": "./types/client/index.d.ts"
     },
+    "./components": {
+      "browser": "./dist/components/index.js",
+      "import": "./dist/components/index.js",
+      "default": "./dist/components/index.js",
+      "types": "./types/components/index.d.ts"
+    },
     "./composables": {
       "import": "./dist/composables/index.js",
       "default": "./dist/composables/index.js",

@@ -18,7 +18,7 @@ export default defineConfig({
     },
     local: {
       apiKey: process.env.NUXT_PUBLIC_SITECORE_API_KEY || '',
-      apiHost: process.env.NUXT_PUBLIC_DEFAULT_SITE_NAME || '',
+      apiHost: process.env.NUXT_PUBLIC_SITECORE_API_HOST || '',
     },
   },
   defaultSite: process.env.NUXT_PUBLIC_DEFAULT_SITE_NAME,
