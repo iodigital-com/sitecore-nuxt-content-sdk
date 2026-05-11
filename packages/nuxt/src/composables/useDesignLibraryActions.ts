@@ -58,7 +58,6 @@ export type PreviewEventModel = {
  * Composable that provides server-side component cache update functions for use with
  * Sitecore Design Library.
  *
- * Replaces Next.js server actions with Nuxt-compatible equivalents.
  * Uses `refreshNuxtData` to invalidate the page cache after updating component data,
  * triggering a server-side re-render of the affected components.
  * @public

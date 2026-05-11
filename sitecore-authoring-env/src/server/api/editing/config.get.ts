@@ -6,4 +6,6 @@ import metadata from '../../../.sitecore/metadata.json';
 
 const { handle } = createEditingConfigRoute({ components: componentNames, metadata });
 
-export default defineEventHandler(handle);
+export default defineEventHandler((event) => {
+  return handle(event);
+});
