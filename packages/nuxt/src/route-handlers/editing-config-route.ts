@@ -1,4 +1,4 @@
-import { H3Event, getRequestHeader, setResponseHeader, setResponseStatus, send } from 'h3';
+import { H3Event, setResponseHeader, setResponseStatus, send, getHeaders } from 'h3';
 import { ComponentMap } from '@sitecore-content-sdk/vue';
 import { Metadata } from '@sitecore-content-sdk/core/node-tools';
 import { NuxtContentSdkComponent } from '../sharedTypes/component-props';
@@ -85,12 +85,12 @@ export const createEditingConfigRoute = (config: EditingConfigRouteConfig) => {
    * @returns {Record<string, string> | null} CORS headers or null if origin is not allowed
    */
   const getEnforcedCorsHeaders = (event: H3Event): Record<string, string> | null => {
+    const requestHeaders = getHeaders(event);
+    const headers = new Headers(requestHeaders as Record<string, string>);
+
     return getCorsHeaders({
       requestMethod: event.method,
-      headers: new Headers({
-        origin: getRequestHeader(event, 'origin') || '',
-        'access-control-allow-origin': getRequestHeader(event, 'access-control-allow-origin') || '',
-      }),
+      headers,
       presetCorsHeader: undefined,
       allowedOrigins: EDITING_ALLOWED_ORIGINS,
     });
@@ -122,6 +122,11 @@ export const createEditingConfigRoute = (config: EditingConfigRouteConfig) => {
       }
 
       Object.entries(corsHeaders).forEach(([key, value]) => setResponseHeader(event, key, value));
+      setResponseHeader(
+        event,
+        'Access-Control-Allow-Headers',
+        'Content-Type, Authorization, authorization'
+      );
       setResponseStatus(event, 204);
       await send(event, '');
     } catch (error) {

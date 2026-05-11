@@ -19,6 +19,9 @@ export default defineNuxtConfig({
         '@sitecore-feaas/clientside',
       ],
     },
+    server: {
+      allowedHosts: ['.sitecorecloud.io', '.sitecorecloud.net', '.sitecorecloud.dev'],
+    },
   },
   routeRules: {
     '*': {
