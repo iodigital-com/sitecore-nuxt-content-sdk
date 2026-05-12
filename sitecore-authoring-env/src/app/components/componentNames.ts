@@ -9,5 +9,5 @@ export const componentNames = [
   'Form',
   'PartialDesignDynamicPlaceholder',
   'Link',
-  'FEaaSWrapper',
+  'MyGraphQLComponent',
 ];
