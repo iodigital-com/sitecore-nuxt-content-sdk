@@ -6,7 +6,7 @@
 
 # Interface: SitecoreProviderState
 
-Defined in: [vue/src/composables/useSitecoreContext.ts:12](https://github.com/weareyou/sitecore-nuxt-content-sdk/blob/74db850835f95819bdce9b617dd0388c1911d154/packages/vue/src/composables/useSitecoreContext.ts#L12)
+Defined in: [vue/src/composables/useSitecoreContext.ts:12](https://github.com/weareyou/sitecore-nuxt-content-sdk/blob/0050a40ff8845ffcfa6529dc9043742e14fcc60d/packages/vue/src/composables/useSitecoreContext.ts#L12)
 
 The state provided by SitecoreProvider.
 
@@ -16,7 +16,7 @@ The state provided by SitecoreProvider.
 
 > `optional` **api**: `Required`\<\{ `edge?`: `Required`\<\{ `clientContextId?`: `string`; `contextId`: `string`; `edgeUrl?`: `string`; \} \| `undefined`\>; `local?`: `Required`\<\{ `apiHost`: `string`; `apiKey`: `string`; `path?`: `string`; \} \| `undefined`\>; \}\>
 
-Defined in: [vue/src/composables/useSitecoreContext.ts:21](https://github.com/weareyou/sitecore-nuxt-content-sdk/blob/74db850835f95819bdce9b617dd0388c1911d154/packages/vue/src/composables/useSitecoreContext.ts#L21)
+Defined in: [vue/src/composables/useSitecoreContext.ts:21](https://github.com/weareyou/sitecore-nuxt-content-sdk/blob/0050a40ff8845ffcfa6529dc9043742e14fcc60d/packages/vue/src/composables/useSitecoreContext.ts#L21)
 
 The API configuration defined in the `SitecoreConfig`.
 
@@ -26,7 +26,7 @@ The API configuration defined in the `SitecoreConfig`.
 
 > **componentMap**: [`ComponentMap`](../type-aliases/ComponentMap.md)
 
-Defined in: [vue/src/composables/useSitecoreContext.ts:23](https://github.com/weareyou/sitecore-nuxt-content-sdk/blob/74db850835f95819bdce9b617dd0388c1911d154/packages/vue/src/composables/useSitecoreContext.ts#L23)
+Defined in: [vue/src/composables/useSitecoreContext.ts:23](https://github.com/weareyou/sitecore-nuxt-content-sdk/blob/0050a40ff8845ffcfa6529dc9043742e14fcc60d/packages/vue/src/composables/useSitecoreContext.ts#L23)
 
 The component map to use for rendering components.
 
@@ -36,7 +36,7 @@ The component map to use for rendering components.
 
 > **loadImportMap**: () => `Promise`\<`ImportMapImport`\>
 
-Defined in: [vue/src/composables/useSitecoreContext.ts:25](https://github.com/weareyou/sitecore-nuxt-content-sdk/blob/74db850835f95819bdce9b617dd0388c1911d154/packages/vue/src/composables/useSitecoreContext.ts#L25)
+Defined in: [vue/src/composables/useSitecoreContext.ts:25](https://github.com/weareyou/sitecore-nuxt-content-sdk/blob/0050a40ff8845ffcfa6529dc9043742e14fcc60d/packages/vue/src/composables/useSitecoreContext.ts#L25)
 
 The dynamic import for import map to be used in variant generation mode.
 
@@ -50,7 +50,7 @@ The dynamic import for import map to be used in variant generation mode.
 
 > **page**: `Ref`\<`Page`\>
 
-Defined in: [vue/src/composables/useSitecoreContext.ts:14](https://github.com/weareyou/sitecore-nuxt-content-sdk/blob/74db850835f95819bdce9b617dd0388c1911d154/packages/vue/src/composables/useSitecoreContext.ts#L14)
+Defined in: [vue/src/composables/useSitecoreContext.ts:14](https://github.com/weareyou/sitecore-nuxt-content-sdk/blob/0050a40ff8845ffcfa6529dc9043742e14fcc60d/packages/vue/src/composables/useSitecoreContext.ts#L14)
 
 The current page data as a reactive ref.
 
@@ -60,7 +60,7 @@ The current page data as a reactive ref.
 
 > `optional` **setPage**: (`value`) => `void`
 
-Defined in: [vue/src/composables/useSitecoreContext.ts:19](https://github.com/weareyou/sitecore-nuxt-content-sdk/blob/74db850835f95819bdce9b617dd0388c1911d154/packages/vue/src/composables/useSitecoreContext.ts#L19)
+Defined in: [vue/src/composables/useSitecoreContext.ts:19](https://github.com/weareyou/sitecore-nuxt-content-sdk/blob/0050a40ff8845ffcfa6529dc9043742e14fcc60d/packages/vue/src/composables/useSitecoreContext.ts#L19)
 
 Method to update the page. Only exposed when `updatable: true` is passed to `useSitecore`.
 

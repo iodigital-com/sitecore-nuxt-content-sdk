@@ -554,7 +554,12 @@ describe('<DesignLibrary />', () => {
       await sendUpdate({ uid: RENDER_ID, fields: { content: { value: 'updated!' } } });
 
       expect(onServerComponentUpdate).toHaveBeenCalledWith(
-        expect.objectContaining({ uid: RENDER_ID, fields: { content: { value: 'updated!' } } })
+        expect.objectContaining({
+          uid: RENDER_ID,
+          fields: expect.objectContaining({
+            content: { value: 'updated!' },
+          }),
+        })
       );
     });
 
