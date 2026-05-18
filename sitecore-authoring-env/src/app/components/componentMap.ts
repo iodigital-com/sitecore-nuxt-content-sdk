@@ -10,6 +10,7 @@ import PartialDesignDynamicPlaceholder from './PartialDesignDynamicPlaceholder.v
 import Link from './Link.vue';
 import Text from './Text.vue';
 import MyGraphQLComponent from './MyGraphQLComponent.vue';
+import AsyncComponent from './AsyncComponent.vue';
 
 const componentMap: ComponentMap = new Map([
   ['RichText', RichText],
@@ -22,6 +23,7 @@ const componentMap: ComponentMap = new Map([
   ['PartialDesignDynamicPlaceholder', PartialDesignDynamicPlaceholder],
   ['Link', Link],
   ['MyGraphQLComponent', MyGraphQLComponent],
+  ['AsyncComponent', AsyncComponent],
 ]);
 
 export default componentMap;
