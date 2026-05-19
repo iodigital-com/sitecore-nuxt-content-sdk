@@ -122,11 +122,7 @@ export const createEditingConfigRoute = (config: EditingConfigRouteConfig) => {
       }
 
       Object.entries(corsHeaders).forEach(([key, value]) => setResponseHeader(event, key, value));
-      setResponseHeader(
-        event,
-        'Access-Control-Allow-Headers',
-        'Content-Type, Authorization, authorization'
-      );
+      setResponseHeader(event, 'Access-Control-Allow-Headers', 'Content-Type, Authorization');
       setResponseStatus(event, 204);
       await send(event, '');
     } catch (error) {

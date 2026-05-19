@@ -15,14 +15,15 @@ const middleware = new PersonalizeMiddleware({
   scope: scConfig.personalize?.scope,
   channel: scConfig.personalize?.channel,
   currency: scConfig.personalize?.currency,
-  extractGeoDataCb: () => ({
+  extractGeoDataCb: (event) => ({
     country:
-      // getRequestHeader(event, 'x-vercel-ip-country') ||
-      // getRequestHeader(event, 'cf-ipcountry') ||
-      'UK', // For localhost: change to 'NL' for country-based personalization testing
+      event.req.headers.get('x-vercel-ip-country') || event.req.headers.get('cf-ipcountry') || 'UK',
   }),
 });
 
 export default defineEventHandler((event) => {
+  // Log the country header for debugging purposes
+  console.log('Country header:', event.req.headers.get('x-vercel-ip-country'));
+  console.log('Country header:', event.req.headers.get('cf-ipcountry'));
   return middleware.handle(event);
 });
