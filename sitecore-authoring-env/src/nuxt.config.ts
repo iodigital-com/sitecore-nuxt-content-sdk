@@ -11,11 +11,12 @@ export default defineNuxtConfig({
       include: [
         '@vue/devtools-core',
         '@vue/devtools-kit',
+        'debug', // CJS
         'graphql-request',
-        'debug',
-        'url-parse',
-        'memory-cache',
-        'regex-parser',
+        'memory-cache', // CJS
+        'url-parse', // CJS
+        'regex-parser', // CJS
+        '@sitecore-feaas/clientside',
       ],
     },
     server: {

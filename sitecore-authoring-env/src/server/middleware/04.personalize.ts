@@ -17,13 +17,12 @@ const middleware = new PersonalizeMiddleware({
   currency: scConfig.personalize?.currency,
   extractGeoDataCb: (event) => ({
     country:
-      event.req.headers.get('x-vercel-ip-country') || event.req.headers.get('cf-ipcountry') || 'UK',
+      (event.node?.req?.headers?.['x-vercel-ip-country'] as string) ||
+      (event.node?.req?.headers?.['cf-ipcountry'] as string) ||
+      'UK',
   }),
 });
 
 export default defineEventHandler((event) => {
-  // Log the country header for debugging purposes
-  console.log('Country header:', event.req.headers.get('x-vercel-ip-country'));
-  console.log('Country header:', event.req.headers.get('cf-ipcountry'));
   return middleware.handle(event);
 });
