@@ -1,6 +1,5 @@
 import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest';
-import { createEvent, H3Event } from 'h3';
-import { IncomingMessage, ServerResponse } from 'http';
+import { mockEvent, H3Event } from 'h3';
 
 vi.mock('@sitecore-content-sdk/core', () => ({ getCoreContext: vi.fn() }));
 vi.mock('@sitecore-content-sdk/analytics-core/internal', () => ({
@@ -20,7 +19,6 @@ vi.mock('h3', async (importOriginal) => {
     getCookie: vi.fn(),
     setCookie: vi.fn(),
     deleteCookie: vi.fn(),
-    getRequestHeader: vi.fn(),
   };
 });
 
@@ -34,11 +32,11 @@ import {
   fetchProfileIdFromEdgeProxy,
 } from '@sitecore-content-sdk/personalize/internal';
 import { getClientId } from './analytics-adapter';
-import { getCookie, setCookie, deleteCookie, getRequestHeader } from 'h3';
+import { getCookie, setCookie, deleteCookie } from 'h3';
 import { personalizeMiddlewareAdapter } from './personalize-adapter';
 
 describe('personalizeMiddlewareAdapter', () => {
-    const mockAnalyticsPlugin = {
+  const mockAnalyticsPlugin = {
     options: {
       cookies: {
         name: 'sc_cid',
@@ -73,10 +71,8 @@ describe('personalizeMiddlewareAdapter', () => {
     secure: true,
   };
 
-  const createMockEvent = (): H3Event => {
-    const req = new IncomingMessage(null as any);
-    const res = new ServerResponse(req);
-    return createEvent(req, res);
+  const createMockEvent = (headers: Record<string, string> = {}): H3Event => {
+    return mockEvent('http://localhost/', { headers });
   };
 
   beforeEach(() => {
@@ -101,15 +97,14 @@ describe('personalizeMiddlewareAdapter', () => {
 
     describe('getUserAgent', () => {
       it('should return user agent from request headers', () => {
-        vi.mocked(getRequestHeader).mockReturnValue('Mozilla/5.0 TestBrowser');
-        const adapter = personalizeMiddlewareAdapter(createMockEvent());
+        const adapter = personalizeMiddlewareAdapter(
+          createMockEvent({ 'user-agent': 'Mozilla/5.0 TestBrowser' })
+        );
 
         expect(adapter.getUserAgent()).toBe('Mozilla/5.0 TestBrowser');
-        expect(vi.mocked(getRequestHeader)).toHaveBeenCalledWith(expect.anything(), 'user-agent');
       });
 
       it('should return undefined when user agent header is not present', () => {
-        vi.mocked(getRequestHeader).mockReturnValue(undefined);
         const adapter = personalizeMiddlewareAdapter(createMockEvent());
 
         expect(adapter.getUserAgent()).toBeUndefined();

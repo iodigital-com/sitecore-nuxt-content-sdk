@@ -1,6 +1,5 @@
 import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest';
-import { createEvent } from 'h3';
-import { IncomingMessage, ServerResponse } from 'http';
+import { mockEvent } from 'h3';
 import type { SiteInfo } from '@sitecore-content-sdk/content/site';
 import { constants } from '@sitecore-content-sdk/core';
 import { createSitemapRoute } from './sitemap-route';
@@ -17,28 +16,7 @@ vi.mock('@sitecore-content-sdk/content/site', async (importOriginal) => {
 });
 
 const createMockEvent = (headers: Record<string, string> = {}, path: string = '/') => {
-  const req = new IncomingMessage(null as any);
-  req.headers = headers;
-  req.url = path;
-  const res = new ServerResponse(req);
-  return createEvent(req, res);
-};
-
-const readBody = (event: ReturnType<typeof createMockEvent>): Promise<string> => {
-  return new Promise((resolve) => {
-    const chunks: Buffer[] = [];
-
-    event.node.res.write = (chunk: any) => {
-      chunks.push(Buffer.from(chunk));
-      return true;
-    };
-
-    event.node.res.end = (chunk?: any) => {
-      if (chunk) chunks.push(Buffer.from(chunk));
-      resolve(Buffer.concat(chunks).toString());
-      return event.node.res;
-    };
-  });
+  return mockEvent(`http://localhost${path}`, { headers });
 };
 
 describe('createSitemapRoute', () => {
@@ -66,7 +44,10 @@ describe('createSitemapRoute', () => {
       getByName: vi.fn(),
     };
 
-    SiteResolverMock.mockReturnValue(siteResolverStub);
+    SiteResolverMock.mockImplementation(function (this: any) {
+      this.getByHost = siteResolverStub.getByHost;
+      this.getByName = siteResolverStub.getByName;
+    });
 
     route = createSitemapRoute({ client: sitecoreClientStub, sites });
   });
@@ -84,10 +65,8 @@ describe('createSitemapRoute', () => {
         { host: 'example.com', 'x-forwarded-proto': 'https' },
         '/sitemap.xml'
       );
-      const bodyPromise = readBody(event);
 
-      await route.handle(event);
-      const body = await bodyPromise;
+      const body = await route.handle(event);
 
       expect(getSiteMapMock).toHaveBeenCalledOnce();
       expect(getSiteMapMock.mock.calls[0][0]).toMatchObject({
@@ -96,7 +75,7 @@ describe('createSitemapRoute', () => {
         id: '',
         siteName: 'test-site',
       });
-      expect(event.node.res.getHeader('Content-Type')).toBe('text/xml;charset=utf-8');
+      expect(event.res.headers.get('Content-Type')).toBe('text/xml;charset=utf-8');
       expect(body).toBe(xmlContent);
     });
 
@@ -109,10 +88,8 @@ describe('createSitemapRoute', () => {
         { host: 'example.com', 'x-forwarded-proto': 'https' },
         `/sitemap-${sitemapId}.xml`
       );
-      const bodyPromise = readBody(event);
 
-      await route.handle(event);
-      const body = await bodyPromise;
+      const body = await route.handle(event);
 
       expect(getSiteMapMock.mock.calls[0][0]).toMatchObject({
         reqHost: 'example.com',
@@ -127,10 +104,8 @@ describe('createSitemapRoute', () => {
       getSiteMapMock.mockResolvedValue('<sitemapindex>...</sitemapindex>');
 
       const event = createMockEvent({ host: 'example.com' }, '/sitemap.xml');
-      const bodyPromise = readBody(event);
 
       await route.handle(event);
-      await bodyPromise;
 
       expect(getSiteMapMock.mock.calls[0][0]).toMatchObject({
         reqHost: 'example.com',
@@ -146,10 +121,8 @@ describe('createSitemapRoute', () => {
         { 'x-forwarded-host': 'example.com', host: 'localhost:3000' },
         '/sitemap.xml'
       );
-      const bodyPromise = readBody(event);
 
       await route.handle(event);
-      await bodyPromise;
 
       expect(getSiteMapMock).toHaveBeenCalledWith(
         expect.objectContaining({ reqHost: 'example.com', siteName: 'test-site' })
@@ -160,10 +133,8 @@ describe('createSitemapRoute', () => {
       getSiteMapMock.mockResolvedValue('<sitemapindex>...</sitemapindex>');
 
       const event = createMockEvent({ 'x-forwarded-proto': 'https' }, '/sitemap.xml');
-      const bodyPromise = readBody(event);
 
       await route.handle(event);
-      await bodyPromise;
 
       expect(getSiteMapMock.mock.calls[0][0]).toMatchObject({
         reqHost: '',
@@ -178,12 +149,10 @@ describe('createSitemapRoute', () => {
         { host: 'example.com', 'x-forwarded-proto': 'https' },
         '/sitemap.xml'
       );
-      const bodyPromise = readBody(event);
 
-      await route.handle(event);
-      const body = await bodyPromise;
+      const body = await route.handle(event);
 
-      expect(event.node.res.statusCode).toBe(404);
+      expect(event.res.status).toBe(404);
       expect(body).toBe('Not Found');
     });
 
@@ -194,12 +163,10 @@ describe('createSitemapRoute', () => {
         { host: 'example.com', 'x-forwarded-proto': 'https' },
         '/sitemap.xml'
       );
-      const bodyPromise = readBody(event);
 
-      await route.handle(event);
-      const body = await bodyPromise;
+      const body = await route.handle(event);
 
-      expect(event.node.res.statusCode).toBe(500);
+      expect(event.res.status).toBe(500);
       expect(body).toBe(`Internal Server Error.  ${ERROR_MESSAGES.CONTACT_SUPPORT}`);
     });
   });

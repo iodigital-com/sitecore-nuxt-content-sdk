@@ -1,6 +1,5 @@
 import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest';
-import { createEvent } from 'h3';
-import { IncomingMessage, ServerResponse } from 'http';
+import { mockEvent } from 'h3';
 import type { SiteInfo } from '@sitecore-content-sdk/content/site';
 import { createRobotsRoute } from './robots-route';
 
@@ -14,10 +13,7 @@ vi.mock('@sitecore-content-sdk/content/site', async (importOriginal) => {
 });
 
 const createMockEvent = (headers: Record<string, string> = {}) => {
-  const req = new IncomingMessage(null as any);
-  req.headers = headers;
-  const res = new ServerResponse(req);
-  return createEvent(req, res);
+  return mockEvent('http://localhost/', { headers });
 };
 
 describe('createRobotsRoute', () => {
@@ -46,7 +42,10 @@ describe('createRobotsRoute', () => {
       getByName: vi.fn(),
     };
 
-    SiteResolverMock.mockReturnValue(siteResolverStub);
+    SiteResolverMock.mockImplementation(function (this: any) {
+      this.getByHost = siteResolverStub.getByHost;
+      this.getByName = siteResolverStub.getByName;
+    });
 
     route = createRobotsRoute({ client: sitecoreClientStub, sites });
   });
@@ -61,7 +60,7 @@ describe('createRobotsRoute', () => {
 
     await route.handle(event);
 
-    expect(event.node.res.getHeader('Content-Type')).toBe('text/plain');
+    expect(event.res.headers.get('Content-Type')).toBe('text/plain');
   });
 
   it('should call getRobots with the correct siteName', async () => {
@@ -79,7 +78,7 @@ describe('createRobotsRoute', () => {
 
     await route.handle(event);
 
-    expect(event.node.res.statusCode).toBe(200);
+    expect(event.res.status ?? 200).toBe(200);
   });
 
   it('should return 404 if getRobots returns null', async () => {
@@ -88,7 +87,7 @@ describe('createRobotsRoute', () => {
 
     await route.handle(event);
 
-    expect(event.node.res.statusCode).toBe(404);
+    expect(event.res.status).toBe(404);
   });
 
   it('should return 500 if getRobots throws an error', async () => {
@@ -97,7 +96,7 @@ describe('createRobotsRoute', () => {
 
     await route.handle(event);
 
-    expect(event.node.res.statusCode).toBe(500);
+    expect(event.res.status).toBe(500);
   });
 
   it('should use "localhost" as fallback when host header is missing', async () => {

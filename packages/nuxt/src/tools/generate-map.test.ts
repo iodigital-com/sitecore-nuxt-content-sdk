@@ -44,6 +44,7 @@ describe('generateMap', () => {
   ];
 
   beforeEach(() => {
+    vi.clearAllMocks();
     vi.spyOn(templatingUtils, 'getComponentListWithTypes').mockReturnValue(fakeComponents);
     vi.mocked(fs.writeFileSync).mockImplementation(() => undefined);
   });

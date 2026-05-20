@@ -8,15 +8,7 @@ export default defineNuxtConfig({
   compatibilityDate: '2026-04-10',
   vite: {
     optimizeDeps: {
-      include: [
-        '@vue/devtools-core',
-        '@vue/devtools-kit',
-        'graphql-request',
-        'debug',
-        'url-parse',
-        'memory-cache',
-        'regex-parser',
-      ],
+      include: ['@vue/devtools-core', '@vue/devtools-kit', 'graphql-request'],
     },
     server: {
       allowedHosts: [

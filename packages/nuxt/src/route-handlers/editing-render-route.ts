@@ -1,4 +1,4 @@
-import { H3Event, getRequestHeader, setResponseHeader, setResponseStatus, send } from 'h3';
+import { H3Event } from 'h3';
 import { NativeDataFetcher } from '@sitecore-content-sdk/core';
 import {
   EDITING_ALLOWED_ORIGINS,
@@ -90,8 +90,8 @@ export const createEditingRenderRoute = (config: EditingRenderRouteConfig = {}) 
     const expectedCorsHeaders = getEnforcedCorsHeaders({
       requestMethod: event.method,
       headers: new Headers({
-        origin: getRequestHeader(event, 'origin') || '',
-        'access-control-allow-origin': getRequestHeader(event, 'access-control-allow-origin') || '',
+        origin: event.req.headers.get('origin') || '',
+        'access-control-allow-origin': event.req.headers.get('access-control-allow-origin') || '',
       }),
       presetCorsHeader: undefined,
       allowedOrigins: EDITING_ALLOWED_ORIGINS,
@@ -135,9 +135,12 @@ export const createEditingRenderRoute = (config: EditingRenderRouteConfig = {}) 
    * Returns 400 if required query parameters are missing.
    * Returns 307 redirect if the page HTML fetch fails.
    * @param {H3Event} event - The incoming H3 event
-   * @returns {Promise<void>}
+   * @returns {Promise<string>} Promise that resolves to the HTML string to return in the response
    */
-  const handleGet = async (event: H3Event): Promise<void> => {
+  const handleGet = async (event: H3Event): Promise<string> => {
+    const nodeReq = event.runtime?.node?.req;
+    if (!nodeReq) throw new Error('Node.js runtime required');
+
     const query: EditingRenderQueryParams = {} as EditingRenderQueryParams;
     const searchParams = new URL(event.path, 'http://localhost').searchParams;
     searchParams.forEach((value, key) => {
@@ -151,23 +154,18 @@ export const createEditingRenderRoute = (config: EditingRenderRouteConfig = {}) 
 
     const corsHeaders = getCorsHeaders(event);
     if (!corsHeaders) {
-      setResponseStatus(event, 401);
-      await send(
-        event,
-        `<html><body>Requests from origin ${
-          getRequestHeader(event, 'origin') || ''
-        } not allowed</body></html>`
-      );
-      return;
+      event.res.status = 401;
+      return `<html><body>Requests from origin ${
+        event.req.headers.get('origin') || ''
+      } not allowed</body></html>`;
     }
 
-    Object.entries(corsHeaders).forEach(([key, value]) => setResponseHeader(event, key, value));
+    Object.entries(corsHeaders).forEach(([key, value]) => event.res.headers.set(key, value));
 
     if (!validateEditingSecret(query[QUERY_PARAM_EDITING_SECRET])) {
-      setResponseStatus(event, 401);
-      setResponseHeader(event, 'Content-Type', 'application/json');
-      await send(event, JSON.stringify({ html: INVALID_SECRET_HTML_MESSAGE }));
-      return;
+      event.res.status = 401;
+      event.res.headers.set('Content-Type', 'application/json');
+      return JSON.stringify({ html: INVALID_SECRET_HTML_MESSAGE });
     }
 
     const startTimestamp = Date.now();
@@ -183,17 +181,11 @@ export const createEditingRenderRoute = (config: EditingRenderRouteConfig = {}) 
       const missing = [...missingQueryParams, ...missingAllowedParams];
       debug.editing('missing required query parameters: %o', missing);
 
-      setResponseStatus(event, 400);
-      setResponseHeader(event, 'Content-Type', 'application/json');
-      await send(
-        event,
-        JSON.stringify({
-          html: `<html><body>Missing required query parameters: ${missing.join(
-            ', '
-          )}</body></html>`,
-        })
-      );
-      return;
+      event.res.status = 400;
+      event.res.headers.set('Content-Type', 'application/json');
+      return JSON.stringify({
+        html: `<html><body>Missing required query parameters: ${missing.join(', ')}</body></html>`,
+      });
     }
 
     const encodedRoute = encodeURI(query.route);
@@ -202,7 +194,7 @@ export const createEditingRenderRoute = (config: EditingRenderRouteConfig = {}) 
     const base = config.sitecoreInternalEditingHostUrl || resolveServerUrl(event);
     const requestUrl = new URL(route, base);
 
-    setResponseHeader(event, 'Content-Security-Policy', getCSPHeader());
+    event.res.headers.set('Content-Security-Policy', getCSPHeader());
 
     const previewCookies =
       mode === LayoutServicePageState.Preview ? getPreviewCookies(query.sc_site) : [];
@@ -216,7 +208,7 @@ export const createEditingRenderRoute = (config: EditingRenderRouteConfig = {}) 
       };
 
       const propagatedHeaders = getHeadersForPropagation(
-        new Headers(event.node.req.headers as Record<string, string>)
+        new Headers(nodeReq.headers as Record<string, string>)
       );
 
       const html = await getEditingRequestHtml(
@@ -232,8 +224,8 @@ export const createEditingRenderRoute = (config: EditingRenderRouteConfig = {}) 
         route,
       });
 
-      setResponseHeader(event, 'Content-Type', 'text/html; charset=utf-8');
-      await send(event, html);
+      event.res.headers.set('Content-Type', 'text/html; charset=utf-8');
+      return html;
     } catch (err) {
       debug.editing('error fetching page route %s: %o', requestUrl, err);
       debug.editing('falling back to redirect method...');
@@ -246,9 +238,9 @@ export const createEditingRenderRoute = (config: EditingRenderRouteConfig = {}) 
         }
       );
 
-      setResponseStatus(event, 307);
-      setResponseHeader(event, 'Location', route);
-      await send(event, '');
+      event.res.status = 307;
+      event.res.headers.set('Location', route);
+      return '';
     }
   };
 
@@ -259,35 +251,31 @@ export const createEditingRenderRoute = (config: EditingRenderRouteConfig = {}) 
    * Returns 401 if the origin is not allowed.
    * Returns 204 if the origin is valid.
    * @param {H3Event} event - The incoming H3 event
-   * @returns {Promise<void>}
+   * @returns {Promise<string>} Promise that resolves to the response body string (empty for 204/redirect responses).
    */
-  const handleOptions = async (event: H3Event): Promise<void> => {
+  const handleOptions = async (event: H3Event): Promise<string> => {
     debug.editing('preflight request');
 
     try {
       const corsHeaders = getCorsHeaders(event);
 
       if (!corsHeaders) {
-        setResponseStatus(event, 401);
-        await send(
-          event,
-          `<html><body>Requests from origin ${
-            getRequestHeader(event, 'origin') || ''
-          } not allowed</body></html>`
-        );
-        return;
+        event.res.status = 401;
+        return `<html><body>Requests from origin ${
+          event.req.headers.get('origin') || ''
+        } not allowed</body></html>`;
       }
 
-      Object.entries(corsHeaders).forEach(([key, value]) => setResponseHeader(event, key, value));
-      setResponseStatus(event, 204);
-      await send(event, '');
+      Object.entries(corsHeaders).forEach(([key, value]) => event.res.headers.set(key, value));
+      event.res.status = 204;
+      return '';
     } catch (error) {
       console.error(
         'Editing render OPTIONS route handler failed:',
         error instanceof Error ? error.message : String(error)
       );
-      setResponseStatus(event, 500);
-      await send(event, 'Internal Server Error');
+      event.res.status = 500;
+      return 'Internal Server Error';
     }
   };
 

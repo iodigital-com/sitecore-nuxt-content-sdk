@@ -1,11 +1,4 @@
-import {
-  H3Event,
-  getCookie,
-  getRequestHeader,
-  getResponseHeader,
-  getRequestURL,
-  setResponseHeader,
-} from 'h3';
+import { H3Event, getCookie, getRequestHeader } from 'h3';
 import { SITE_KEY, SiteInfo, SiteResolver } from '@sitecore-content-sdk/content/site';
 import {
   createGraphQLClientFactory,
@@ -97,13 +90,13 @@ export abstract class MiddlewareBase extends MiddlewareHandler {
    * @returns {boolean} is prefetch
    */
   protected isPrefetch(event: H3Event): boolean {
-    const isMobile = getRequestHeader(event, 'sec-ch-ua-mobile') === '?1';
-    const userAgent = getRequestHeader(event, 'user-agent') || '';
+    const isMobile = event.req.headers.get('sec-ch-ua-mobile') === '?1';
+    const userAgent = event.req.headers.get('user-agent') || '';
     const isKnownPlatform = /iPhone|Mac|Linux|Windows|Android/i.test(userAgent);
     const isKnownDevice = isMobile || isKnownPlatform;
 
-    const purpose = getRequestHeader(event, 'purpose');
-    const fetchMode = getRequestHeader(event, 'sec-fetch-mode');
+    const purpose = event.req.headers.get('purpose');
+    const fetchMode = event.req.headers.get('sec-fetch-mode');
 
     if (isKnownDevice && fetchMode === 'navigate') {
       return false;
@@ -120,7 +113,12 @@ export abstract class MiddlewareBase extends MiddlewareHandler {
    * @returns {boolean} true if the middleware should be skipped
    */
   protected disabled(event: H3Event): boolean {
-    const pathname = getRequestURL(event).pathname;
+    const rawUrl = (event.node?.req?.url || event.req?.url || '/') as string;
+    const host = (event.node?.req?.headers?.host ||
+      event.req?.headers?.get('host') ||
+      'localhost') as string;
+    const requestURL = new URL(rawUrl.startsWith('http') ? rawUrl : `http://${host}${rawUrl}`);
+    const pathname = requestURL.pathname;
 
     return (
       pathname.startsWith('/api/') || // Ignore Nuxt API calls
@@ -137,7 +135,7 @@ export abstract class MiddlewareBase extends MiddlewareHandler {
    */
   protected getLanguage(event: H3Event): string {
     return (
-      (getResponseHeader(event, LOCALE_HEADER_NAME) as string) ||
+      (event.res?.headers?.get?.(LOCALE_HEADER_NAME) as string) ||
       this.config.defaultLanguage ||
       'en'
     );
@@ -202,11 +200,13 @@ export abstract class MiddlewareBase extends MiddlewareHandler {
    * @returns {void}
    */
   protected rewrite(rewritePath: string, event: H3Event, skipHeader?: boolean): void {
-    event.node.req.url = rewritePath;
+    const nodeReq = event.runtime?.node?.req;
+    if (nodeReq) {
+      nodeReq.url = rewritePath;
+    }
 
-    // Share rewrite path with following proxies
     if (!skipHeader) {
-      setResponseHeader(event, REWRITE_HEADER_NAME, rewritePath);
+      event.res.headers.set(REWRITE_HEADER_NAME, rewritePath);
     }
   }
 

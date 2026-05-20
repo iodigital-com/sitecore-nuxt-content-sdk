@@ -1,7 +1,7 @@
 /* eslint-disable no-unused-expressions */
 /* eslint-disable dot-notation */
 import { describe, it, beforeEach, afterEach, beforeAll, afterAll, vi, expect } from 'vitest';
-import { createEvent, H3Event } from 'h3';
+import { mockEvent, H3Event } from 'h3';
 import { IncomingMessage, ServerResponse } from 'http';
 import { MultisiteMiddleware, MultisiteMiddlewareConfig } from './multisite-middleware';
 import { SiteResolver, SiteInfo } from '@sitecore-content-sdk/content/site';
@@ -22,26 +22,31 @@ const createMockEvent = (
   path: string = '/styleguide',
   responseHeaders: Record<string, string> = {}
 ): H3Event => {
-  const req = new IncomingMessage(null as any);
-  req.url = path;
-  req.headers = {
-    host: 'foo.net',
-    ...headers,
-  };
+  const cookieHeader = Object.keys(cookies).length
+    ? Object.entries(cookies)
+        .map(([k, v]) => `${k}=${v}`)
+        .join('; ')
+    : undefined;
 
-  if (Object.keys(cookies).length) {
-    req.headers.cookie = Object.entries(cookies)
-      .map(([k, v]) => `${k}=${v}`)
-      .join('; ');
-  }
-
-  const res = new ServerResponse(req);
-
-  Object.entries(responseHeaders).forEach(([key, value]) => {
-    res.setHeader(key, value);
+  const event = mockEvent(`http://foo.net${path}`, {
+    headers: {
+      host: 'foo.net',
+      ...headers,
+      ...(cookieHeader ? { cookie: cookieHeader } : {}),
+    },
   });
 
-  return createEvent(req, res);
+  const req = new IncomingMessage(null as any);
+  req.url = path;
+  req.headers = { host: 'foo.net', ...headers, ...(cookieHeader ? { cookie: cookieHeader } : {}) };
+  const res = new ServerResponse(req);
+  (event.req as any).runtime = { node: { req, res } };
+
+  Object.entries(responseHeaders).forEach(([key, value]) => {
+    event.res.headers.set(key, value);
+  });
+
+  return event;
 };
 
 const createMiddleware = (
@@ -113,7 +118,7 @@ describe('MultisiteMiddleware', () => {
         });
         validateDebugLog('skipped (multisite middleware is disabled)');
 
-        expect(event.node.req.url).toBe(pathname);
+        expect(event.res.headers.get('x-sc-rewrite')).toBeNull();
 
         debugSpy.mockClear();
       };
@@ -127,7 +132,7 @@ describe('MultisiteMiddleware', () => {
       });
 
       it('should apply both default and custom rules when custom skip function provided', async () => {
-        const skip = (event: H3Event) => event.path === '/crazypath/luna';
+        const skip = (event: H3Event) => event.url.pathname === '/crazypath/luna';
         const { middleware } = createMiddleware({ config: { ...defaultConfig, skip } });
         await test('/src/image.png', middleware);
         await test('/api/layout/render', middleware);
@@ -163,7 +168,7 @@ describe('MultisiteMiddleware', () => {
           siteName: 'foobar',
         });
 
-        expect(event.node.req.url).toBe('/foobar/styleguide');
+        expect(event.res.headers.get('x-sc-rewrite')).toBe('/foobar/styleguide');
         expect((siteResolver.getByHost as ReturnType<typeof vi.fn>).mock.calls).toHaveLength(0);
         expect((siteResolver.getByName as ReturnType<typeof vi.fn>).mock.calls).toHaveLength(0);
       });
@@ -190,7 +195,7 @@ describe('MultisiteMiddleware', () => {
         siteName,
       });
 
-      expect(event.node.req.url).toBe('/foo/styleguide');
+      expect(event.res.headers.get('x-sc-rewrite')).toBe('/foo/styleguide');
       expect((siteResolver.getByHost as ReturnType<typeof vi.fn>).mock.calls[0][0]).toBe('bar.net');
     });
 
@@ -211,7 +216,7 @@ describe('MultisiteMiddleware', () => {
         siteName,
       });
 
-      expect(event.node.req.url).toBe('/foo/styleguide/foo');
+      expect(event.res.headers.get('x-sc-rewrite')).toBe('/foo/styleguide/foo');
       expect((siteResolver.getByHost as ReturnType<typeof vi.fn>).mock.calls[0][0]).toBe('foo.net');
     });
 
@@ -234,7 +239,7 @@ describe('MultisiteMiddleware', () => {
         siteName,
       });
 
-      expect(event.node.req.url).toBe('/foo/en/some/otherpath');
+      expect(event.res.headers.get('x-sc-rewrite')).toBe('/foo/en/some/otherpath');
       expect((siteResolver.getByHost as ReturnType<typeof vi.fn>).mock.calls[0][0]).toBe('foo.net');
     });
 
@@ -255,7 +260,7 @@ describe('MultisiteMiddleware', () => {
         siteName,
       });
 
-      expect(event.node.req.url).toBe('/foo/styleguide');
+      expect(event.res.headers.get('x-sc-rewrite')).toBe('/foo/styleguide');
       expect((siteResolver.getByHost as ReturnType<typeof vi.fn>).mock.calls[0][0]).toBe(
         'localhost'
       );
@@ -278,7 +283,7 @@ describe('MultisiteMiddleware', () => {
         siteName,
       });
 
-      expect(event.node.req.url).toBe('/foo/styleguide');
+      expect(event.res.headers.get('x-sc-rewrite')).toBe('/foo/styleguide');
       expect((siteResolver.getByHost as ReturnType<typeof vi.fn>).mock.calls[0][0]).toBe('foo.net');
     });
 
@@ -301,7 +306,7 @@ describe('MultisiteMiddleware', () => {
         siteName: 'qsFoo',
       });
 
-      expect(event.node.req.url).toBe('/qsFoo/styleguide');
+      expect(event.res.headers.get('x-sc-rewrite')).toBe('/qsFoo/styleguide');
       expect((siteResolver.getByHost as ReturnType<typeof vi.fn>).mock.calls).toHaveLength(0);
       expect((siteResolver.getByName as ReturnType<typeof vi.fn>).mock.calls).toHaveLength(0);
     });
@@ -325,7 +330,7 @@ describe('MultisiteMiddleware', () => {
         siteName: 'qsFoo',
       });
 
-      expect(event.node.req.url).toBe('/qsFoo/styleguide');
+      expect(event.res.headers.get('x-sc-rewrite')).toBe('/qsFoo/styleguide');
       expect((siteResolver.getByHost as ReturnType<typeof vi.fn>).mock.calls).toHaveLength(0);
       expect((siteResolver.getByName as ReturnType<typeof vi.fn>).mock.calls).toHaveLength(0);
     });
@@ -355,7 +360,7 @@ describe('MultisiteMiddleware', () => {
         siteName: 'foobar',
       });
 
-      expect(event.node.req.url).toBe('/foobar/styleguide');
+      expect(event.res.headers.get('x-sc-rewrite')).toBe('/foobar/styleguide');
       expect((siteResolver.getByHost as ReturnType<typeof vi.fn>).mock.calls).toHaveLength(0);
       expect((siteResolver.getByName as ReturnType<typeof vi.fn>).mock.calls).toHaveLength(0);
     });
@@ -377,7 +382,7 @@ describe('MultisiteMiddleware', () => {
         siteName,
       });
 
-      expect(event.node.req.url).toBe('/foo/styleguide');
+      expect(event.res.headers.get('x-sc-rewrite')).toBe('/foo/styleguide');
       expect((siteResolver.getByHost as ReturnType<typeof vi.fn>).mock.calls[0][0]).toBe('foo.net');
     });
   });

@@ -1,4 +1,4 @@
-import { H3Event, getRequestHeader, getRequestURL, setResponseHeader } from 'h3';
+import { H3Event } from 'h3';
 import {
   PersonalizeService,
   getPersonalizedRewrite,
@@ -176,7 +176,7 @@ export class PersonalizeMiddleware extends MiddlewareBase {
    * - No personalize info is found for the current route
    * - No variants are identified by the CDP
    *
-   * On success, rewrites `event.node.req.url` to the personalized path and sets
+   * On success, rewrites `event.runtime!.node!.req.url` to the personalized path and sets
    * the `x-sc-rewrite` response header for downstream middleware.
    *
    * Errors are caught and logged without re-throwing, so the request continues normally.
@@ -190,7 +190,12 @@ export class PersonalizeMiddleware extends MiddlewareBase {
     }
 
     try {
-      const pathname = getRequestURL(event).pathname;
+      const rawUrl = (event.node?.req?.url || event.req?.url || '/') as string;
+      const host = (event.node?.req?.headers?.host ||
+        event.req?.headers?.get('host') ||
+        'localhost') as string;
+      const requestURL = new URL(rawUrl.startsWith('http') ? rawUrl : `http://${host}${rawUrl}`);
+      const pathname = requestURL.pathname;
       const language = this.getLanguage(event);
 
       // Strip locale prefix from pathname
@@ -248,8 +253,8 @@ export class PersonalizeMiddleware extends MiddlewareBase {
 
       if (this.isPrefetch(event)) {
         debug.personalize('skipped (prefetch)');
-        setResponseHeader(event, 'x-proxy-cache', 'no-cache');
-        setResponseHeader(event, 'Cache-Control', 'no-store, must-revalidate');
+        event.res.headers.set('x-proxy-cache', 'no-cache');
+        event.res.headers.set('Cache-Control', 'no-store, must-revalidate');
         return;
       }
 
@@ -290,13 +295,12 @@ export class PersonalizeMiddleware extends MiddlewareBase {
         return;
       }
 
-      const basePath = (event.node.res.getHeader(REWRITE_HEADER_NAME) as string) || pathname;
+      const basePath = event.res.headers.get(REWRITE_HEADER_NAME) || pathname;
       const rewritePath = getPersonalizedRewrite(basePath, identifiedVariantIds);
 
       this.rewrite(rewritePath, event);
 
-      event.node.req.headers['x-sc-rewrite'] = rewritePath;
-      setResponseHeader(event, 'x-proxy-cache', 'no-cache');
+      event.res.headers.set('x-proxy-cache', 'no-cache');
 
       debug.personalize('personalize middleware end in %dms: %o', Date.now() - startTimestamp, {
         rewritePath,
@@ -326,7 +330,12 @@ export class PersonalizeMiddleware extends MiddlewareBase {
       return true;
     }
 
-    const pathname = getRequestURL(event).pathname;
+    const rawUrl = (event.node?.req?.url || event.req?.url || '/') as string;
+    const host = (event.node?.req?.headers?.host ||
+      event.req?.headers?.get('host') ||
+      'localhost') as string;
+    const requestURL = new URL(rawUrl.startsWith('http') ? rawUrl : `http://${host}${rawUrl}`);
+    const pathname = requestURL.pathname;
     return pathname.includes('.') || super.disabled(event);
   }
 
@@ -339,7 +348,12 @@ export class PersonalizeMiddleware extends MiddlewareBase {
    * @returns {ExperienceParams} The experience params to pass to the CDP
    */
   protected getExperienceParams(event: H3Event): ExperienceParams {
-    const url = getRequestURL(event);
+    const rawUrl = (event.node?.req?.url || event.req?.url || '/') as string;
+    const host = (event.node?.req?.headers?.host ||
+      event.req?.headers?.get('host') ||
+      'localhost') as string;
+    const requestURL = new URL(rawUrl.startsWith('http') ? rawUrl : `http://${host}${rawUrl}`);
+    const url = requestURL;
     const extraParams = this.config.getExtraUtmParams ? this.config.getExtraUtmParams(event) : {};
 
     const utm = {
@@ -351,7 +365,7 @@ export class PersonalizeMiddleware extends MiddlewareBase {
     };
 
     return {
-      referrer: getRequestHeader(event, 'referer') || '',
+      referrer: event.req.headers.get('referer') || '',
       utm,
     };
   }

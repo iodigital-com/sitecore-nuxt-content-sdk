@@ -1,6 +1,5 @@
 import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest';
-import { createEvent } from 'h3';
-import { IncomingMessage, ServerResponse } from 'http';
+import { mockEvent } from 'h3';
 import { DesignLibraryMode, PREVIEW_KEY } from '@sitecore-content-sdk/content/editing';
 import { DEFAULT_VARIANT } from '@sitecore-content-sdk/content/personalize';
 import { SITE_KEY } from '@sitecore-content-sdk/content/site';
@@ -18,10 +17,7 @@ import {
 import { LayoutServicePageState } from '@sitecore-content-sdk/content/layout';
 
 const createMockEvent = (headers: Record<string, string> = {}) => {
-  const req = new IncomingMessage(null as any);
-  req.headers = headers;
-  const res = new ServerResponse(req);
-  return createEvent(req, res);
+  return mockEvent('http://localhost/', { headers });
 };
 
 describe('editing-utils', () => {
@@ -768,7 +764,7 @@ describe('editing-utils', () => {
     });
 
     it('should handle missing host header gracefully', () => {
-      expect(resolveServerUrl(createMockEvent({}))).toBe('http://undefined');
+      expect(resolveServerUrl(createMockEvent({}))).toBe('http://null');
     });
   });
 

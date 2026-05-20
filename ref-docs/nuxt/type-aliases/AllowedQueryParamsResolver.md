@@ -8,7 +8,7 @@
 
 > **AllowedQueryParamsResolver** = (`queryParams`) => ([`AllowedQueryParam`](../interfaces/AllowedQueryParam.md) \| `string`)[]
 
-Defined in: [packages/nuxt/src/sharedTypes/editing-types.ts:22](https://github.com/weareyou/sitecore-nuxt-content-sdk/blob/9012ccaea91e6d12c9995dfa53c658f7debe0ac8/packages/nuxt/src/sharedTypes/editing-types.ts#L22)
+Defined in: [packages/nuxt/src/sharedTypes/editing-types.ts:22](https://github.com/weareyou/sitecore-nuxt-content-sdk/blob/d70e3f78edb5d654a3c5779bdb880ed2da0dfa5c/packages/nuxt/src/sharedTypes/editing-types.ts#L22)
 
 Resolver function for allowed query parameters, which can be used to extract additional parameters from the query string beyond the required editing parameters.
 

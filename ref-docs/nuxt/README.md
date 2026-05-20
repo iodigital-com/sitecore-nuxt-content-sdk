@@ -70,6 +70,7 @@
 - [RouteData](interfaces/RouteData.md)
 - [SitecoreProviderState](interfaces/SitecoreProviderState.md)
 - [SitePathServiceConfig](interfaces/SitePathServiceConfig.md)
+- [UseDatasourceCheckOptions](interfaces/UseDatasourceCheckOptions.md)
 - [UseSitecoreContextOptions](interfaces/UseSitecoreContextOptions.md)
 
 ## Type Aliases
@@ -157,6 +158,8 @@
 - [normalizePersonalizedRewrite](functions/normalizePersonalizedRewrite.md)
 - [normalizeSiteRewrite](functions/normalizeSiteRewrite.md)
 - [personalizeLayout](functions/personalizeLayout.md)
+- [useDatasourceCheck](functions/useDatasourceCheck.md)
+- [useEditorChromes](functions/useEditorChromes.md)
 
 ## References
 
@@ -251,6 +254,30 @@ Renames and re-exports [File](variables/File.md)
 ***
 
 ### ImageSizeParameters
+
+Renames and re-exports [File](variables/File.md)
+
+***
+
+### Link
+
+Renames and re-exports [File](variables/File.md)
+
+***
+
+### LinkField
+
+Renames and re-exports [File](variables/File.md)
+
+***
+
+### LinkFieldValue
+
+Renames and re-exports [File](variables/File.md)
+
+***
+
+### LinkProps
 
 Renames and re-exports [File](variables/File.md)
 

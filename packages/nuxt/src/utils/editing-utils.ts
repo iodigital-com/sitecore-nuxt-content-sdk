@@ -1,4 +1,4 @@
-import { H3Event, getRequestHeader } from 'h3';
+import { H3Event } from 'h3';
 import { NativeDataFetcher } from '@sitecore-content-sdk/core';
 import {
   EDITING_ALLOWED_ORIGINS,
@@ -222,7 +222,7 @@ export const resolveServerUrl = (event: H3Event): string => {
   }
 
   const useHttps = (process.env.VERCEL || process.env.NETLIFY) !== undefined;
-  const host = getRequestHeader(event, 'x-forwarded-host') || getRequestHeader(event, 'host');
+  const host = event.req.headers.get('x-forwarded-host') || event.req.headers.get('host');
 
   return `${useHttps ? 'https' : 'http'}://${host}`;
 };

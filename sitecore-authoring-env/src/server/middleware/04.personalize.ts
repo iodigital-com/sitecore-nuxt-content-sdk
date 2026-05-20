@@ -23,7 +23,7 @@ const middleware = new PersonalizeMiddleware({
 
 export default defineEventHandler((event) => {
   // Log the country header for debugging purposes
-  console.log('Country header:', event.req.headers.get('x-vercel-ip-country'));
-  console.log('Country header:', event.req.headers.get('cf-ipcountry'));
+  console.log('Country header:', event.req.headers['x-vercel-ip-country']);
+  console.log('Country header:', event.req.headers['cf-ipcountry']);
   return middleware.handle(event);
 });

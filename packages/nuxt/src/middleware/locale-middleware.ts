@@ -1,4 +1,4 @@
-import { H3Event, getRequestURL, setResponseHeader } from 'h3';
+import { H3Event } from 'h3';
 import { MiddlewareBase, MiddlewareBaseConfig, LOCALE_HEADER_NAME } from './middleware';
 import debug from '../debug';
 
@@ -52,7 +52,12 @@ export class LocaleMiddleware extends MiddlewareBase {
    */
   handle = async (event: H3Event): Promise<void> => {
     try {
-      const { pathname } = getRequestURL(event);
+      const rawUrl = (event.node?.req?.url || event.req?.url || '/') as string;
+      const host = (event.node?.req?.headers?.host ||
+        event.req?.headers?.get('host') ||
+        'localhost') as string;
+      const requestURL = new URL(rawUrl.startsWith('http') ? rawUrl : `http://${host}${rawUrl}`);
+      const pathname = requestURL.pathname;
       const locale = this.getLocaleFromPath(pathname) ?? this.getLanguage(event);
 
       debug.locale('locale middleware start: %o', { pathname, locale });
@@ -62,8 +67,7 @@ export class LocaleMiddleware extends MiddlewareBase {
         return;
       }
 
-      setResponseHeader(event, LOCALE_HEADER_NAME, locale);
-      event.node.req.headers[LOCALE_HEADER_NAME] = locale;
+      event.res.headers.set(LOCALE_HEADER_NAME, locale);
 
       const matchedLocale = this.config.locales.find(
         (l) => pathname.startsWith(`/${l}/`) || pathname === `/${l}`
@@ -76,7 +80,7 @@ export class LocaleMiddleware extends MiddlewareBase {
           pathname === `/${matchedLocale}` ? '/' : pathname.replace(`/${matchedLocale}/`, '/');
         const qs = event.path.includes('?') ? '?' + event.path.split('?')[1] : '';
         rewrittenPath = strippedPath + qs;
-        event.node.req.url = rewrittenPath;
+        this.rewrite(rewrittenPath, event);
       }
 
       debug.locale('locale middleware end: %o', { pathname, locale, rewrittenPath });
@@ -94,7 +98,13 @@ export class LocaleMiddleware extends MiddlewareBase {
    * @returns {boolean} `true` if the middleware should be skipped
    */
   protected disabled(event: H3Event): boolean {
-    const { pathname } = getRequestURL(event);
+    const rawUrl = (event.node?.req?.url || event.req?.url || '/') as string;
+    const host = (event.node?.req?.headers?.host ||
+      event.req?.headers?.get('host') ||
+      'localhost') as string;
+    const requestURL = new URL(rawUrl.startsWith('http') ? rawUrl : `http://${host}${rawUrl}`);
+    const pathname = requestURL.pathname;
+
     return pathname.includes('.') || super.disabled(event);
   }
 

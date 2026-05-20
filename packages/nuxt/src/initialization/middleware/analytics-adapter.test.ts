@@ -1,6 +1,5 @@
 import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest';
-import { createEvent, H3Event } from 'h3';
-import { IncomingMessage, ServerResponse } from 'http';
+import { mockEvent, H3Event } from 'h3';
 
 vi.mock('@sitecore-content-sdk/core', () => ({ getCoreContext: vi.fn() }));
 vi.mock('@sitecore-content-sdk/analytics-core/internal', () => ({
@@ -30,7 +29,7 @@ import { getCookie, setCookie, deleteCookie, getRequestURL } from 'h3';
 import { analyticsMiddlewareAdapter, getClientId } from './analytics-adapter';
 
 describe('analyticsMiddlewareAdapter', () => {
-    const mockAnalyticsPlugin = {
+  const mockAnalyticsPlugin = {
     options: {
       cookies: {
         name: 'sc_cid',
@@ -58,9 +57,7 @@ describe('analyticsMiddlewareAdapter', () => {
   };
 
   const createMockEvent = (): H3Event => {
-    const req = new IncomingMessage(null as any);
-    const res = new ServerResponse(req);
-    return createEvent(req, res);
+    return mockEvent('http://localhost/');
   };
 
   beforeEach(() => {

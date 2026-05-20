@@ -9,7 +9,7 @@ import {
   fetchProfileIdFromEdgeProxy,
   getPersonalizePlugin,
 } from '@sitecore-content-sdk/personalize/internal';
-import { H3Event, deleteCookie, getCookie, getRequestHeader, setCookie } from 'h3';
+import { H3Event, deleteCookie, getCookie, setCookie } from 'h3';
 import { getClientId } from './analytics-adapter';
 
 /**
@@ -44,7 +44,7 @@ export function personalizeMiddlewareAdapter(event: H3Event): PersonalizeMiddlew
 
   return {
     type: 'middleware',
-    getUserAgent: () => getRequestHeader(event, 'user-agent') || undefined,
+    getUserAgent: () => event.req.headers.get('user-agent') || undefined,
     getProfileId: () => {
       return getProfileId(event, requestCookies);
     },

@@ -1,4 +1,4 @@
-import { H3Event, setResponseHeader, getRequestHeader, setResponseStatus, send } from 'h3';
+import { H3Event } from 'h3';
 import { SitecoreClient } from '@sitecore-content-sdk/content/client';
 import { constants } from '@sitecore-content-sdk/core';
 import { SiteInfo, SiteResolver } from '@sitecore-content-sdk/content/site';
@@ -46,12 +46,12 @@ export const createRobotsRoute = (options: RobotsRouteOptions) => {
 
   const siteResolver = new SiteResolver(sites);
 
-  const handle = async (event: H3Event): Promise<void> => {
-    setResponseHeader(event, 'Content-Type', 'text/plain');
+  const handle = async (event: H3Event) => {
+    event.res.headers.set('Content-Type', 'text/plain');
 
     const hostName =
-      getRequestHeader(event, 'x-forwarded-host') ||
-      getRequestHeader(event, 'host')?.split(':')[0] ||
+      event.req.headers.get('x-forwarded-host') ||
+      event.req.headers.get('host')?.split(':')[0] ||
       'localhost';
 
     const site = hostName
@@ -60,9 +60,8 @@ export const createRobotsRoute = (options: RobotsRouteOptions) => {
 
     if (!site) {
       console.warn(`No site found for hostname "${hostName}". Unable to serve robots.txt.`);
-      setResponseStatus(event, 404);
-      await send(event, 'User-agent: *\nDisallow: /');
-      return;
+      event.res.status = 404;
+      return 'User-agent: *\nDisallow: /';
     }
 
     const startTimestamp = Date.now();
@@ -72,19 +71,19 @@ export const createRobotsRoute = (options: RobotsRouteOptions) => {
       const robotsContent = await client.getRobots(site.name);
 
       if (!robotsContent) {
-        setResponseStatus(event, 404);
-        await send(event, 'User-agent: *\nDisallow: /');
-        return;
+        event.res.status = 404;
+        return 'User-agent: *\nDisallow: /';
       }
 
-      await send(event, robotsContent);
+      event.res.status = 200;
+      return robotsContent;
     } catch (error) {
       const message = error instanceof Error ? error.message : String(error);
 
       console.error(`Failed to fetch robots.txt from Sitecore for site "${site.name}": ${message}`);
 
-      setResponseStatus(event, 500);
-      await send(event, `Internal Server Error. ${ERROR_MESSAGES.CONTACT_SUPPORT}`);
+      event.res.status = 500;
+      return `Internal Server Error. ${ERROR_MESSAGES.CONTACT_SUPPORT}`;
     } finally {
       debug.robots('robots route handler end in %dms', Date.now() - startTimestamp);
     }

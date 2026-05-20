@@ -1,6 +1,5 @@
 import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest';
-import { createEvent, H3Event } from 'h3';
-import { IncomingMessage, ServerResponse } from 'http';
+import { mockEvent, H3Event } from 'h3';
 import { QUERY_PARAM_EDITING_SECRET } from '@sitecore-content-sdk/content/editing';
 import { NuxtContentSdkComponent } from '../sharedTypes/component-props';
 import { ComponentMap } from '@sitecore-content-sdk/vue';
@@ -17,29 +16,7 @@ const createMockEvent = (
   path: string = '/',
   method: string = 'GET'
 ): H3Event => {
-  const req = new IncomingMessage(null as any);
-  req.headers = headers;
-  req.url = path;
-  req.method = method;
-  const res = new ServerResponse(req);
-  return createEvent(req, res);
-};
-
-const readBody = (event: H3Event): Promise<string> => {
-  return new Promise((resolve) => {
-    const chunks: Buffer[] = [];
-
-    event.node.res.write = (chunk: any) => {
-      chunks.push(Buffer.from(chunk));
-      return true;
-    };
-
-    event.node.res.end = (chunk?: any) => {
-      if (chunk) chunks.push(Buffer.from(chunk));
-      resolve(Buffer.concat(chunks).toString());
-      return event.node.res;
-    };
-  });
+  return mockEvent(`http://localhost${path}`, { method, headers });
 };
 
 describe('createEditingConfigRoute', () => {
@@ -85,29 +62,24 @@ describe('createEditingConfigRoute', () => {
       vi.mocked(getEnforcedCorsHeaders).mockReturnValue(null);
 
       const event = createMockEvent({ origin: allowedOrigin }, '/', 'OPTIONS');
-      const bodyPromise = readBody(event);
+      const body = await route.handleOptions(event);
 
-      await route.handleOptions(event);
-      const body = await bodyPromise;
-
-      expect(event.node.res.statusCode).toBe(401);
+      expect(event.res.status).toBe(401);
       expect(body).toBe(JSON.stringify({ message: 'Invalid origin' }));
-      expect(event.node.res.getHeader('Content-Type')).toBe('application/json');
+      expect(event.res.headers.get('Content-Type')).toBe('application/json');
     });
 
     it('should return 204 for valid preflight request', async () => {
       const event = createMockEvent({ origin: allowedOrigin }, '/', 'OPTIONS');
-      const bodyPromise = readBody(event);
 
       await route.handleOptions(event);
-      await bodyPromise;
 
-      expect(event.node.res.statusCode).toBe(204);
-      expect(event.node.res.getHeader('Access-Control-Allow-Origin')).toBe(allowedOrigin);
-      expect(event.node.res.getHeader('Access-Control-Allow-Methods')).toBe(
+      expect(event.res.status).toBe(204);
+      expect(event.res.headers.get('Access-Control-Allow-Origin')).toBe(allowedOrigin);
+      expect(event.res.headers.get('Access-Control-Allow-Methods')).toBe(
         corsHeaders['Access-Control-Allow-Methods']
       );
-      expect(event.node.res.getHeader('Access-Control-Allow-Headers')).toBe(
+      expect(event.res.headers.get('Access-Control-Allow-Headers')).toBe(
         corsHeaders['Access-Control-Allow-Headers']
       );
     });
@@ -129,12 +101,9 @@ describe('createEditingConfigRoute', () => {
       });
 
       const event = createMockEvent({ origin: allowedOrigin }, '/', 'OPTIONS');
-      const bodyPromise = readBody(event);
+      const body = await route.handleOptions(event);
 
-      await route.handleOptions(event);
-      const body = await bodyPromise;
-
-      expect(event.node.res.statusCode).toBe(500);
+      expect(event.res.status).toBe(500);
       expect(body).toBe('Internal Server Error');
     });
   });
@@ -146,26 +115,22 @@ describe('createEditingConfigRoute', () => {
         { origin: allowedOrigin },
         `/?${QUERY_PARAM_EDITING_SECRET}=${secret}`
       );
-      const bodyPromise = readBody(event);
 
-      await route.handle(event);
-      const body = await bodyPromise;
+      const body = await route.handle(event);
 
-      expect(event.node.res.statusCode).toBe(401);
+      expect(event.res.status).toBe(401);
       expect(body).toBe(JSON.stringify({ message: 'Invalid origin' }));
-      expect(event.node.res.getHeader('Content-Type')).toBe('application/json');
+      expect(event.res.headers.get('Content-Type')).toBe('application/json');
     });
 
     it('should return 401 for missing editing secret', async () => {
       const event = createMockEvent({ origin: allowedOrigin }, '/');
-      const bodyPromise = readBody(event);
 
-      await route.handle(event);
-      const body = await bodyPromise;
+      const body = await route.handle(event);
 
-      expect(event.node.res.statusCode).toBe(401);
+      expect(event.res.status).toBe(401);
       expect(body).toBe(JSON.stringify({ message: 'Missing or invalid editing secret' }));
-      expect(event.node.res.getHeader('Content-Type')).toBe('application/json');
+      expect(event.res.headers.get('Content-Type')).toBe('application/json');
     });
 
     it('should return 401 for invalid editing secret', async () => {
@@ -173,14 +138,12 @@ describe('createEditingConfigRoute', () => {
         { origin: allowedOrigin },
         `/?${QUERY_PARAM_EDITING_SECRET}=wrong-secret`
       );
-      const bodyPromise = readBody(event);
 
-      await route.handle(event);
-      const body = await bodyPromise;
+      const body = await route.handle(event);
 
-      expect(event.node.res.statusCode).toBe(401);
+      expect(event.res.status).toBe(401);
       expect(body).toBe(JSON.stringify({ message: 'Missing or invalid editing secret' }));
-      expect(event.node.res.getHeader('Content-Type')).toBe('application/json');
+      expect(event.res.headers.get('Content-Type')).toBe('application/json');
     });
 
     it('should return 200 with config data for valid request', async () => {
@@ -188,19 +151,17 @@ describe('createEditingConfigRoute', () => {
         { origin: allowedOrigin },
         `/?${QUERY_PARAM_EDITING_SECRET}=${secret}`
       );
-      const bodyPromise = readBody(event);
 
-      await route.handle(event);
-      const body = await bodyPromise;
+      const body = await route.handle(event);
 
-      expect(event.node.res.statusCode).toBe(200);
+      expect(event.res.status ?? 200).toBe(200);
       expect(body).toBe(JSON.stringify(expectedResult));
-      expect(event.node.res.getHeader('Content-Type')).toBe('application/json');
-      expect(event.node.res.getHeader('Access-Control-Allow-Origin')).toBe(allowedOrigin);
-      expect(event.node.res.getHeader('Access-Control-Allow-Methods')).toBe(
+      expect(event.res.headers.get('Content-Type')).toBe('application/json');
+      expect(event.res.headers.get('Access-Control-Allow-Origin')).toBe(allowedOrigin);
+      expect(event.res.headers.get('Access-Control-Allow-Methods')).toBe(
         corsHeaders['Access-Control-Allow-Methods']
       );
-      expect(event.node.res.getHeader('Access-Control-Allow-Headers')).toBe(
+      expect(event.res.headers.get('Access-Control-Allow-Headers')).toBe(
         corsHeaders['Access-Control-Allow-Headers']
       );
     });
@@ -227,12 +188,10 @@ describe('createEditingConfigRoute', () => {
         { origin: allowedOrigin },
         `/?${QUERY_PARAM_EDITING_SECRET}=${secret}`
       );
-      const bodyPromise = readBody(event);
 
-      await route.handle(event);
-      const body = await bodyPromise;
+      const body = await route.handle(event);
 
-      expect(event.node.res.statusCode).toBe(500);
+      expect(event.res.status).toBe(500);
       expect(body).toBe('Internal Server Error');
     });
   });
@@ -250,12 +209,10 @@ describe('createEditingConfigRoute', () => {
         { origin: allowedOrigin },
         `/?${QUERY_PARAM_EDITING_SECRET}=${secret}`
       );
-      const bodyPromise = readBody(event);
 
-      await customRoute.handle(event);
-      const body = JSON.parse(await bodyPromise);
+      const body = JSON.parse(await customRoute.handle(event));
 
-      expect(event.node.res.statusCode).toBe(200);
+      expect(event.res.status ?? 200).toBe(200);
       expect(body.components).toEqual(['Component1', 'Component2', 'Component3']);
       expect(body.framework).toBe('nuxt');
       expect(body.clientComponents).toEqual([]);
@@ -276,12 +233,10 @@ describe('createEditingConfigRoute', () => {
         { origin: allowedOrigin },
         `/?${QUERY_PARAM_EDITING_SECRET}=${secret}`
       );
-      const bodyPromise = readBody(event);
 
-      await customRoute.handle(event);
-      const body = JSON.parse(await bodyPromise);
+      const body = JSON.parse(await customRoute.handle(event));
 
-      expect(event.node.res.statusCode).toBe(200);
+      expect(event.res.status ?? 200).toBe(200);
       expect(body.framework).toBe('nuxt');
       expect(body.clientComponents).toEqual(['ClientComponent1', 'ClientComponent2']);
     });
@@ -291,12 +246,10 @@ describe('createEditingConfigRoute', () => {
         { origin: allowedOrigin },
         `/?${QUERY_PARAM_EDITING_SECRET}=${secret}`
       );
-      const bodyPromise = readBody(event);
 
-      await route.handle(event);
-      const body = JSON.parse(await bodyPromise);
+      const body = JSON.parse(await route.handle(event));
 
-      expect(event.node.res.statusCode).toBe(200);
+      expect(event.res.status ?? 200).toBe(200);
       expect(body.framework).toBe('nuxt');
       expect(body.clientComponents).toEqual([]);
     });

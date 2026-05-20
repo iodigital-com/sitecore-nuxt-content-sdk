@@ -1,4 +1,4 @@
-import { H3Event, getCookie, setCookie, getRequestURL } from 'h3';
+import { H3Event, getCookie, setCookie } from 'h3';
 import { SITE_KEY } from '@sitecore-content-sdk/content/site';
 import { MiddlewareBase, MiddlewareBaseConfig, REWRITE_HEADER_NAME } from './middleware';
 import { SitecoreConfig } from '../config';
@@ -79,10 +79,43 @@ export class MultisiteMiddleware extends MiddlewareBase {
    */
   handle = async (event: H3Event): Promise<void> => {
     try {
+      // Debug: log wat er beschikbaar is op het event
+      console.log('[Multisite] event.node:', !!event.node);
+      console.log('[Multisite] event.node?.req:', !!event.node?.req);
+      console.log('[Multisite] event.node?.req?.url:', event.node?.req?.url);
+      console.log('[Multisite] event.node?.res:', !!event.node?.res);
+      console.log('[Multisite] event.runtime:', !!event.runtime);
+      console.log('[Multisite] event.runtime?.node:', !!event.runtime?.node);
+      console.log('[Multisite] event.req:', !!event.req);
+      console.log('[Multisite] event.req?.url:', (event.req as any)?.url);
+      console.log('[Multisite] typeof event.req?.headers:', typeof (event.req as any)?.headers);
+      console.log('[Multisite] event.req constructor:', event.req?.constructor?.name);
+      console.log(
+        '[Multisite] event.req headers constructor:',
+        (event.req?.headers as any)?.constructor?.name
+      );
+      console.log(
+        '[Multisite] typeof event.req?.headers?.get:',
+        typeof (event.req as any)?.headers?.get
+      );
+      console.log('[Multisite] event.res:', !!event.res);
+      console.log('[Multisite] typeof event.res?.headers:', typeof (event.res as any)?.headers);
+
+      // Tijdelijk hardcoded om te testen of de rest werkt
+      const rawUrl = (event.node?.req?.url || '/') as string;
+      const host = (event.node?.req?.headers?.host || 'localhost') as string;
+      console.log('[Multisite] rawUrl:', rawUrl, 'host:', host);
+
+      const url = new URL(`http://${host}${rawUrl.startsWith('/') ? rawUrl : '/' + rawUrl}`);
+      console.log('[Multisite] url:', url.href);
+
       const pathname =
-        (event.node.res.getHeader(REWRITE_HEADER_NAME) as string) || getRequestURL(event).pathname;
+        (event.node?.res?.getHeader(REWRITE_HEADER_NAME) as string) ||
+        (event.res?.headers as any)?.get?.(REWRITE_HEADER_NAME) ||
+        url.pathname;
       const language = this.getLanguage(event);
       const hostname = this.getHostHeader(event) || this.defaultHostname;
+
       const startTimestamp = Date.now();
 
       debug.multisite('multisite middleware start: %o', { pathname, language, hostname });
@@ -93,7 +126,6 @@ export class MultisiteMiddleware extends MiddlewareBase {
       }
 
       const isSitecorePreview = getCookie(event, PREVIEW_KEY);
-      const url = getRequestURL(event);
 
       const siteName = isSitecorePreview
         ? (getCookie(event, SITE_KEY) as string)
@@ -130,7 +162,12 @@ export class MultisiteMiddleware extends MiddlewareBase {
    * @returns {boolean} `true` if the middleware should be skipped
    */
   protected disabled(event: H3Event): boolean {
-    const { pathname } = getRequestURL(event);
+    const rawUrl = (event.node?.req?.url || event.req?.url || '/') as string;
+    const host = (event.node?.req?.headers?.host ||
+      event.req?.headers?.get('host') ||
+      'localhost') as string;
+    const requestURL = new URL(rawUrl.startsWith('http') ? rawUrl : `http://${host}${rawUrl}`);
+    const pathname = requestURL.pathname;
     return pathname.includes('.') || super.disabled(event);
   }
 

@@ -8,7 +8,7 @@
 
 > **ComponentPropsError** = `object`
 
-Defined in: [packages/nuxt/src/sharedTypes/component-props.ts:9](https://github.com/weareyou/sitecore-nuxt-content-sdk/blob/9012ccaea91e6d12c9995dfa53c658f7debe0ac8/packages/nuxt/src/sharedTypes/component-props.ts#L9)
+Defined in: [packages/nuxt/src/sharedTypes/component-props.ts:9](https://github.com/weareyou/sitecore-nuxt-content-sdk/blob/d70e3f78edb5d654a3c5779bdb880ed2da0dfa5c/packages/nuxt/src/sharedTypes/component-props.ts#L9)
 
 The interface for the component props error.
 
@@ -18,7 +18,7 @@ The interface for the component props error.
 
 > **componentName**: `string`
 
-Defined in: [packages/nuxt/src/sharedTypes/component-props.ts:9](https://github.com/weareyou/sitecore-nuxt-content-sdk/blob/9012ccaea91e6d12c9995dfa53c658f7debe0ac8/packages/nuxt/src/sharedTypes/component-props.ts#L9)
+Defined in: [packages/nuxt/src/sharedTypes/component-props.ts:9](https://github.com/weareyou/sitecore-nuxt-content-sdk/blob/d70e3f78edb5d654a3c5779bdb880ed2da0dfa5c/packages/nuxt/src/sharedTypes/component-props.ts#L9)
 
 ***
 
@@ -26,4 +26,4 @@ Defined in: [packages/nuxt/src/sharedTypes/component-props.ts:9](https://github.
 
 > **error**: `string`
 
-Defined in: [packages/nuxt/src/sharedTypes/component-props.ts:9](https://github.com/weareyou/sitecore-nuxt-content-sdk/blob/9012ccaea91e6d12c9995dfa53c658f7debe0ac8/packages/nuxt/src/sharedTypes/component-props.ts#L9)
+Defined in: [packages/nuxt/src/sharedTypes/component-props.ts:9](https://github.com/weareyou/sitecore-nuxt-content-sdk/blob/d70e3f78edb5d654a3c5779bdb880ed2da0dfa5c/packages/nuxt/src/sharedTypes/component-props.ts#L9)

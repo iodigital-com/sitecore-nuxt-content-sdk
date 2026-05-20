@@ -1,6 +1,6 @@
 /* eslint-disable no-unused-expressions */
 import { describe, it, beforeEach, afterEach, vi, expect } from 'vitest';
-import { createEvent, H3Event } from 'h3';
+import { mockEvent, H3Event } from 'h3';
 import { IncomingMessage, ServerResponse } from 'http';
 import { LocaleMiddleware, LocaleMiddlewareConfig } from './locale-middleware';
 import { LOCALE_HEADER_NAME } from './middleware';
@@ -15,15 +15,20 @@ const createMockEvent = (
   headers: Record<string, string> = {},
   path: string = '/styleguide'
 ): H3Event => {
+  const event = mockEvent(`http://foo.net${path}`, {
+    headers: {
+      host: 'foo.net',
+      ...headers,
+    },
+  });
+
   const req = new IncomingMessage(null as any);
   req.url = path;
-  req.headers = {
-    host: 'foo.net',
-    ...headers,
-  };
-
+  req.headers = { host: 'foo.net', ...headers };
   const res = new ServerResponse(req);
-  return createEvent(req, res);
+  (event.req as any).runtime = { node: { req, res } };
+
+  return event;
 };
 
 const createMiddleware = (config: Partial<LocaleMiddlewareConfig> = {}) => {
@@ -60,7 +65,7 @@ describe('LocaleMiddleware', () => {
         locale: 'en',
       });
       validateDebugLog('skipped (locale middleware is disabled)');
-      expect(event.node.res.getHeader(LOCALE_HEADER_NAME)).toBeUndefined();
+      expect(event.res.headers.get(LOCALE_HEADER_NAME)).toBeNull();
 
       debugSpy.mockClear();
     };
@@ -74,7 +79,7 @@ describe('LocaleMiddleware', () => {
     });
 
     it('should apply both default and custom rules when custom skip function provided', async () => {
-      const skip = (event: H3Event) => event.path === '/crazypath/luna';
+      const skip = (event: H3Event) => event.url.pathname === '/crazypath/luna';
       const { middleware } = createMiddleware({ skip });
       await test('/src/image.png', middleware);
       await test('/api/layout/render', middleware);
@@ -101,8 +106,8 @@ describe('LocaleMiddleware', () => {
         rewrittenPath: '/about',
       });
 
-      expect(event.node.res.getHeader(LOCALE_HEADER_NAME)).toBe('de-DE');
-      expect(event.node.req.url).toBe('/about');
+      expect(event.res.headers.get(LOCALE_HEADER_NAME)).toBe('de-DE');
+      expect(event.res.headers.get('x-sc-rewrite')).toBe('/about');
     });
 
     it('should rewrite locale-only path to root', async () => {
@@ -117,8 +122,8 @@ describe('LocaleMiddleware', () => {
         rewrittenPath: '/',
       });
 
-      expect(event.node.res.getHeader(LOCALE_HEADER_NAME)).toBe('en');
-      expect(event.node.req.url).toBe('/');
+      expect(event.res.headers.get(LOCALE_HEADER_NAME)).toBe('en');
+      expect(event.res.headers.get('x-sc-rewrite')).toBe('/');
     });
 
     it('should not rewrite path when locale is not in path', async () => {
@@ -137,8 +142,8 @@ describe('LocaleMiddleware', () => {
         rewrittenPath: undefined,
       });
 
-      expect(event.node.res.getHeader(LOCALE_HEADER_NAME)).toBe('en');
-      expect(event.node.req.url).toBe('/about');
+      expect(event.res.headers.get(LOCALE_HEADER_NAME)).toBe('en');
+      expect(event.res.headers.get('x-sc-rewrite')).toBeNull();
     });
 
     it('should set locale header with defaultLanguage when locale is not in path', async () => {
@@ -157,8 +162,8 @@ describe('LocaleMiddleware', () => {
         rewrittenPath: undefined,
       });
 
-      expect(event.node.res.getHeader(LOCALE_HEADER_NAME)).toBe('de-DE');
-      expect(event.node.req.url).toBe('/about');
+      expect(event.res.headers.get(LOCALE_HEADER_NAME)).toBe('de-DE');
+      expect(event.res.headers.get('x-sc-rewrite')).toBeNull();
     });
 
     it('should preserve query string when rewriting path', async () => {
@@ -167,8 +172,8 @@ describe('LocaleMiddleware', () => {
 
       await middleware.handle(event);
 
-      expect(event.node.res.getHeader(LOCALE_HEADER_NAME)).toBe('de-DE');
-      expect(event.node.req.url).toBe('/about?foo=bar');
+      expect(event.res.headers.get(LOCALE_HEADER_NAME)).toBe('de-DE');
+      expect(event.res.headers.get('x-sc-rewrite')).toBe('/about?foo=bar');
     });
   });
 

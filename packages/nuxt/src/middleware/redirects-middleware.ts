@@ -1,4 +1,4 @@
-import { H3Event, getRequestURL, sendRedirect, setResponseHeader } from 'h3';
+import { H3Event } from 'h3';
 import {
   RedirectsService,
   RedirectsServiceConfig,
@@ -151,7 +151,11 @@ export class RedirectsMiddleware extends MiddlewareBase {
     }
 
     try {
-      const url = getRequestURL(event);
+      const rawUrl = (event.node?.req?.url || event.req?.url || '/') as string;
+      const host = (event.node?.req?.headers?.host ||
+        event.req?.headers?.get('host') ||
+        'localhost') as string;
+      const url = new URL(rawUrl.startsWith('http') ? rawUrl : `http://${host}${rawUrl}`);
       const pathname = url.pathname;
       const language = this.getLanguage(event);
       const hostname = this.getHostHeader(event) || this.defaultHostname;
@@ -176,8 +180,8 @@ export class RedirectsMiddleware extends MiddlewareBase {
 
       if (this.isPrefetch(event)) {
         debug.redirects('skipped (prefetch)');
-        setResponseHeader(event, 'x-proxy-cache', 'no-cache');
-        setResponseHeader(event, 'Cache-Control', 'no-store, must-revalidate');
+        event.res.headers.set('x-proxy-cache', 'no-cache');
+        event.res.headers.set('Cache-Control', 'no-store, must-revalidate');
         return;
       }
 
@@ -242,7 +246,12 @@ export class RedirectsMiddleware extends MiddlewareBase {
       return true;
     }
 
-    const { pathname } = getRequestURL(event);
+    const rawUrl = (event.node?.req?.url || event.req?.url || '/') as string;
+    const host = (event.node?.req?.headers?.host ||
+      event.req?.headers?.get('host') ||
+      'localhost') as string;
+    const requestURL = new URL(rawUrl.startsWith('http') ? rawUrl : `http://${host}${rawUrl}`);
+    const pathname = requestURL.pathname;
     return pathname.includes('.') || super.disabled(event);
   }
 
@@ -271,7 +280,7 @@ export class RedirectsMiddleware extends MiddlewareBase {
       targetUrl = `${targetMainUrl}?${mergedQueryString}`;
     }
 
-    await this.dispatchRedirect(event, targetUrl, existsRedirect.redirectType);
+    this.dispatchRedirect(event, targetUrl, existsRedirect.redirectType);
   }
 
   /**
@@ -318,7 +327,7 @@ export class RedirectsMiddleware extends MiddlewareBase {
 
     // Preserve site prefix from x-sc-rewrite header if present
     if (existsRedirect.redirectType === REDIRECT_TYPE_SERVER_TRANSFER) {
-      const incomingRewrite = event.node.res.getHeader(REWRITE_HEADER_NAME) as string | undefined;
+      const incomingRewrite = event.res.headers.get(REWRITE_HEADER_NAME) ?? undefined;
       if (incomingRewrite && targetLocale) {
         const localePattern = `/${targetLocale}/`;
         const localeIndex = incomingRewrite.indexOf(localePattern);
@@ -342,15 +351,17 @@ export class RedirectsMiddleware extends MiddlewareBase {
    * @param {H3Event} event - The incoming H3 event
    * @param {string} target - The target URL or path
    * @param {string} type - The redirect type constant
-   * @returns {Promise<void>}
+   * @returns {void}
    */
-  protected async dispatchRedirect(event: H3Event, target: string, type: string): Promise<void> {
+  protected dispatchRedirect(event: H3Event, target: string, type: string): void {
     switch (type) {
       case REDIRECT_TYPE_301:
-        await sendRedirect(event, target, 301);
+        event.res.status = 301;
+        event.res.headers.set('location', target);
         break;
       case REDIRECT_TYPE_302:
-        await sendRedirect(event, target, 302);
+        event.res.status = 302;
+        event.res.headers.set('location', target);
         break;
       case REDIRECT_TYPE_SERVER_TRANSFER:
         this.rewrite(target, event);
@@ -359,7 +370,8 @@ export class RedirectsMiddleware extends MiddlewareBase {
         console.warn(
           `[RedirectsMiddleware] Unsupported redirect type: ${type}. Defaulting to 302 redirect.`
         );
-        await sendRedirect(event, target, 302);
+        event.res.status = 302;
+        event.res.headers.set('location', target);
     }
   }
 
@@ -381,7 +393,11 @@ export class RedirectsMiddleware extends MiddlewareBase {
       return undefined;
     }
 
-    const url = getRequestURL(event);
+    const rawUrl = (event.node?.req?.url || event.req?.url || '/') as string;
+    const host = (event.node?.req?.headers?.host ||
+      event.req?.headers?.get('host') ||
+      'localhost') as string;
+    const url = new URL(rawUrl.startsWith('http') ? rawUrl : `http://${host}${rawUrl}`);
     const normalizedUrl = this.normalizeUrl(new URL(url.href));
     const incomingURL = normalizedUrl.pathname;
     const incomingQS = normalizedUrl.search ?? '';

@@ -1,5 +1,5 @@
 import { describe, it, expect, vi } from 'vitest';
-import { createEvent, H3Event } from 'h3';
+import { mockEvent, H3Event } from 'h3';
 import { IncomingMessage, ServerResponse } from 'http';
 import { MiddlewareBase, REWRITE_HEADER_NAME } from './middleware';
 import { SiteResolver } from '@sitecore-content-sdk/content/site';
@@ -24,18 +24,26 @@ const createMockEvent = (
   cookies: Record<string, string> = {},
   path: string = '/'
 ): H3Event => {
+  const cookieHeader = Object.keys(cookies).length
+    ? Object.entries(cookies)
+        .map(([k, v]) => `${k}=${v}`)
+        .join('; ')
+    : undefined;
+
+  const event = mockEvent(`http://localhost${path}`, {
+    headers: {
+      ...headers,
+      ...(cookieHeader ? { cookie: cookieHeader } : {}),
+    },
+  });
+
   const req = new IncomingMessage(null as any);
-  req.headers = headers;
   req.url = path;
-
-  if (Object.keys(cookies).length) {
-    req.headers.cookie = Object.entries(cookies)
-      .map(([k, v]) => `${k}=${v}`)
-      .join('; ');
-  }
-
+  req.headers = { ...headers, ...(cookieHeader ? { cookie: cookieHeader } : {}) };
   const res = new ServerResponse(req);
-  return createEvent(req, res);
+  (event.req as any).runtime = { node: { req, res } };
+
+  return event;
 };
 
 describe('MiddlewareBase', () => {
@@ -156,7 +164,7 @@ describe('MiddlewareBase', () => {
     it('should use custom skip function', () => {
       const middleware = new SampleMiddleware({
         sites: [],
-        skip: (event: H3Event) => event.path === '/foo',
+        skip: (event: H3Event) => event.url.pathname === '/foo',
       });
 
       const eventFoo = createMockEvent({ host: 'localhost' }, {}, '/foo');
@@ -171,7 +179,7 @@ describe('MiddlewareBase', () => {
     it('should return undefined when header is not present', () => {
       const middleware = new SampleMiddleware({ sites: [] });
       const event = createMockEvent();
-      expect(middleware._getHostHeader(event)).toBe(undefined);
+      expect(middleware._getHostHeader(event)).toBeUndefined();
     });
 
     it('should return host header without port', () => {
@@ -206,7 +214,7 @@ describe('MiddlewareBase', () => {
     it('should return language from x-sc-locale response header if present', () => {
       const middleware = new SampleMiddleware({ sites: [] });
       const event = createMockEvent();
-      event.node.res.setHeader('x-sc-locale', 'de-DE');
+      event.res.headers.set('x-sc-locale', 'de-DE');
       expect(middleware._getLanguage(event)).toBe('de-DE');
     });
   });
@@ -277,8 +285,7 @@ describe('MiddlewareBase', () => {
 
       middleware._rewrite('/new', event);
 
-      expect(event.path).toBe('/new');
-      expect(event.node.res.getHeader(REWRITE_HEADER_NAME)).toBe('/new');
+      expect(event.res.headers.get(REWRITE_HEADER_NAME)).toBe('/new');
     });
 
     it('should rewrite path and not set header when skipHeader is true', () => {
@@ -287,8 +294,7 @@ describe('MiddlewareBase', () => {
 
       middleware._rewrite('/new', event, true);
 
-      expect(event.path).toBe('/new');
-      expect(event.node.res.getHeader(REWRITE_HEADER_NAME)).toBe(undefined);
+      expect(event.res.headers.get(REWRITE_HEADER_NAME)).toBeNull();
     });
   });
 });

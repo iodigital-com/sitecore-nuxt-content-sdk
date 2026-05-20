@@ -1,4 +1,4 @@
-import { H3Event, setResponseHeader, setResponseStatus, send, getHeaders } from 'h3';
+import { H3Event } from 'h3';
 import { ComponentMap } from '@sitecore-content-sdk/vue';
 import { Metadata } from '@sitecore-content-sdk/core/node-tools';
 import { NuxtContentSdkComponent } from '../sharedTypes/component-props';
@@ -85,8 +85,11 @@ export const createEditingConfigRoute = (config: EditingConfigRouteConfig) => {
    * @returns {Record<string, string> | null} CORS headers or null if origin is not allowed
    */
   const getEnforcedCorsHeaders = (event: H3Event): Record<string, string> | null => {
-    const requestHeaders = getHeaders(event);
-    const headers = new Headers(requestHeaders as Record<string, string>);
+    const requestHeaders: Record<string, string> = {};
+    event.req.headers.forEach((value, key) => {
+      requestHeaders[key] = value;
+    });
+    const headers = new Headers(requestHeaders);
 
     return getCorsHeaders({
       requestMethod: event.method,
@@ -105,7 +108,7 @@ export const createEditingConfigRoute = (config: EditingConfigRouteConfig) => {
    * @param {H3Event} event - The incoming H3 event
    * @returns {Promise<void>}
    */
-  const handleOptions = async (event: H3Event): Promise<void> => {
+  const handleOptions = async (event: H3Event): Promise<string> => {
     debug.editing('preflight request');
 
     try {
@@ -115,23 +118,22 @@ export const createEditingConfigRoute = (config: EditingConfigRouteConfig) => {
         debug.editing(
           'invalid origin host - set allowed origins in JSS_ALLOWED_ORIGINS environment variable'
         );
-        setResponseStatus(event, 401);
-        setResponseHeader(event, 'Content-Type', 'application/json');
-        await send(event, JSON.stringify({ message: 'Invalid origin' }));
-        return;
+        event.res.status = 401;
+        event.res.headers.set('Content-Type', 'application/json');
+        return JSON.stringify({ message: 'Invalid origin' });
       }
 
-      Object.entries(corsHeaders).forEach(([key, value]) => setResponseHeader(event, key, value));
-      setResponseHeader(event, 'Access-Control-Allow-Headers', 'Content-Type, Authorization');
-      setResponseStatus(event, 204);
-      await send(event, '');
+      Object.entries(corsHeaders).forEach(([key, value]) => event.res.headers.set(key, value));
+      event.res.headers.set('Access-Control-Allow-Headers', 'Content-Type, Authorization');
+      event.res.status = 204;
+      return '';
     } catch (error) {
       console.error(
         'Editing config OPTIONS route handler failed:',
         error instanceof Error ? error.message : String(error)
       );
-      setResponseStatus(event, 500);
-      await send(event, 'Internal Server Error');
+      event.res.status = 500;
+      return 'Internal Server Error';
     }
   };
 
@@ -145,7 +147,7 @@ export const createEditingConfigRoute = (config: EditingConfigRouteConfig) => {
    * @param {H3Event} event - The incoming H3 event
    * @returns {Promise<void>}
    */
-  const handle = async (event: H3Event): Promise<void> => {
+  const handle = async (event: H3Event): Promise<string> => {
     const startTimestamp = Date.now();
     debug.editing('editing config route handler start');
 
@@ -156,18 +158,16 @@ export const createEditingConfigRoute = (config: EditingConfigRouteConfig) => {
         debug.editing(
           'invalid origin host - set allowed origins in JSS_ALLOWED_ORIGINS environment variable'
         );
-        setResponseStatus(event, 401);
-        setResponseHeader(event, 'Content-Type', 'application/json');
-        await send(event, JSON.stringify({ message: 'Invalid origin' }));
-        return;
+        event.res.status = 401;
+        event.res.headers.set('Content-Type', 'application/json');
+        return JSON.stringify({ message: 'Invalid origin' });
       }
 
       if (!validateSecret(event)) {
-        setResponseStatus(event, 401);
-        Object.entries(corsHeaders).forEach(([key, value]) => setResponseHeader(event, key, value));
-        setResponseHeader(event, 'Content-Type', 'application/json');
-        await send(event, JSON.stringify({ message: 'Missing or invalid editing secret' }));
-        return;
+        event.res.status = 401;
+        Object.entries(corsHeaders).forEach(([key, value]) => event.res.headers.set(key, value));
+        event.res.headers.set('Content-Type', 'application/json');
+        return JSON.stringify({ message: 'Missing or invalid editing secret' });
       }
 
       const componentNames = Array.isArray(config.components)
@@ -187,18 +187,17 @@ export const createEditingConfigRoute = (config: EditingConfigRouteConfig) => {
         editMode: EditMode.Metadata,
       };
 
-      Object.entries(corsHeaders).forEach(([key, value]) => setResponseHeader(event, key, value));
-      setResponseHeader(event, 'Content-Type', 'application/json');
-      await send(event, JSON.stringify(responseData));
-
+      Object.entries(corsHeaders).forEach(([key, value]) => event.res.headers.set(key, value));
+      event.res.headers.set('Content-Type', 'application/json');
       debug.editing('editing config route handler end in %dms', Date.now() - startTimestamp);
+      return JSON.stringify(responseData);
     } catch (error) {
       console.error(
         'Editing config route handler failed:',
         error instanceof Error ? error.message : String(error)
       );
-      setResponseStatus(event, 500);
-      await send(event, 'Internal Server Error');
+      event.res.status = 500;
+      return 'Internal Server Error';
     }
   };
 

@@ -12,13 +12,12 @@
     "postinstall": "nuxt prepare"
   },
   "dependencies": {
-    "@sitecore-content-sdk/nuxt": "file:./../../packages/nuxt",
-    "@sitecore-content-sdk/events": "file:./../../packages/events",
     "@sitecore-content-sdk/analytics-core": "file:./../../packages/analytics-core",
+    "@sitecore-content-sdk/events": "file:./../../packages/events",
+    "@sitecore-content-sdk/nuxt": "file:./../../packages/nuxt",
     "@types/node": "^24.10.4",
-    "nuxt": "^4.4.2",
-    "nitro": "^3.0.260311-beta",
-    "vue": "^3.5.32",
+    "nuxt": "^4.4.6",
+    "vue": "^3.5.34",
     "vue-router": "^5.0.4"
   },
   "devDependencies": {

@@ -1,6 +1,5 @@
 import { describe, it, expect, afterEach, vi } from 'vitest';
-import { createEvent, H3Event } from 'h3';
-import { IncomingMessage, ServerResponse } from 'http';
+import { mockEvent, H3Event } from 'h3';
 import { PreviewMiddleware } from './preview-middleware';
 import { PreviewCookies } from '../utils/editing-utils';
 
@@ -9,22 +8,22 @@ const createMockEvent = (
   cookies: Record<string, string> = {},
   path: string = '/'
 ): H3Event => {
-  const req = new IncomingMessage(null as any);
-  req.headers = headers;
-  req.url = path;
+  const cookieHeader = Object.keys(cookies).length
+    ? Object.entries(cookies)
+        .map(([k, v]) => `${k}=${v}`)
+        .join('; ')
+    : undefined;
 
-  if (Object.keys(cookies).length) {
-    req.headers.cookie = Object.entries(cookies)
-      .map(([k, v]) => `${k}=${v}`)
-      .join('; ');
-  }
-
-  const res = new ServerResponse(req);
-  return createEvent(req, res);
+  return mockEvent(`http://localhost${path}`, {
+    headers: {
+      ...headers,
+      ...(cookieHeader ? { cookie: cookieHeader } : {}),
+    },
+  });
 };
 
 describe('PreviewMiddleware', () => {
-    afterEach(() => {
+  afterEach(() => {
     vi.restoreAllMocks();
   });
 
@@ -34,7 +33,7 @@ describe('PreviewMiddleware', () => {
 
     await middleware.handle(event);
 
-    expect(event.node.res.getHeader('Cache-Control')).toBe('no-store, must-revalidate');
+    expect(event.res.headers.get('Cache-Control')).toBe('no-store, must-revalidate');
   });
 
   it('should not bypass cache when preview cookie is absent', async () => {
@@ -43,7 +42,7 @@ describe('PreviewMiddleware', () => {
 
     await middleware.handle(event);
 
-    expect(event.node.res.getHeader('Cache-Control')).toBe(undefined);
+    expect(event.res.headers.get('Cache-Control')).toBeNull();
   });
 
   it('should skip when path is an API route', async () => {
@@ -52,7 +51,7 @@ describe('PreviewMiddleware', () => {
 
     await middleware.handle(event);
 
-    expect(event.node.res.getHeader('Cache-Control')).toBe(undefined);
+    expect(event.res.headers.get('Cache-Control')).toBeNull();
   });
 
   it('should skip when path is a Nuxt internal route', async () => {
@@ -61,19 +60,19 @@ describe('PreviewMiddleware', () => {
 
     await middleware.handle(event);
 
-    expect(event.node.res.getHeader('Cache-Control')).toBe(undefined);
+    expect(event.res.headers.get('Cache-Control')).toBeNull();
   });
 
   it('should skip when custom skip function returns true', async () => {
     const middleware = new PreviewMiddleware({
       sites: [],
-      skip: (event: H3Event) => event.path === '/skip-me',
+      skip: (event: H3Event) => event.url.pathname === '/skip-me',
     });
     const event = createMockEvent({}, { [PreviewCookies.PREVIEW]: 'true' }, '/skip-me');
 
     await middleware.handle(event);
 
-    expect(event.node.res.getHeader('Cache-Control')).toBe(undefined);
+    expect(event.res.headers.get('Cache-Control')).toBeNull();
   });
 
   it('should catch errors and log them without throwing', async () => {
@@ -81,7 +80,9 @@ describe('PreviewMiddleware', () => {
     const consoleErrorStub = vi.spyOn(console, 'error');
     const event = createMockEvent({}, { [PreviewCookies.PREVIEW]: 'true' });
 
-    vi.spyOn(middleware as any, 'bypassCache').mockImplementation(() => { throw new Error('Unexpected failure'); });
+    vi.spyOn(middleware as any, 'bypassCache').mockImplementation(() => {
+      throw new Error('Unexpected failure');
+    });
 
     await middleware.handle(event);
 

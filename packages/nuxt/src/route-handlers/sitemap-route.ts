@@ -1,6 +1,6 @@
 import { SitecoreClient, SitemapXmlOptions } from '@sitecore-content-sdk/content/client';
 import { SiteInfo, SiteResolver } from '@sitecore-content-sdk/content/site';
-import { H3Event, setResponseHeader, setResponseStatus, send } from 'h3';
+import { H3Event } from 'h3';
 import debug from '../debug';
 import { constants } from '@sitecore-content-sdk/core';
 
@@ -45,7 +45,7 @@ export function createSitemapRoute(options: SitemapRouteOptions) {
     return { reqHost, reqProtocol, id, siteName: site.name };
   };
 
-  const handle = async (event: H3Event): Promise<void> => {
+  const handle = async (event: H3Event) => {
     const startTimestamp = Date.now();
     const sitemapOptions = getOptions(event);
 
@@ -54,19 +54,19 @@ export function createSitemapRoute(options: SitemapRouteOptions) {
     try {
       const xml = await client.getSiteMap(sitemapOptions);
 
-      setResponseHeader(event, 'Content-Type', 'text/xml;charset=utf-8');
-      await send(event, xml);
+      event.res.headers.set('Content-Type', 'text/xml;charset=utf-8');
+      return xml;
     } catch (error) {
       const message = error instanceof Error ? error.message : String(error);
 
       console.error(`Failed to fetch sitemap from Sitecore: ${message}`);
 
       if (error instanceof Error && error.message === 'REDIRECT_404') {
-        setResponseStatus(event, 404);
-        await send(event, 'Not Found');
+        event.res.status = 404;
+        return 'Not Found';
       } else {
-        setResponseStatus(event, 500);
-        await send(event, `Internal Server Error.  ${ERROR_MESSAGES.CONTACT_SUPPORT}`);
+        event.res.status = 500;
+        return `Internal Server Error.  ${ERROR_MESSAGES.CONTACT_SUPPORT}`;
       }
     } finally {
       debug.sitemap('sitemap route handler end in %dms', Date.now() - startTimestamp);

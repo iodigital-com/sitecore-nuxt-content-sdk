@@ -1,8 +1,7 @@
 /* eslint-disable no-unused-expressions */
 /* eslint-disable dot-notation */
 import { describe, it, beforeEach, afterEach, beforeAll, afterAll, vi, expect } from 'vitest';
-import { createEvent, H3Event } from 'h3';
-import { IncomingMessage, ServerResponse } from 'http';
+import { mockEvent, H3Event } from 'h3';
 import {
   REDIRECT_TYPE_301,
   REDIRECT_TYPE_302,
@@ -36,27 +35,26 @@ const createMockEvent = (
   path: string = '/old-page',
   responseHeaders: Record<string, string> = {}
 ): H3Event => {
-  const req = new IncomingMessage(null as any);
-  req.url = path;
-  req.headers = {
-    host: hostname,
-    referer: 'http://localhost:3000',
-    ...headers,
-  };
+  const cookieHeader = Object.keys(cookies).length
+    ? Object.entries(cookies)
+        .map(([k, v]) => `${k}=${v}`)
+        .join('; ')
+    : undefined;
 
-  if (Object.keys(cookies).length) {
-    req.headers.cookie = Object.entries(cookies)
-      .map(([k, v]) => `${k}=${v}`)
-      .join('; ');
-  }
-
-  const res = new ServerResponse(req);
-
-  Object.entries(responseHeaders).forEach(([key, value]) => {
-    res.setHeader(key, value);
+  const event = mockEvent(`http://${hostname}${path}`, {
+    headers: {
+      host: hostname,
+      referer: 'http://localhost:3000',
+      ...headers,
+      ...(cookieHeader ? { cookie: cookieHeader } : {}),
+    },
   });
 
-  return createEvent(req, res);
+  Object.entries(responseHeaders).forEach(([key, value]) => {
+    event.res.headers.set(key, value);
+  });
+
+  return event;
 };
 
 type TestMiddlewareProps = {
@@ -195,7 +193,7 @@ describe('RedirectsMiddleware', () => {
       });
 
       it('should apply both default and custom rules when custom skip function provided', async () => {
-        const skip = (event: H3Event) => event.path === '/crazypath/luna';
+        const skip = (event: H3Event) => event.url.pathname === '/crazypath/luna';
         const { middleware } = createMiddleware({
           redirectsMiddlewareConfig: { ...defaultConfig, skip },
         });
@@ -231,8 +229,8 @@ describe('RedirectsMiddleware', () => {
           hostname: 'foo.net',
         });
         validateDebugLog('skipped (prefetch)');
-        expect(event.node.res.getHeader('x-proxy-cache')).toBe('no-cache');
-        expect(event.node.res.getHeader('Cache-Control')).toBe('no-store, must-revalidate');
+        expect(event.res.headers.get('x-proxy-cache')).toBe('no-cache');
+        expect(event.res.headers.get('Cache-Control')).toBe('no-store, must-revalidate');
       });
     });
   });
@@ -255,7 +253,7 @@ describe('RedirectsMiddleware', () => {
       });
 
       expect(fetchRedirectsStub).toHaveBeenCalledWith(siteName);
-      expect(event.node.res.statusCode).toBe(301);
+      expect(event.res.status).toBe(301);
 
       validateEndMessageDebugLog('redirects middleware end in %dms: %o', {
         target: '/new-page',
@@ -274,7 +272,7 @@ describe('RedirectsMiddleware', () => {
       await middleware.handle(event);
 
       expect(fetchRedirectsStub).toHaveBeenCalledWith(siteName);
-      expect(event.node.res.statusCode).toBe(302);
+      expect(event.res.status).toBe(302);
 
       validateEndMessageDebugLog('redirects middleware end in %dms: %o', {
         target: '/new-page',
@@ -293,7 +291,7 @@ describe('RedirectsMiddleware', () => {
 
       await middleware.handle(event);
 
-      expect(event.node.req.url).toBe('/new-page');
+      expect(event.res.headers.get('x-sc-rewrite')).toBe('/new-page');
 
       validateEndMessageDebugLog('redirects middleware end in %dms: %o', {
         target: '/new-page',
@@ -312,8 +310,8 @@ describe('RedirectsMiddleware', () => {
 
       await middleware.handle(event);
 
-      expect(event.node.res.getHeader('location')).toContain('param1=value1');
-      expect(event.node.res.getHeader('location')).toContain('param2=value2');
+      expect(event.res.headers.get('location')).toContain('param1=value1');
+      expect(event.res.headers.get('location')).toContain('param2=value2');
     });
 
     it('should not preserve query string when isQueryStringPreserved is false', async () => {
@@ -327,7 +325,7 @@ describe('RedirectsMiddleware', () => {
 
       await middleware.handle(event);
 
-      const location = event.node.res.getHeader('location') as string;
+      const location = event.res.headers.get('location') as string;
       expect(location).toContain('/new-page');
       expect(location).not.toContain('param1');
       expect(location).not.toContain('param2');
@@ -343,7 +341,7 @@ describe('RedirectsMiddleware', () => {
 
       await middleware.handle(event);
 
-      const location = event.node.res.getHeader('location') as string;
+      const location = event.res.headers.get('location') as string;
       expect(location).toContain('https://example.com/new-page');
     });
 
@@ -357,7 +355,7 @@ describe('RedirectsMiddleware', () => {
 
       await middleware.handle(event);
 
-      const location = event.node.res.getHeader('location') as string;
+      const location = event.res.headers.get('location') as string;
       expect(location).toContain('/new-page/123');
     });
 
@@ -372,7 +370,7 @@ describe('RedirectsMiddleware', () => {
 
       await middleware.handle(event);
 
-      const location = event.node.res.getHeader('location') as string;
+      const location = event.res.headers.get('location') as string;
       expect(location).toContain('/da/new-page');
     });
 
@@ -388,8 +386,8 @@ describe('RedirectsMiddleware', () => {
       await middleware.handle(event);
 
       expect(fetchRedirectsStub).toHaveBeenCalledWith(siteName);
-      expect(event.node.res.statusCode).toBe(302);
-      expect(event.node.res.getHeader('location')).toContain('/new-page-2');
+      expect(event.res.status).toBe(302);
+      expect(event.res.headers.get('location')).toContain('/new-page-2');
     });
 
     it('should use fallback hostname when host header is missing', async () => {
@@ -409,7 +407,7 @@ describe('RedirectsMiddleware', () => {
         hostname: 'bar.net',
       });
 
-      expect(event.node.res.statusCode).toBe(301);
+      expect(event.res.status).toBe(301);
     });
 
     it('should preserve site prefix from x-sc-rewrite on server transfer', async () => {
@@ -423,7 +421,7 @@ describe('RedirectsMiddleware', () => {
 
       await middleware.handle(event);
 
-      expect(event.node.req.url).toContain('/foo/en/new-page');
+      expect(event.res.headers.get('x-sc-rewrite')).toContain('/foo/en/new-page');
     });
   });
 

@@ -6,7 +6,7 @@
 
 # Class: RedirectsMiddleware
 
-Defined in: [packages/nuxt/src/middleware/redirects-middleware.ts:74](https://github.com/weareyou/sitecore-nuxt-content-sdk/blob/9012ccaea91e6d12c9995dfa53c658f7debe0ac8/packages/nuxt/src/middleware/redirects-middleware.ts#L74)
+Defined in: [packages/nuxt/src/middleware/redirects-middleware.ts:74](https://github.com/weareyou/sitecore-nuxt-content-sdk/blob/d70e3f78edb5d654a3c5779bdb880ed2da0dfa5c/packages/nuxt/src/middleware/redirects-middleware.ts#L74)
 
 Middleware that fetches redirect rules from Sitecore and applies them to incoming requests.
 
@@ -48,7 +48,7 @@ export default defineEventHandler((event) => middleware.handle(event));
 
 > **new RedirectsMiddleware**(`config`): `RedirectsMiddleware`
 
-Defined in: [packages/nuxt/src/middleware/redirects-middleware.ts:83](https://github.com/weareyou/sitecore-nuxt-content-sdk/blob/9012ccaea91e6d12c9995dfa53c658f7debe0ac8/packages/nuxt/src/middleware/redirects-middleware.ts#L83)
+Defined in: [packages/nuxt/src/middleware/redirects-middleware.ts:83](https://github.com/weareyou/sitecore-nuxt-content-sdk/blob/d70e3f78edb5d654a3c5779bdb880ed2da0dfa5c/packages/nuxt/src/middleware/redirects-middleware.ts#L83)
 
 #### Parameters
 
@@ -70,7 +70,7 @@ Defined in: [packages/nuxt/src/middleware/redirects-middleware.ts:83](https://gi
 
 > `protected` **config**: [`RedirectsMiddlewareConfig`](../type-aliases/RedirectsMiddlewareConfig.md)
 
-Defined in: [packages/nuxt/src/middleware/redirects-middleware.ts:83](https://github.com/weareyou/sitecore-nuxt-content-sdk/blob/9012ccaea91e6d12c9995dfa53c658f7debe0ac8/packages/nuxt/src/middleware/redirects-middleware.ts#L83)
+Defined in: [packages/nuxt/src/middleware/redirects-middleware.ts:83](https://github.com/weareyou/sitecore-nuxt-content-sdk/blob/d70e3f78edb5d654a3c5779bdb880ed2da0dfa5c/packages/nuxt/src/middleware/redirects-middleware.ts#L83)
 
 Redirects middleware configuration.
 When neither Edge nor local API configuration is provided, `redirectsService` is set
@@ -86,7 +86,7 @@ to `null` and redirect processing is disabled.
 
 > `protected` **defaultHostname**: `string`
 
-Defined in: [packages/nuxt/src/middleware/middleware.ts:73](https://github.com/weareyou/sitecore-nuxt-content-sdk/blob/9012ccaea91e6d12c9995dfa53c658f7debe0ac8/packages/nuxt/src/middleware/middleware.ts#L73)
+Defined in: [packages/nuxt/src/middleware/middleware.ts:66](https://github.com/weareyou/sitecore-nuxt-content-sdk/blob/d70e3f78edb5d654a3c5779bdb880ed2da0dfa5c/packages/nuxt/src/middleware/middleware.ts#L66)
 
 #### Inherited from
 
@@ -98,7 +98,7 @@ Defined in: [packages/nuxt/src/middleware/middleware.ts:73](https://github.com/w
 
 > `protected` **redirectsService**: [`RedirectsService`](RedirectsService.md) \| `null`
 
-Defined in: [packages/nuxt/src/middleware/redirects-middleware.ts:75](https://github.com/weareyou/sitecore-nuxt-content-sdk/blob/9012ccaea91e6d12c9995dfa53c658f7debe0ac8/packages/nuxt/src/middleware/redirects-middleware.ts#L75)
+Defined in: [packages/nuxt/src/middleware/redirects-middleware.ts:75](https://github.com/weareyou/sitecore-nuxt-content-sdk/blob/d70e3f78edb5d654a3c5779bdb880ed2da0dfa5c/packages/nuxt/src/middleware/redirects-middleware.ts#L75)
 
 ***
 
@@ -106,7 +106,7 @@ Defined in: [packages/nuxt/src/middleware/redirects-middleware.ts:75](https://gi
 
 > `protected` **siteResolver**: [`SiteResolver`](SiteResolver.md)
 
-Defined in: [packages/nuxt/src/middleware/middleware.ts:74](https://github.com/weareyou/sitecore-nuxt-content-sdk/blob/9012ccaea91e6d12c9995dfa53c658f7debe0ac8/packages/nuxt/src/middleware/middleware.ts#L74)
+Defined in: [packages/nuxt/src/middleware/middleware.ts:67](https://github.com/weareyou/sitecore-nuxt-content-sdk/blob/d70e3f78edb5d654a3c5779bdb880ed2da0dfa5c/packages/nuxt/src/middleware/middleware.ts#L67)
 
 #### Inherited from
 
@@ -118,7 +118,7 @@ Defined in: [packages/nuxt/src/middleware/middleware.ts:74](https://github.com/w
 
 > `protected` **disabled**(`event`): `boolean`
 
-Defined in: [packages/nuxt/src/middleware/redirects-middleware.ts:239](https://github.com/weareyou/sitecore-nuxt-content-sdk/blob/9012ccaea91e6d12c9995dfa53c658f7debe0ac8/packages/nuxt/src/middleware/redirects-middleware.ts#L239)
+Defined in: [packages/nuxt/src/middleware/redirects-middleware.ts:239](https://github.com/weareyou/sitecore-nuxt-content-sdk/blob/d70e3f78edb5d654a3c5779bdb880ed2da0dfa5c/packages/nuxt/src/middleware/redirects-middleware.ts#L239)
 
 Determines whether the middleware should be skipped for the current request.
 
@@ -145,9 +145,9 @@ a file extension (static assets), or the base disabled check matches.
 
 ### dispatchRedirect()
 
-> `protected` **dispatchRedirect**(`event`, `target`, `type`): `Promise`\<`void`\>
+> `protected` **dispatchRedirect**(`event`, `target`, `type`): `void`
 
-Defined in: [packages/nuxt/src/middleware/redirects-middleware.ts:347](https://github.com/weareyou/sitecore-nuxt-content-sdk/blob/9012ccaea91e6d12c9995dfa53c658f7debe0ac8/packages/nuxt/src/middleware/redirects-middleware.ts#L347)
+Defined in: [packages/nuxt/src/middleware/redirects-middleware.ts:347](https://github.com/weareyou/sitecore-nuxt-content-sdk/blob/d70e3f78edb5d654a3c5779bdb880ed2da0dfa5c/packages/nuxt/src/middleware/redirects-middleware.ts#L347)
 
 Dispatches a redirect or rewrite based on the redirect type.
 
@@ -166,7 +166,7 @@ Dispatches a redirect or rewrite based on the redirect type.
 
 #### Returns
 
-`Promise`\<`void`\>
+`void`
 
 ***
 
@@ -174,7 +174,7 @@ Dispatches a redirect or rewrite based on the redirect type.
 
 > `protected` **getClientFactory**(`graphQLOptions`): [`GraphQLRequestClientFactory`](../type-aliases/GraphQLRequestClientFactory.md)
 
-Defined in: [packages/nuxt/src/middleware/middleware.ts:218](https://github.com/weareyou/sitecore-nuxt-content-sdk/blob/9012ccaea91e6d12c9995dfa53c658f7debe0ac8/packages/nuxt/src/middleware/middleware.ts#L218)
+Defined in: [packages/nuxt/src/middleware/middleware.ts:211](https://github.com/weareyou/sitecore-nuxt-content-sdk/blob/d70e3f78edb5d654a3c5779bdb880ed2da0dfa5c/packages/nuxt/src/middleware/middleware.ts#L211)
 
 Creates a new GraphQLRequestClientFactory instance
 
@@ -200,7 +200,7 @@ GraphQLRequestClientFactory instance
 
 > `protected` **getExistsRedirect**(`event`, `siteName`): `Promise`\<`RedirectResult` \| `undefined`\>
 
-Defined in: [packages/nuxt/src/middleware/redirects-middleware.ts:376](https://github.com/weareyou/sitecore-nuxt-content-sdk/blob/9012ccaea91e6d12c9995dfa53c658f7debe0ac8/packages/nuxt/src/middleware/redirects-middleware.ts#L376)
+Defined in: [packages/nuxt/src/middleware/redirects-middleware.ts:379](https://github.com/weareyou/sitecore-nuxt-content-sdk/blob/d70e3f78edb5d654a3c5779bdb880ed2da0dfa5c/packages/nuxt/src/middleware/redirects-middleware.ts#L379)
 
 Finds a matching redirect rule for the current request by comparing the normalized
 incoming URL against all redirect rules fetched from the Sitecore redirects service.
@@ -227,7 +227,7 @@ The matched redirect rule, or `undefined` if none found
 
 > `protected` **getHostHeader**(`event`): `string` \| `undefined`
 
-Defined in: [packages/nuxt/src/middleware/middleware.ts:151](https://github.com/weareyou/sitecore-nuxt-content-sdk/blob/9012ccaea91e6d12c9995dfa53c658f7debe0ac8/packages/nuxt/src/middleware/middleware.ts#L151)
+Defined in: [packages/nuxt/src/middleware/middleware.ts:142](https://github.com/weareyou/sitecore-nuxt-content-sdk/blob/d70e3f78edb5d654a3c5779bdb880ed2da0dfa5c/packages/nuxt/src/middleware/middleware.ts#L142)
 
 Extract 'host' header.
 
@@ -253,7 +253,7 @@ The host header, `undefined` will be returned instead of the default value when 
 
 > `protected` **getLanguage**(`event`): `string`
 
-Defined in: [packages/nuxt/src/middleware/middleware.ts:138](https://github.com/weareyou/sitecore-nuxt-content-sdk/blob/9012ccaea91e6d12c9995dfa53c658f7debe0ac8/packages/nuxt/src/middleware/middleware.ts#L138)
+Defined in: [packages/nuxt/src/middleware/middleware.ts:131](https://github.com/weareyou/sitecore-nuxt-content-sdk/blob/d70e3f78edb5d654a3c5779bdb880ed2da0dfa5c/packages/nuxt/src/middleware/middleware.ts#L131)
 
 Provides used language
 
@@ -279,7 +279,7 @@ language
 
 > `protected` **getSite**(`event`): [`SiteInfo`](../type-aliases/SiteInfo.md)
 
-Defined in: [packages/nuxt/src/middleware/middleware.ts:164](https://github.com/weareyou/sitecore-nuxt-content-sdk/blob/9012ccaea91e6d12c9995dfa53c658f7debe0ac8/packages/nuxt/src/middleware/middleware.ts#L164)
+Defined in: [packages/nuxt/src/middleware/middleware.ts:155](https://github.com/weareyou/sitecore-nuxt-content-sdk/blob/d70e3f78edb5d654a3c5779bdb880ed2da0dfa5c/packages/nuxt/src/middleware/middleware.ts#L155)
 
 Get site information. If site name is stored in cookie, use it, otherwise resolve by hostname
 - If site can't be resolved by site name cookie use default site info based on provided parameters
@@ -307,7 +307,7 @@ site information
 
 > **handle**(`event`): `Promise`\<`void`\>
 
-Defined in: [packages/nuxt/src/middleware/redirects-middleware.ts:147](https://github.com/weareyou/sitecore-nuxt-content-sdk/blob/9012ccaea91e6d12c9995dfa53c658f7debe0ac8/packages/nuxt/src/middleware/redirects-middleware.ts#L147)
+Defined in: [packages/nuxt/src/middleware/redirects-middleware.ts:147](https://github.com/weareyou/sitecore-nuxt-content-sdk/blob/d70e3f78edb5d654a3c5779bdb880ed2da0dfa5c/packages/nuxt/src/middleware/redirects-middleware.ts#L147)
 
 Handles an incoming request by checking for matching redirect rules and applying them.
 
@@ -343,7 +343,7 @@ Errors are caught and logged without re-throwing, so the request continues norma
 
 > `protected` **isPrefetch**(`event`): `boolean`
 
-Defined in: [packages/nuxt/src/middleware/middleware.ts:99](https://github.com/weareyou/sitecore-nuxt-content-sdk/blob/9012ccaea91e6d12c9995dfa53c658f7debe0ac8/packages/nuxt/src/middleware/middleware.ts#L99)
+Defined in: [packages/nuxt/src/middleware/middleware.ts:92](https://github.com/weareyou/sitecore-nuxt-content-sdk/blob/d70e3f78edb5d654a3c5779bdb880ed2da0dfa5c/packages/nuxt/src/middleware/middleware.ts#L92)
 
 Determines if the request is a Nuxt prefetch request
 
@@ -369,7 +369,7 @@ is prefetch
 
 > `protected` **isPreview**(`event`): `boolean`
 
-Defined in: [packages/nuxt/src/middleware/middleware.ts:90](https://github.com/weareyou/sitecore-nuxt-content-sdk/blob/9012ccaea91e6d12c9995dfa53c658f7debe0ac8/packages/nuxt/src/middleware/middleware.ts#L90)
+Defined in: [packages/nuxt/src/middleware/middleware.ts:83](https://github.com/weareyou/sitecore-nuxt-content-sdk/blob/d70e3f78edb5d654a3c5779bdb880ed2da0dfa5c/packages/nuxt/src/middleware/middleware.ts#L83)
 
 Determines if mode is preview
 
@@ -395,7 +395,7 @@ is preview
 
 > `protected` **normalizeUrl**(`url`): `URL`
 
-Defined in: [packages/nuxt/src/middleware/redirects-middleware.ts:458](https://github.com/weareyou/sitecore-nuxt-content-sdk/blob/9012ccaea91e6d12c9995dfa53c658f7debe0ac8/packages/nuxt/src/middleware/redirects-middleware.ts#L458)
+Defined in: [packages/nuxt/src/middleware/redirects-middleware.ts:461](https://github.com/weareyou/sitecore-nuxt-content-sdk/blob/d70e3f78edb5d654a3c5779bdb880ed2da0dfa5c/packages/nuxt/src/middleware/redirects-middleware.ts#L461)
 
 Normalizes the incoming URL by removing Next.js-style `path=` query parameters
 that are added when using the `Link` component.
@@ -424,7 +424,7 @@ The normalized URL
 
 > `protected` **processAbsoluteUrlTarget**(`event`, `url`, `existsRedirect`): `Promise`\<`void`\>
 
-Defined in: [packages/nuxt/src/middleware/redirects-middleware.ts:257](https://github.com/weareyou/sitecore-nuxt-content-sdk/blob/9012ccaea91e6d12c9995dfa53c658f7debe0ac8/packages/nuxt/src/middleware/redirects-middleware.ts#L257)
+Defined in: [packages/nuxt/src/middleware/redirects-middleware.ts:257](https://github.com/weareyou/sitecore-nuxt-content-sdk/blob/d70e3f78edb5d654a3c5779bdb880ed2da0dfa5c/packages/nuxt/src/middleware/redirects-middleware.ts#L257)
 
 Handles redirect logic for absolute (external) URLs.
 Merges query strings when `isQueryStringPreserved` is set on the redirect rule.
@@ -447,7 +447,7 @@ Merges query strings when `isQueryStringPreserved` is set on the redirect rule.
 
 > `protected` **processRelativeUrlTarget**(`event`, `url`, `existsRedirect`, `language`): `Promise`\<`void`\>
 
-Defined in: [packages/nuxt/src/middleware/redirects-middleware.ts:287](https://github.com/weareyou/sitecore-nuxt-content-sdk/blob/9012ccaea91e6d12c9995dfa53c658f7debe0ac8/packages/nuxt/src/middleware/redirects-middleware.ts#L287)
+Defined in: [packages/nuxt/src/middleware/redirects-middleware.ts:287](https://github.com/weareyou/sitecore-nuxt-content-sdk/blob/d70e3f78edb5d654a3c5779bdb880ed2da0dfa5c/packages/nuxt/src/middleware/redirects-middleware.ts#L287)
 
 Handles redirect logic for relative (internal) URLs.
 Resolves the target locale, merges query strings when configured, and applies
@@ -472,7 +472,7 @@ any site prefix from the `x-sc-rewrite` response header.
 
 > `protected` **rewrite**(`rewritePath`, `event`, `skipHeader?`): `void`
 
-Defined in: [packages/nuxt/src/middleware/middleware.ts:204](https://github.com/weareyou/sitecore-nuxt-content-sdk/blob/9012ccaea91e6d12c9995dfa53c658f7debe0ac8/packages/nuxt/src/middleware/middleware.ts#L204)
+Defined in: [packages/nuxt/src/middleware/middleware.ts:195](https://github.com/weareyou/sitecore-nuxt-content-sdk/blob/d70e3f78edb5d654a3c5779bdb880ed2da0dfa5c/packages/nuxt/src/middleware/middleware.ts#L195)
 
 Rewrites the request path for subsequent handling.
 

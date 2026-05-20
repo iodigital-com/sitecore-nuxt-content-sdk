@@ -8,7 +8,7 @@
 
 > **SitecoreConfigInput** = `SitecoreConfigInputCore` & `object`
 
-Defined in: [packages/nuxt/src/config/define-config.ts:57](https://github.com/weareyou/sitecore-nuxt-content-sdk/blob/9012ccaea91e6d12c9995dfa53c658f7debe0ac8/packages/nuxt/src/config/define-config.ts#L57)
+Defined in: [packages/nuxt/src/config/define-config.ts:57](https://github.com/weareyou/sitecore-nuxt-content-sdk/blob/d70e3f78edb5d654a3c5779bdb880ed2da0dfa5c/packages/nuxt/src/config/define-config.ts#L57)
 
 Type to be used as config input in sitecore.config
 

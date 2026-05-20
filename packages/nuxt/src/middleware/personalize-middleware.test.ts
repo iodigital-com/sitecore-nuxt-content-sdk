@@ -1,7 +1,7 @@
 /* eslint-disable dot-notation */
 /* eslint-disable no-unused-expressions */
 import { describe, it, beforeEach, afterEach, vi, expect } from 'vitest';
-import { createEvent, H3Event } from 'h3';
+import { mockEvent, H3Event } from 'h3';
 import { IncomingMessage, ServerResponse } from 'http';
 import { GraphQLRequestClient } from '@sitecore-content-sdk/core';
 import { SiteResolver } from '@sitecore-content-sdk/content/site';
@@ -45,22 +45,33 @@ const createMockEvent = (
   cookies: Record<string, string> = {},
   path: string = '/styleguide'
 ): H3Event => {
+  const cookieHeader = Object.keys(cookies).length
+    ? Object.entries(cookies)
+        .map(([k, v]) => `$${k}=$${v}`)
+        .join('; ')
+    : undefined;
+
+  const event = mockEvent(`http://${hostname}${path}`, {
+    headers: {
+      host: hostname,
+      referer: referrer,
+      ...headers,
+      ...(cookieHeader ? { cookie: cookieHeader } : {}),
+    },
+  });
+
   const req = new IncomingMessage(null as any);
   req.url = path;
   req.headers = {
     host: hostname,
     referer: referrer,
     ...headers,
+    ...(cookieHeader ? { cookie: cookieHeader } : {}),
   };
-
-  if (Object.keys(cookies).length) {
-    req.headers.cookie = Object.entries(cookies)
-      .map(([k, v]) => `$${k}=$${v}`)
-      .join('; ');
-  }
-
   const res = new ServerResponse(req);
-  return createEvent(req, res);
+  (event.req as any).runtime = { node: { req, res } };
+
+  return event;
 };
 
 const createMiddleware = (
@@ -294,7 +305,7 @@ describe('PersonalizeMiddleware', () => {
       });
 
       it('should apply both default and custom rules when custom skip function provided', async () => {
-        const skip = (event: H3Event) => event.path === '/crazypath/luna';
+        const skip = (event: H3Event) => event.url.pathname === '/crazypath/luna';
         const { middleware } = createMiddleware({ config: { ...defaultConfig, skip } });
         await test('/src/image.png', middleware);
         await test('/api/layout/render', middleware);
@@ -397,8 +408,8 @@ describe('PersonalizeMiddleware', () => {
         language: 'en',
       });
       validateDebugLog('skipped (prefetch)');
-      expect(event.node.res.getHeader('x-proxy-cache')).toBe('no-cache');
-      expect(event.node.res.getHeader('Cache-Control')).toBe('no-store, must-revalidate');
+      expect(event.res.headers.get('x-proxy-cache')).toBe('no-cache');
+      expect(event.res.headers.get('Cache-Control')).toBe('no-store, must-revalidate');
     });
   });
 
@@ -524,7 +535,7 @@ describe('PersonalizeMiddleware', () => {
 
     it('x-sc-rewrite header is provided', async () => {
       const event = createMockEvent();
-      event.node.res.setHeader('x-sc-rewrite', '/_site_nextjs-app/styleguide/');
+      event.res.headers.set('x-sc-rewrite', '/_site_nextjs-app/styleguide/');
       const { middleware, getPersonalizeInfo, initPersonalizeServer, personalize, siteResolver } =
         createMiddleware({ variantId: 'variant-2' });
 
@@ -766,7 +777,7 @@ describe('PersonalizeMiddleware', () => {
         const languageInHeader = 'fr-FR';
         const language = 'da-DK';
         const event = createMockEvent();
-        event.node.res.setHeader('x-sc-locale', languageInHeader);
+        event.res.headers.set('x-sc-locale', languageInHeader);
 
         const { middleware, getPersonalizeInfo } = createMiddleware({
           language,

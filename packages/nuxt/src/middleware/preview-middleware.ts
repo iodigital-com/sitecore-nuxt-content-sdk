@@ -1,4 +1,4 @@
-import { H3Event, setResponseHeader } from 'h3';
+import { H3Event } from 'h3';
 import { MiddlewareBase, MiddlewareBaseConfig } from './middleware';
 
 /**
@@ -65,6 +65,6 @@ export class PreviewMiddleware extends MiddlewareBase {
    * @internal
    */
   private bypassCache(event: H3Event): void {
-    setResponseHeader(event, 'Cache-Control', 'no-store, must-revalidate');
+    event.res.headers.set('Cache-Control', 'no-store, must-revalidate');
   }
 }

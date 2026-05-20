@@ -1,4 +1,4 @@
-import { H3Event, setResponseStatus, send } from 'h3';
+import { H3Event } from 'h3';
 
 /**
  * Creates a route handler for the healthcheck endpoint.
@@ -19,9 +19,9 @@ export const createHealthcheckRoute = () => {
    * @param {H3Event} event - The incoming H3 event
    * @returns {Promise<void>}
    */
-  const handle = async (event: H3Event): Promise<void> => {
-    setResponseStatus(event, 200);
-    await send(event, 'Healthy');
+  const handle = async (event: H3Event) => {
+    event.res.status = 200;
+    return 'Healthy';
   };
 
   return { handle };

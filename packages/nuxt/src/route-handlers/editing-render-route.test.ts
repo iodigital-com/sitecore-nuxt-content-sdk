@@ -1,6 +1,6 @@
 /* eslint-disable no-unused-vars */
 import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest';
-import { createEvent, H3Event } from 'h3';
+import { mockEvent, H3Event } from 'h3';
 import { IncomingMessage, ServerResponse } from 'http';
 import {
   EDITING_ALLOWED_ORIGINS,
@@ -27,7 +27,7 @@ vi.mock('@sitecore-content-sdk/core', async (importOriginal) => {
   const actual = await importOriginal<typeof import('@sitecore-content-sdk/core')>();
   return {
     ...actual,
-    NativeDataFetcher: vi.fn().mockReturnValue({}),
+    NativeDataFetcher: vi.fn().mockImplementation(class {}),
   };
 });
 vi.mock('h3', async () => {
@@ -51,29 +51,17 @@ import { proxyRequest } from 'h3';
 import { createEditingRenderRoute } from './editing-render-route';
 
 const createMockEvent = (headers: Record<string, string> = {}, path: string = '/'): H3Event => {
+  const event = mockEvent(`http://localhost${path}`, { method: 'GET', headers });
+
   const req = new IncomingMessage(null as any);
   req.headers = headers;
   req.url = path;
   req.method = 'GET';
   const res = new ServerResponse(req);
-  return createEvent(req, res);
-};
 
-const readBody = (event: H3Event): Promise<string> => {
-  return new Promise((resolve) => {
-    const chunks: Buffer[] = [];
+  (event.req as any).runtime = { node: { req, res } };
 
-    event.node.res.write = (chunk: any) => {
-      chunks.push(Buffer.from(chunk));
-      return true;
-    };
-
-    event.node.res.end = (chunk?: any) => {
-      if (chunk) chunks.push(Buffer.from(chunk));
-      resolve(Buffer.concat(chunks).toString());
-      return event.node.res;
-    };
-  });
+  return event;
 };
 
 const buildPath = (params: Record<string, string>) => {
@@ -137,9 +125,7 @@ describe('createEditingRenderRoute', () => {
       version: query.sc_version,
       layoutKind: query.sc_layoutKind,
     }));
-    vi.mocked(proxyRequest).mockImplementation(async (event: H3Event) => {
-      event.node.res.end('');
-    });
+    vi.mocked(proxyRequest).mockResolvedValue(undefined);
 
     handlers = createEditingRenderRoute({});
   });
@@ -153,12 +139,10 @@ describe('createEditingRenderRoute', () => {
     it('should return 401 for invalid origin', async () => {
       vi.mocked(getEnforcedCorsHeaders).mockReturnValue(null);
       const event = createMockEvent({ origin: allowedOrigin }, buildPath(defaultQuery));
-      const bodyPromise = readBody(event);
 
-      await handlers.handleGet(event);
-      const body = await bodyPromise;
+      const body = await handlers.handleGet(event);
 
-      expect(event.node.res.statusCode).toBe(401);
+      expect(event.res.status).toBe(401);
       expect(body).toContain('not allowed');
     });
 
@@ -167,24 +151,20 @@ describe('createEditingRenderRoute', () => {
         { origin: allowedOrigin },
         buildPath({ ...defaultQuery, [QUERY_PARAM_EDITING_SECRET]: 'wrong-secret' })
       );
-      const bodyPromise = readBody(event);
 
-      await handlers.handleGet(event);
-      const body = await bodyPromise;
+      const body = await handlers.handleGet(event);
 
-      expect(event.node.res.statusCode).toBe(401);
+      expect(event.res.status).toBe(401);
       expect(JSON.parse(body).html).toBe(INVALID_SECRET_HTML_MESSAGE);
     });
 
     it('should return 401 for missing editing secret', async () => {
       const { [QUERY_PARAM_EDITING_SECRET]: _, ...queryWithoutSecret } = defaultQuery;
       const event = createMockEvent({ origin: allowedOrigin }, buildPath(queryWithoutSecret));
-      const bodyPromise = readBody(event);
 
-      await handlers.handleGet(event);
-      const body = await bodyPromise;
+      const body = await handlers.handleGet(event);
 
-      expect(event.node.res.statusCode).toBe(401);
+      expect(event.res.status).toBe(401);
       expect(JSON.parse(body).html).toBe(INVALID_SECRET_HTML_MESSAGE);
     });
 
@@ -193,12 +173,10 @@ describe('createEditingRenderRoute', () => {
         { origin: allowedOrigin },
         buildPath({ [QUERY_PARAM_EDITING_SECRET]: secret, sc_site: 'website' })
       );
-      const bodyPromise = readBody(event);
 
-      await handlers.handleGet(event);
-      const body = await bodyPromise;
+      const body = await handlers.handleGet(event);
 
-      expect(event.node.res.statusCode).toBe(400);
+      expect(event.res.status).toBe(400);
       expect(JSON.parse(body).html).toBe(
         '<html><body>Missing required query parameters: sc_itemid, sc_lang, route, mode</body></html>'
       );
@@ -210,15 +188,13 @@ describe('createEditingRenderRoute', () => {
       vi.mocked(getEditingRequestHtml).mockResolvedValue(mockHtml);
 
       const event = createMockEvent({ origin: allowedOrigin }, buildPath(defaultQuery));
-      const bodyPromise = readBody(event);
 
-      await handlers.handleGet(event);
-      const body = await bodyPromise;
+      const body = await handlers.handleGet(event);
 
-      expect(event.node.res.statusCode).toBe(200);
+      expect(event.res.status ?? 200).toBe(200);
       expect(body).toBe(mockHtml);
-      expect(event.node.res.getHeader('Content-Type')).toBe('text/html; charset=utf-8');
-      expect(event.node.res.getHeader('Content-Security-Policy')).toContain('frame-ancestors');
+      expect(event.res.headers.get('Content-Type')).toBe('text/html; charset=utf-8');
+      expect(event.res.headers.get('Content-Security-Policy')).toContain('frame-ancestors');
     });
 
     it('should launch internal request and pass preview data as search params', async () => {
@@ -228,10 +204,8 @@ describe('createEditingRenderRoute', () => {
       });
 
       const event = createMockEvent({ origin: allowedOrigin }, buildPath(defaultQuery));
-      const bodyPromise = readBody(event);
 
       await handlers.handleGet(event);
-      await bodyPromise;
 
       expect(vi.mocked(getEditingRequestHtml)).toHaveBeenCalledOnce();
 
@@ -266,10 +240,8 @@ describe('createEditingRenderRoute', () => {
         { origin: allowedOrigin },
         buildPath({ ...defaultQuery, route: testRoute })
       );
-      const bodyPromise = readBody(event);
 
       await handlers.handleGet(event);
-      await bodyPromise;
 
       const [requestUrl] = vi.mocked(getEditingRequestHtml).mock.calls[0];
       expect((requestUrl as URL).toString()).toBe(
@@ -287,10 +259,8 @@ describe('createEditingRenderRoute', () => {
       });
 
       const event = createMockEvent({ origin: allowedOrigin }, buildPath(defaultQuery));
-      const bodyPromise = readBody(event);
 
       await handlers.handleGet(event);
-      await bodyPromise;
 
       const [requestUrl] = vi.mocked(getEditingRequestHtml).mock.calls[0];
       expect((requestUrl as URL).pathname).toBe('/custom/path/styleguide');
@@ -301,12 +271,10 @@ describe('createEditingRenderRoute', () => {
         { origin: allowedOrigin },
         buildPath({ ...defaultQuery, route: '/Åbout' })
       );
-      const bodyPromise = readBody(event);
 
       await handlers.handleGet(event);
-      await bodyPromise;
 
-      expect(event.node.res.statusCode).toBe(200);
+      expect(event.res.status ?? 200).toBe(200);
       const [requestUrl] = vi.mocked(getEditingRequestHtml).mock.calls[0];
       expect((requestUrl as URL).pathname).toBe('/%C3%85bout');
     });
@@ -316,12 +284,10 @@ describe('createEditingRenderRoute', () => {
         { origin: allowedOrigin },
         buildPath({ ...defaultQuery, mode: 'preview' })
       );
-      const bodyPromise = readBody(event);
 
       await handlers.handleGet(event);
-      await bodyPromise;
 
-      expect(event.node.res.statusCode).toBe(200);
+      expect(event.res.status ?? 200).toBe(200);
       expect(vi.mocked(getPreviewCookies)).toHaveBeenCalledWith('website');
 
       const [, , , cookies] = vi.mocked(getEditingRequestHtml).mock.calls[0];
@@ -331,10 +297,8 @@ describe('createEditingRenderRoute', () => {
 
     it('should not set preview cookies for non-preview mode', async () => {
       const event = createMockEvent({ origin: allowedOrigin }, buildPath(defaultQuery));
-      const bodyPromise = readBody(event);
 
       await handlers.handleGet(event);
-      await bodyPromise;
 
       expect(vi.mocked(getPreviewCookies)).not.toHaveBeenCalled();
     });
@@ -343,50 +307,42 @@ describe('createEditingRenderRoute', () => {
       vi.mocked(getEditingRequestHtml).mockRejectedValue(new Error('Request failed'));
 
       const event = createMockEvent({ origin: allowedOrigin }, buildPath(defaultQuery));
-      const bodyPromise = readBody(event);
 
       await handlers.handleGet(event);
-      await bodyPromise;
 
-      expect(event.node.res.statusCode).toBe(307);
-      expect(event.node.res.getHeader('Location')).toBe('/styleguide');
+      expect(event.res.status).toBe(307);
+      expect(event.res.headers.get('Location')).toBe('/styleguide');
     });
 
     it('should set Content-Security-Policy header', async () => {
       const event = createMockEvent({ origin: allowedOrigin }, buildPath(defaultQuery));
-      const bodyPromise = readBody(event);
 
       await handlers.handleGet(event);
-      await bodyPromise;
 
       expect(vi.mocked(getCSPHeader)).toHaveBeenCalledOnce();
-      expect(event.node.res.getHeader('Content-Security-Policy')).toBe(
+      expect(event.res.headers.get('Content-Security-Policy')).toBe(
         `frame-ancestors 'self' $${allowedOrigin} $${EDITING_ALLOWED_ORIGINS.join(' ')}`
       );
     });
 
     it('should set correct CORS headers', async () => {
       const event = createMockEvent({ origin: allowedOrigin }, buildPath(defaultQuery));
-      const bodyPromise = readBody(event);
 
       await handlers.handleGet(event);
-      await bodyPromise;
 
-      expect(event.node.res.getHeader('Access-Control-Allow-Origin')).toBe(allowedOrigin);
-      expect(event.node.res.getHeader('Access-Control-Allow-Methods')).toBe(
+      expect(event.res.headers.get('Access-Control-Allow-Origin')).toBe(allowedOrigin);
+      expect(event.res.headers.get('Access-Control-Allow-Methods')).toBe(
         corsHeaders['Access-Control-Allow-Methods']
       );
-      expect(event.node.res.getHeader('Access-Control-Allow-Headers')).toBe(
+      expect(event.res.headers.get('Access-Control-Allow-Headers')).toBe(
         corsHeaders['Access-Control-Allow-Headers']
       );
     });
 
     it('should call getEnforcedCorsHeaders with correct parameters', async () => {
       const event = createMockEvent({ origin: allowedOrigin }, buildPath(defaultQuery));
-      const bodyPromise = readBody(event);
 
       await handlers.handleGet(event);
-      await bodyPromise;
 
       expect(vi.mocked(getEnforcedCorsHeaders)).toHaveBeenCalledOnce();
       const args = vi.mocked(getEnforcedCorsHeaders).mock.calls[0][0];
@@ -406,12 +362,10 @@ describe('createEditingRenderRoute', () => {
           { origin: allowedOrigin },
           buildPath({ ...defaultQuery, customParam1: 'value1', customParam2: 'value2' })
         );
-        const bodyPromise = readBody(event);
 
         await handlers.handleGet(event);
-        await bodyPromise;
 
-        expect(event.node.res.statusCode).toBe(200);
+        expect(event.res.status ?? 200).toBe(200);
         expect(vi.mocked(getAllowedQueryParams)).toHaveBeenCalled();
       });
 
@@ -433,12 +387,10 @@ describe('createEditingRenderRoute', () => {
           { origin: allowedOrigin },
           buildPath({ ...defaultQuery, customParam1: 'value1', customParam2: 'value2' })
         );
-        const bodyPromise = readBody(event);
 
         await handlers.handleGet(event);
-        await bodyPromise;
 
-        expect(event.node.res.statusCode).toBe(200);
+        expect(event.res.status ?? 200).toBe(200);
         expect(vi.mocked(getAllowedQueryParams)).toHaveBeenCalledWith(
           expect.anything(),
           expect.any(Array)
@@ -456,12 +408,10 @@ describe('createEditingRenderRoute', () => {
         });
 
         const event = createMockEvent({ origin: allowedOrigin }, buildPath(defaultQuery));
-        const bodyPromise = readBody(event);
 
-        await handlers.handleGet(event);
-        const body = await bodyPromise;
+        const body = await handlers.handleGet(event);
 
-        expect(event.node.res.statusCode).toBe(400);
+        expect(event.res.status).toBe(400);
         expect(JSON.parse(body).html).toBe(
           '<html><body>Missing required query parameters: customParam1</body></html>'
         );
@@ -481,12 +431,10 @@ describe('createEditingRenderRoute', () => {
           { origin: allowedOrigin },
           buildPath({ [QUERY_PARAM_EDITING_SECRET]: secret, sc_site: 'website' })
         );
-        const bodyPromise = readBody(event);
 
-        await handlers.handleGet(event);
-        const body = await bodyPromise;
+        const body = await handlers.handleGet(event);
 
-        expect(event.node.res.statusCode).toBe(400);
+        expect(event.res.status).toBe(400);
         const responseBody = JSON.parse(body);
         expect(responseBody.html).toContain('sc_itemid');
         expect(responseBody.html).toContain('sc_lang');
@@ -512,10 +460,8 @@ describe('createEditingRenderRoute', () => {
           { origin: allowedOrigin },
           buildPath({ ...defaultQuery, customParam1: 'value1', customParam2: 'value2' })
         );
-        const bodyPromise = readBody(event);
 
         await handlers.handleGet(event);
-        await bodyPromise;
 
         const [, propagatedQsParams] = vi.mocked(getEditingRequestHtml).mock.calls[0];
         expect(propagatedQsParams).toMatchObject({
@@ -538,10 +484,8 @@ describe('createEditingRenderRoute', () => {
           { origin: allowedOrigin },
           buildPath({ ...defaultQuery, prefixedParam1: 'value1' })
         );
-        const bodyPromise = readBody(event);
 
         await handlers.handleGet(event);
-        await bodyPromise;
 
         expect(vi.mocked(getAllowedQueryParams)).toHaveBeenCalledWith(
           expect.anything(),
@@ -569,12 +513,10 @@ describe('createEditingRenderRoute', () => {
             sc_uid: '789',
           })
         );
-        const bodyPromise = readBody(event);
 
-        await handlers.handleGet(event);
-        const body = await bodyPromise;
+        const body = await handlers.handleGet(event);
 
-        expect(event.node.res.statusCode).toBe(200);
+        expect(event.res.status ?? 200).toBe(200);
         expect(body).toBe(mockLibraryHtml);
         expect(body).toContain('Design Library');
         expect(body).toContain('component-library');
@@ -598,12 +540,10 @@ describe('createEditingRenderRoute', () => {
             sc_uid: '789',
           })
         );
-        const bodyPromise = readBody(event);
 
-        await handlers.handleGet(event);
-        const body = await bodyPromise;
+        const body = await handlers.handleGet(event);
 
-        expect(event.node.res.statusCode).toBe(200);
+        expect(event.res.status ?? 200).toBe(200);
         expect(body).toBe(mockMetadataHtml);
         expect(body).toContain('Component Metadata');
       });
@@ -615,12 +555,10 @@ describe('createEditingRenderRoute', () => {
           { origin: allowedOrigin },
           buildPath({ ...defaultQuery, sc_variant: 'id-1,id-2,id-3' })
         );
-        const bodyPromise = readBody(event);
 
         await handlers.handleGet(event);
-        await bodyPromise;
 
-        expect(event.node.res.statusCode).toBe(200);
+        expect(event.res.status ?? 200).toBe(200);
       });
     });
 
@@ -632,10 +570,8 @@ describe('createEditingRenderRoute', () => {
           { origin: allowedOrigin, host: 'some-other-host:8080' },
           buildPath(defaultQuery)
         );
-        const bodyPromise = readBody(event);
 
         await handlers.handleGet(event);
-        await bodyPromise;
 
         expect(vi.mocked(resolveServerUrl)).toHaveBeenCalledOnce();
         const [requestUrl] = vi.mocked(getEditingRequestHtml).mock.calls[0];
@@ -649,28 +585,24 @@ describe('createEditingRenderRoute', () => {
       vi.mocked(getEnforcedCorsHeaders).mockReturnValue(null);
 
       const event = createMockEvent({ origin: allowedOrigin }, '/');
-      const bodyPromise = readBody(event);
 
-      await handlers.handleOptions(event);
-      const body = await bodyPromise;
+      const body = await handlers.handleOptions(event);
 
-      expect(event.node.res.statusCode).toBe(401);
+      expect(event.res.status).toBe(401);
       expect(body).toContain('not allowed');
     });
 
     it('should return 204 for valid preflight request', async () => {
       const event = createMockEvent({ origin: allowedOrigin }, '/');
-      const bodyPromise = readBody(event);
 
       await handlers.handleOptions(event);
-      await bodyPromise;
 
-      expect(event.node.res.statusCode).toBe(204);
-      expect(event.node.res.getHeader('Access-Control-Allow-Origin')).toBe(allowedOrigin);
-      expect(event.node.res.getHeader('Access-Control-Allow-Methods')).toBe(
+      expect(event.res.status).toBe(204);
+      expect(event.res.headers.get('Access-Control-Allow-Origin')).toBe(allowedOrigin);
+      expect(event.res.headers.get('Access-Control-Allow-Methods')).toBe(
         corsHeaders['Access-Control-Allow-Methods']
       );
-      expect(event.node.res.getHeader('Access-Control-Allow-Headers')).toBe(
+      expect(event.res.headers.get('Access-Control-Allow-Headers')).toBe(
         corsHeaders['Access-Control-Allow-Headers']
       );
     });
@@ -692,12 +624,10 @@ describe('createEditingRenderRoute', () => {
       });
 
       const event = createMockEvent({ origin: allowedOrigin }, '/');
-      const bodyPromise = readBody(event);
 
-      await handlers.handleOptions(event);
-      const body = await bodyPromise;
+      const body = await handlers.handleOptions(event);
 
-      expect(event.node.res.statusCode).toBe(500);
+      expect(event.res.status).toBe(500);
       expect(body).toBe('Internal Server Error');
     });
   });
@@ -721,12 +651,10 @@ describe('createEditingRenderRoute', () => {
           sc_uid: '789',
         })
       );
-      const bodyPromise = readBody(event);
 
-      await handlers.handleGet(event);
-      const body = await bodyPromise;
+      const body = await handlers.handleGet(event);
 
-      expect(event.node.res.statusCode).toBe(200);
+      expect(event.res.status ?? 200).toBe(200);
       expect(body).toBe(mockLibraryHtml);
       expect(body).toContain('Design Library');
       expect(body).toContain('component-library');
@@ -751,12 +679,10 @@ describe('createEditingRenderRoute', () => {
           sc_uid: '789',
         })
       );
-      const bodyPromise = readBody(event);
 
-      await handlers.handleGet(event);
-      const body = await bodyPromise;
+      const body = await handlers.handleGet(event);
 
-      expect(event.node.res.statusCode).toBe(200);
+      expect(event.res.status ?? 200).toBe(200);
       expect(body).toBe(mockMetadataHtml);
       expect(body).toContain('Component Metadata');
       expect(body).toContain('metadata-view');
@@ -784,14 +710,12 @@ describe('createEditingRenderRoute', () => {
           sc_layoutKind: 'final',
         })
       );
-      const bodyPromise = readBody(event);
 
-      await handlers.handleGet(event);
-      const body = await bodyPromise;
+      const body = await handlers.handleGet(event);
 
-      expect(event.node.res.statusCode).toBe(200);
+      expect(event.res.status ?? 200).toBe(200);
       expect(body).toBe(mockPreviewHtml);
-      expect(event.node.res.getHeader('Content-Type')).toBe('text/html; charset=utf-8');
+      expect(event.res.headers.get('Content-Type')).toBe('text/html; charset=utf-8');
       expect(vi.mocked(getPreviewCookies)).toHaveBeenCalledWith('website');
 
       const [, , , cookies] = vi.mocked(getEditingRequestHtml).mock.calls[0];
@@ -813,10 +737,8 @@ describe('createEditingRenderRoute', () => {
         { origin: allowedOrigin, host: 'some-other-host:8080' },
         buildPath(defaultQuery)
       );
-      const bodyPromise = readBody(event);
 
       await handlers.handleGet(event);
-      await bodyPromise;
 
       expect(vi.mocked(resolveServerUrl)).toHaveBeenCalledOnce();
       const [requestUrl] = vi.mocked(getEditingRequestHtml).mock.calls[0];
@@ -832,10 +754,8 @@ describe('createEditingRenderRoute', () => {
       vi.mocked(resolveServerUrl).mockReturnValue(customHost);
 
       const event = createMockEvent({ origin: allowedOrigin }, buildPath(defaultQuery));
-      const bodyPromise = readBody(event);
 
       await customHandlers.handleGet(event);
-      await bodyPromise;
 
       const [requestUrl] = vi.mocked(getEditingRequestHtml).mock.calls[0];
       expect((requestUrl as URL).origin).toBe(customHost);
@@ -848,28 +768,24 @@ describe('createEditingRenderRoute', () => {
         { origin: allowedOrigin },
         buildPath({ ...defaultQuery, sc_variant: 'id-1,id-2,id-3' })
       );
-      const bodyPromise = readBody(event);
 
       await handlers.handleGet(event);
-      await bodyPromise;
 
-      expect(event.node.res.statusCode).toBe(200);
+      expect(event.res.status ?? 200).toBe(200);
     });
   });
 
   describe('CORS handling', () => {
     it('should set correct CORS headers on GET response', async () => {
       const event = createMockEvent({ origin: allowedOrigin }, buildPath(defaultQuery));
-      const bodyPromise = readBody(event);
 
       await handlers.handleGet(event);
-      await bodyPromise;
 
-      expect(event.node.res.getHeader('Access-Control-Allow-Origin')).toBe(allowedOrigin);
-      expect(event.node.res.getHeader('Access-Control-Allow-Methods')).toBe(
+      expect(event.res.headers.get('Access-Control-Allow-Origin')).toBe(allowedOrigin);
+      expect(event.res.headers.get('Access-Control-Allow-Methods')).toBe(
         corsHeaders['Access-Control-Allow-Methods']
       );
-      expect(event.node.res.getHeader('Access-Control-Allow-Headers')).toBe(
+      expect(event.res.headers.get('Access-Control-Allow-Headers')).toBe(
         corsHeaders['Access-Control-Allow-Headers']
       );
     });
@@ -883,13 +799,11 @@ describe('createEditingRenderRoute', () => {
       );
 
       const event = createMockEvent({ origin: allowedOrigin }, buildPath(defaultQuery));
-      const bodyPromise = readBody(event);
 
       await handlers.handleGet(event);
-      await bodyPromise;
 
       expect(vi.mocked(getCSPHeader)).toHaveBeenCalledOnce();
-      expect(event.node.res.getHeader('Content-Security-Policy')).toContain(
+      expect(event.res.headers.get('Content-Security-Policy')).toContain(
         'https://anotherallowed.com'
       );
     });
