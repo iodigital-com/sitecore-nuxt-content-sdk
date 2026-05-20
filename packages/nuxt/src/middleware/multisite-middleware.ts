@@ -42,7 +42,7 @@ export type MultisiteMiddlewareConfig = MiddlewareBaseConfig & SitecoreConfig['m
  * 4. `sc_site` cookie — when `useCookieResolution` returns true
  * 5. Hostname-based resolution via `SiteResolver`
  *
- * On success, rewrites `event.node.req.url` to `/${siteName}${pathname}` and sets
+ * On success, rewrites the request URL to `/${siteName}${pathname}` and sets
  * the `sc_site` cookie for downstream middleware.
  * @example
  * // server/middleware/multisite.ts

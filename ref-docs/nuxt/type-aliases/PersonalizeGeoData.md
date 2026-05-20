@@ -8,7 +8,7 @@
 
 > **PersonalizeGeoData** = `object`
 
-Defined in: [packages/nuxt/src/middleware/personalize-middleware.ts:23](https://github.com/weareyou/sitecore-nuxt-content-sdk/blob/9012ccaea91e6d12c9995dfa53c658f7debe0ac8/packages/nuxt/src/middleware/personalize-middleware.ts#L23)
+Defined in: [packages/nuxt/src/middleware/personalize-middleware.ts:23](https://github.com/weareyou/sitecore-nuxt-content-sdk/blob/e1d697260f8666d7ac77ee73644c4bf6a6972edd/packages/nuxt/src/middleware/personalize-middleware.ts#L23)
 
 Represents the geolocation data used for personalization.
 
@@ -18,7 +18,7 @@ Represents the geolocation data used for personalization.
 
 > `optional` **city**: `string`
 
-Defined in: [packages/nuxt/src/middleware/personalize-middleware.ts:24](https://github.com/weareyou/sitecore-nuxt-content-sdk/blob/9012ccaea91e6d12c9995dfa53c658f7debe0ac8/packages/nuxt/src/middleware/personalize-middleware.ts#L24)
+Defined in: [packages/nuxt/src/middleware/personalize-middleware.ts:24](https://github.com/weareyou/sitecore-nuxt-content-sdk/blob/e1d697260f8666d7ac77ee73644c4bf6a6972edd/packages/nuxt/src/middleware/personalize-middleware.ts#L24)
 
 ***
 
@@ -26,7 +26,7 @@ Defined in: [packages/nuxt/src/middleware/personalize-middleware.ts:24](https://
 
 > `optional` **country**: `string`
 
-Defined in: [packages/nuxt/src/middleware/personalize-middleware.ts:25](https://github.com/weareyou/sitecore-nuxt-content-sdk/blob/9012ccaea91e6d12c9995dfa53c658f7debe0ac8/packages/nuxt/src/middleware/personalize-middleware.ts#L25)
+Defined in: [packages/nuxt/src/middleware/personalize-middleware.ts:25](https://github.com/weareyou/sitecore-nuxt-content-sdk/blob/e1d697260f8666d7ac77ee73644c4bf6a6972edd/packages/nuxt/src/middleware/personalize-middleware.ts#L25)
 
 ***
 
@@ -34,4 +34,4 @@ Defined in: [packages/nuxt/src/middleware/personalize-middleware.ts:25](https://
 
 > `optional` **region**: `string`
 
-Defined in: [packages/nuxt/src/middleware/personalize-middleware.ts:26](https://github.com/weareyou/sitecore-nuxt-content-sdk/blob/9012ccaea91e6d12c9995dfa53c658f7debe0ac8/packages/nuxt/src/middleware/personalize-middleware.ts#L26)
+Defined in: [packages/nuxt/src/middleware/personalize-middleware.ts:26](https://github.com/weareyou/sitecore-nuxt-content-sdk/blob/e1d697260f8666d7ac77ee73644c4bf6a6972edd/packages/nuxt/src/middleware/personalize-middleware.ts#L26)
