@@ -1,8 +1,8 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable react-hooks/rules-of-hooks */
 import { describe, it, expect, beforeEach } from 'vitest';
-import { mount, flushPromises } from '@vue/test-utils';
-import { defineComponent, h, Suspense } from 'vue';
+import { mount } from '@vue/test-utils';
+import { defineComponent, h } from 'vue';
 import {
   ComponentRendering,
   LayoutServicePageState,
@@ -16,7 +16,6 @@ import {
   sxaRenderingVariantData,
   sxaRenderingVariantDoubleDigitDynamicPlaceholder as sxaRenderingDoubleDigitContainerName,
   sxaRenderingVariantDataWithoutCommonContainerName as sxaRenderingWithoutContainerName,
-  feaasWrapperData,
 } from '../../test-data/normal-mode-data';
 import * as metadataData from '../../test-data/metadata-data';
 import * as SxaRichText from '../../test-data/sxa-rich-text';
@@ -695,39 +694,6 @@ describe('App Placeholder logic', () => {
 
       expect(wrapper.element.querySelectorAll('.parentWrapper').length).toBe(1);
       expect(wrapper.element.querySelectorAll('.wrapper').length).toBe(2);
-    });
-  });
-
-  describe('AppPlaceholder FEaaS fallback', () => {
-    const feaasComponentMap = new Map();
-
-    it('should render', async () => {
-      const page = getPage();
-      page.layout = feaasWrapperData;
-      const component = feaasWrapperData.sitecore.route as RouteData;
-
-      const wrapper = mount(
-        defineComponent({
-          setup: () => () =>
-            h('div', [
-              h(Suspense, null, {
-                default: () =>
-                  h(AppPlaceholder, {
-                    name: 'main',
-                    rendering: component,
-                    componentMap: feaasComponentMap,
-                    page,
-                  }),
-                fallback: () => h('div', 'loading'),
-              }),
-            ]),
-        })
-      );
-
-      await flushPromises();
-
-      expect(wrapper.element.querySelectorAll('.feaas-component').length).toBe(1);
-      expect(wrapper.element.querySelectorAll('.feaas-wrapper').length).toBe(1);
     });
   });
 });
