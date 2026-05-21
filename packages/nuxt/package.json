@@ -11,9 +11,7 @@
     "test": "vitest run",
     "generate-docs": "npx typedoc --plugin typedoc-plugin-markdown --outputFileStrategy Members --parametersFormat table --readme none --out ../../ref-docs/nuxt --entryPoints src/index.ts --githubPages false",
     "prepublishOnly": "npm run build",
-    "coverage": "vitest run --coverage",
-    "route-test": "vitest run test/route-test",
-    "route-test:server": "tsx test/route-test/server.ts"
+    "coverage": "vitest run --coverage"
   },
   "engines": {
     "node": ">=24"
@@ -25,7 +23,6 @@
     "@types/node": "^24.10.4",
     "@typescript-eslint/eslint-plugin": "8.39.0",
     "@typescript-eslint/parser": "8.39.0",
-    "@vitejs/plugin-vue": "^5.0.0",
     "@vitest/coverage-v8": "2.1.9",
     "@vue/test-utils": "^2.4.0",
     "cross-env": "^10.1.0",
@@ -34,7 +31,6 @@
     "jsdom": "^29.1.1",
     "nuxt": "^4.4.2",
     "regex-parser": "^2.3.1",
-    "ts-node": "^10.9.2",
     "tsx": "^4.21.0",
     "typedoc": "^0.27.0",
     "typedoc-plugin-markdown": "^4.0.0",
