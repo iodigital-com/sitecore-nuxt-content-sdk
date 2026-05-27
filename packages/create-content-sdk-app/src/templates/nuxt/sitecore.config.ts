@@ -13,7 +13,8 @@ export default defineConfig({
         'placeholder',
       edgeUrl:
         process.env.NUXT_PUBLIC_SITECORE_EDGE_PLATFORM_HOSTNAME ||
-        process.env.SITECORE_EDGE_PLATFORM_HOSTNAME,
+        process.env.SITECORE_EDGE_PLATFORM_HOSTNAME ||
+        'https://edge-platform.sitecorecloud.io',
     },
     local: {
       apiKey: process.env.NUXT_PUBLIC_SITECORE_API_KEY || '',
@@ -25,10 +26,10 @@ export default defineConfig({
   editingSecret: process.env.SITECORE_EDITING_SECRET,
   redirects: {
     enabled: true,
-    locales: ['en'],
+    locales: ['en', 'nl-NL'],
   },
   multisite: {
-    enabled: false,
+    enabled: true,
     useCookieResolution: () => process.env.NUXT_ENV === 'preview',
   },
   personalize: {
