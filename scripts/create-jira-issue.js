@@ -1,27 +1,43 @@
 /**
- * This script is executed by .github/workflows/create_jira_issue.yml workflow
+ * Creates a Jira issue via the REST API when a GitHub issue or PR is opened.
+ *
+ * Required env vars:
+ *   GITHUB          - JSON-encoded GitHub context (set via ${{ toJson(github) }})
+ *   JIRA_API_TOKEN  - Bearer token for Jira REST API authentication
+ *   JIRA_BASE_URL   - Base URL of the Jira instance, e.g. https://jira.hosted-tools.com
+ *   JIRA_PROJECT_KEY - Jira project key, e.g. CAMPDB_0049
+ *
+ * Example POST body:
+ *   {
+ *     "fields": {
+ *       "project": { "key": "CAMPDB_0049" },
+ *       "summary": "[GitHub] Fix login bug",
+ *       "description": "...",
+ *       "issuetype": { "name": "Task" }
+ *     }
+ *   }
  */
 
 const github = JSON.parse(process.env.GITHUB);
 
+const JIRA_API_TOKEN = process.env.JIRA_API_TOKEN;
+const JIRA_BASE_URL = process.env.JIRA_BASE_URL;
+const JIRA_PROJECT_KEY = process.env.JIRA_PROJECT_KEY;
+
 const formatDescription = (description) => {
+  if (!description) return '';
+
   const header = (text) =>
     Array.from(Array(6)).reduce((currText, _, i) => {
       return currText.replace(new RegExp(`^#{${i + 1}}\\s`, 'gm'), `h${i + 1}. `);
     }, text);
 
   const boldText = (text) => text.replace(/\*\*(.*)\*\*/gm, '*$1*');
-
   const quote = (text) => text.replace(/^>\s/gm, 'bq. ');
-
   const link = (text) => text.replace(/\[([^download].*)\]\((.*)\)/gm, '[$1|$2]');
-
   const image = (text) => text.replace(/!\[download\]\((.*)\)/gm, '!$1!');
-
   const codeBlock = (text) => text.replace(/```(\w+)([\s\S]*)```/gm, '{code:$1}$2{code}');
-
   const inlineCodeBlock = (text) => text.replace(/`([^`\n]+)`/gm, '{noformat}$1{noformat}');
-
   const comment = (text) => text.replace(/^<!---.*-->$/gm, '');
 
   return [header, boldText, quote, link, image, codeBlock, inlineCodeBlock, comment].reduce(
@@ -30,70 +46,45 @@ const formatDescription = (description) => {
   );
 };
 
-const JIRA_ISSUE_TYPE = Object.freeze([
-  {
-    type: 'bug',
-    validate: (ev) => ev.issue && ev.issue.labels.some((l) => l.name.includes('bug')),
-  },
-  {
-    type: 'PR',
-    validate: (ev) => !!ev.pull_request,
-  },
-  {
-    type: 'doc',
-    validate: (ev) => ev.issue && ev.issue.labels.some((l) => l.name.includes('doc')),
-  },
-]);
+const getIssueType = (event) => {
+  if (event.pull_request) return 'Task';
+  if (event.issue?.labels?.some((l) => l.name.includes('bug'))) return 'Bug';
+  return 'Task';
+};
 
 (async () => {
-  if (!process.env.JIRA_WEBHOOK_URL) {
-    console.log('Skipped Jira issue creation. The Pull Request was created from fork');
-    return;
-  }
+  const event = github.event;
+  const issueOrPR = event.issue || event.pull_request;
 
-  const jiraIssueType = JIRA_ISSUE_TYPE.find((o) => o.validate(github.event)).type;
-  const event = github.event.issue || github.event.pull_request;
-
-  let userInfoRes;
-  try {
-    userInfoRes = await fetch(
-      `https://api.github.com/repos/${github.event.repository.owner.login}/${github.event.repository.name}/collaborators/${event.user.login}/permission`,
-      {
-        headers: {
-          Authorization: `Bearer ${github.token}`,
-        },
-      }
-    );
-
-    userInfoRes = await userInfoRes.json();
-  } catch (error) {
-    console.log('Error occurred while fetching user permission', error);
-    process.exit(1);
-  }
-
-  // don't create Jira issue if PR is created by admin or maintainer
-  if (
-    github.event.pull_request &&
-    (userInfoRes.user?.permissions?.admin || userInfoRes.user?.permissions?.maintain)
-  ) {
-    console.log('Skipping Jira issue creation: PR author is admin/maintainer.');
-    return;
-  }
+  const body = {
+    fields: {
+      project: { key: JIRA_PROJECT_KEY },
+      summary: `[GitHub] ${issueOrPR.title}`,
+      description: formatDescription(issueOrPR.body),
+      issuetype: { name: getIssueType(event) },
+    },
+  };
 
   try {
-    await fetch(process.env.JIRA_WEBHOOK_URL, {
+    const res = await fetch(`${JIRA_BASE_URL}/rest/api/2/issue`, {
       method: 'POST',
-      body: JSON.stringify({
-        fields: {
-          summary: `[Content SDK] ${event.title}`,
-          description: formatDescription(event.body),
-          link: event.html_url,
-          type: jiraIssueType,
-        },
-      }),
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${JIRA_API_TOKEN}`,
+      },
+      body: JSON.stringify(body),
     });
+
+    const data = await res.json();
+
+    if (!res.ok) {
+      console.error('Jira API error:', JSON.stringify(data, null, 2));
+      process.exit(1);
+    }
+
+    console.log(`Jira issue created: ${data.key}`);
   } catch (error) {
-    console.log('Error occurred while creating Jira issue', error);
+    console.error('Error creating Jira issue:', error);
     process.exit(1);
   }
 })();
