@@ -1,5 +1,5 @@
 import { defineEventHandler } from 'h3';
-import { PersonalizeMiddleware } from '@sitecore-content-sdk/nuxt';
+import { PersonalizeMiddleware } from '@sitecore-content-sdk/nuxt/middleware';
 import scConfig from '../../sitecore.config';
 import sites from '../../.sitecore/sites.json';
 

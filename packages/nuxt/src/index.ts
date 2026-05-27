@@ -1,4 +1,3 @@
-export * from './middleware';
 export * from './sharedTypes/component-props';
 export * from './sharedTypes/editing-types';
 export * from './utils/utils';
@@ -20,13 +19,7 @@ export {
   initContentSdk,
 } from '@sitecore-content-sdk/core';
 
-export {
-  HTMLLink,
-  PageMode,
-  ErrorPage,
-  Page,
-  StaticPath,
-} from '@sitecore-content-sdk/content';
+export { HTMLLink, PageMode, ErrorPage, Page, StaticPath } from '@sitecore-content-sdk/content';
 
 export {
   LayoutServiceData,
@@ -51,9 +44,7 @@ export {
   ComponentLayoutService,
 } from '@sitecore-content-sdk/content/layout';
 
-export {
-  mediaApi,
-} from '@sitecore-content-sdk/content/media';
+export { mediaApi } from '@sitecore-content-sdk/content/media';
 
 export {
   DictionaryPhrases,
@@ -97,6 +88,11 @@ export {
   normalizeSiteRewrite,
 } from '@sitecore-content-sdk/content/site';
 
-export { ComponentPropsCollection, ComponentPropsError, NuxtContentSdkComponent, ComponentPropsFetchFunction } from './sharedTypes/component-props';
+export {
+  ComponentPropsCollection,
+  ComponentPropsError,
+  NuxtContentSdkComponent,
+  ComponentPropsFetchFunction,
+} from './sharedTypes/component-props';
 
 export * from '@sitecore-content-sdk/vue';
