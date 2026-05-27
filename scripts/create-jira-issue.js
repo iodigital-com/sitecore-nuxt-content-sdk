@@ -75,6 +75,14 @@ const getIssueType = (event) => {
       body: JSON.stringify(body),
     });
 
+    const rawText = await res.text();
+    console.log('Status:', res.status);
+    console.log('Response:', rawText);
+
+    if (!res.ok) {
+      process.exit(1);
+    }
+
     const data = await res.json();
 
     if (!res.ok) {
