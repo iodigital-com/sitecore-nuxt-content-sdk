@@ -15,11 +15,11 @@ const middleware = new PersonalizeMiddleware({
   scope: scConfig.personalize?.scope,
   channel: scConfig.personalize?.channel,
   currency: scConfig.personalize?.currency,
-  extractGeoDataCb: () => ({
+  extractGeoDataCb: (event) => ({
     country:
-      // getRequestHeader(event, 'x-vercel-ip-country') ||
-      // getRequestHeader(event, 'cf-ipcountry') ||
-      'NL', // Default to NL for local development, change it to any other country for a different personalization result
+      (event.node?.req?.headers?.['x-vercel-ip-country'] as string) ||
+      (event.node?.req?.headers?.['cf-ipcountry'] as string) ||
+      'UK',
   }),
 });
 

@@ -536,4 +536,39 @@ describe('<DesignLibrary />', () => {
       expect(wrapper.html()).toContain('Rendering UID is missing in the rendering data');
     });
   });
+
+  describe('onServerComponentUpdate callback', () => {
+    it('should call onServerComponentUpdate when component update is received', async () => {
+      const onServerComponentUpdate = vi.fn().mockResolvedValue(undefined);
+
+      mount(SitecoreProvider, {
+        props: {
+          componentMap: components,
+          api,
+          page: getPage(getTestLayoutData().layoutData, modeLibrary),
+          loadImportMap: undefined as any,
+        },
+        slots: { default: h(DesignLibrary, { onServerComponentUpdate }) },
+      });
+
+      await sendUpdate({ uid: RENDER_ID, fields: { content: { value: 'updated!' } } });
+
+      expect(onServerComponentUpdate).toHaveBeenCalledWith(
+        expect.objectContaining({
+          uid: RENDER_ID,
+          fields: expect.objectContaining({
+            content: { value: 'updated!' },
+          }),
+        })
+      );
+    });
+
+    it('should not throw when onServerComponentUpdate is not provided', async () => {
+      mountDesignLibrary(getPage(getTestLayoutData().layoutData, modeLibrary));
+
+      await expect(
+        sendUpdate({ uid: RENDER_ID, fields: { content: { value: 'updated!' } } })
+      ).resolves.not.toThrow();
+    });
+  });
 });

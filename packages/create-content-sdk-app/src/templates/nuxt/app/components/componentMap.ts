@@ -1,9 +1,9 @@
-// app/componentMap.ts
+// app/components/componentMap.ts
 import type { ComponentMap } from '@sitecore-content-sdk/nuxt';
+import { defineSitecoreComponent } from '@sitecore-content-sdk/nuxt';
 
 const componentMap: ComponentMap = new Map([
-  // Add here your components to be used in the app, for example:
-  // ['ContentBlock', ContentBlock],
+  ['Text', defineSitecoreComponent(() => import('./Text.vue'))],
 ]);
 
 export default componentMap;

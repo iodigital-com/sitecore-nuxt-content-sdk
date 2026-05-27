@@ -9,7 +9,6 @@ export { default as debug } from './debug';
 
 export {
   constants,
-  // generic data access
   NativeDataFetcher,
   NativeDataFetcherConfig,
   NativeDataFetcherResponse,
@@ -18,9 +17,16 @@ export {
   CacheClient,
   CacheOptions,
   MemoryCacheClient,
+  initContentSdk,
 } from '@sitecore-content-sdk/core';
 
-export { HTMLLink } from '@sitecore-content-sdk/content';
+export {
+  HTMLLink,
+  PageMode,
+  ErrorPage,
+  Page,
+  StaticPath,
+} from '@sitecore-content-sdk/content';
 
 export {
   LayoutServiceData,
@@ -42,10 +48,13 @@ export {
   getContentStylesheetLink,
   EditMode,
   RenderingType,
+  ComponentLayoutService,
 } from '@sitecore-content-sdk/content/layout';
-export { PageMode, ErrorPage, Page } from '@sitecore-content-sdk/content/client';
-export { ComponentLayoutService } from '@sitecore-content-sdk/content/editing';
-export { mediaApi } from '@sitecore-content-sdk/content/media';
+
+export {
+  mediaApi,
+} from '@sitecore-content-sdk/content/media';
+
 export {
   DictionaryPhrases,
   DictionaryService,
@@ -71,11 +80,6 @@ export {
   REDIRECT_TYPE_302,
   REDIRECT_TYPE_SERVER_TRANSFER,
   RedirectInfo,
-} from '@sitecore-content-sdk/content/site';
-
-export { StaticPath } from '@sitecore-content-sdk/content';
-
-export {
   SitemapXmlService,
   SitemapXmlServiceConfig,
   ErrorPagesService,
@@ -93,12 +97,6 @@ export {
   normalizeSiteRewrite,
 } from '@sitecore-content-sdk/content/site';
 
-export {
-  ComponentPropsCollection,
-  ComponentPropsError,
-  NuxtContentSdkComponent,
-  ComponentPropsFetchFunction,
-} from './sharedTypes/component-props';
+export { ComponentPropsCollection, ComponentPropsError, NuxtContentSdkComponent, ComponentPropsFetchFunction } from './sharedTypes/component-props';
 
 export * from '@sitecore-content-sdk/vue';
-export { initContentSdk } from '@sitecore-content-sdk/core';

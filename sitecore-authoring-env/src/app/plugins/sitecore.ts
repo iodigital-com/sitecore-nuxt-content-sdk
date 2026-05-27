@@ -38,18 +38,16 @@ export default defineNuxtPlugin(async () => {
         edgeUrl,
         siteName,
       },
-      plugins: !import.meta.dev
-        ? [
-            analyticsPlugin({
-              options: {
-                enableCookie: true,
-                cookieDomain: window.location.hostname.replace(/^www\./, ''),
-              },
-              adapter: analyticsBrowserAdapter(),
-            }),
-            eventsPlugin(),
-          ]
-        : [],
+      plugins: [
+        analyticsPlugin({
+          options: {
+            enableCookie: true,
+            cookieDomain: window.location.hostname.replace(/^www\./, ''),
+          },
+          adapter: analyticsBrowserAdapter(),
+        }),
+        eventsPlugin(),
+      ],
     });
   }
 

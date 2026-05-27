@@ -172,7 +172,6 @@ export const getComponentForRendering = (
 
   if (!component) {
     logUnknownComponentError();
-
     return {
       component: missingComponentComponent ?? MissingComponent,
       isEmpty: true,

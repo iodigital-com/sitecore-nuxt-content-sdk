@@ -11,9 +11,7 @@
     "test": "vitest run",
     "generate-docs": "npx typedoc --plugin typedoc-plugin-markdown --outputFileStrategy Members --parametersFormat table --readme none --out ../../ref-docs/nuxt --entryPoints src/index.ts --githubPages false",
     "prepublishOnly": "npm run build",
-    "coverage": "vitest run --coverage",
-    "route-test": "vitest run test/route-test",
-    "route-test:server": "tsx test/route-test/server.ts"
+    "coverage": "vitest run --coverage"
   },
   "engines": {
     "node": ">=24"
@@ -25,16 +23,14 @@
     "@types/node": "^24.10.4",
     "@typescript-eslint/eslint-plugin": "8.39.0",
     "@typescript-eslint/parser": "8.39.0",
-    "@vitejs/plugin-vue": "^5.0.0",
     "@vitest/coverage-v8": "2.1.9",
+    "@vue/test-utils": "^2.4.0",
     "cross-env": "^10.1.0",
     "del-cli": "^6.0.0",
     "eslint": "^9.32.0",
-    "h3": "^1.0.0",
-    "nitro": "^3.0.260311-beta",
+    "jsdom": "^29.1.1",
     "nuxt": "^4.4.2",
     "regex-parser": "^2.3.1",
-    "ts-node": "^10.9.2",
     "tsx": "^4.21.0",
     "typedoc": "^0.27.0",
     "typedoc-plugin-markdown": "^4.0.0",
@@ -45,7 +41,6 @@
   "peerDependencies": {
     "@sitecore-content-sdk/analytics-core": "^2.0.0-canary.20",
     "@sitecore-content-sdk/personalize": "^2.0.0-canary.20",
-    "h3": "^1.0.0",
     "nuxt": "^4.0.0",
     "typescript": "^5.4.0"
   },
@@ -70,6 +65,12 @@
       "import": "./dist/client/index.js",
       "default": "./dist/client/index.js",
       "types": "./types/client/index.d.ts"
+    },
+    "./components": {
+      "browser": "./dist/components/index.js",
+      "import": "./dist/components/index.js",
+      "default": "./dist/components/index.js",
+      "types": "./types/components/index.d.ts"
     },
     "./composables": {
       "import": "./dist/composables/index.js",

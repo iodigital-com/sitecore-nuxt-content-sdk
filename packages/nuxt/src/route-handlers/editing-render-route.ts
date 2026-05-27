@@ -1,11 +1,4 @@
-import {
-  H3Event,
-  getRequestHeader,
-  setResponseHeader,
-  setResponseStatus,
-  send,
-  proxyRequest,
-} from 'h3';
+import { H3Event, getRequestHeader, setResponseHeader, setResponseStatus, send } from 'h3';
 import { NativeDataFetcher } from '@sitecore-content-sdk/core';
 import {
   EDITING_ALLOWED_ORIGINS,
@@ -260,82 +253,6 @@ export const createEditingRenderRoute = (config: EditingRenderRouteConfig = {}) 
   };
 
   /**
-   * Handles an incoming POST request for server action proxying in editing mode.
-   * Proxies the request to the Nuxt application so server actions can be processed correctly.
-   * Validates the editing secret and CORS headers before proxying.
-   *
-   * Returns 401 if the origin is not allowed or the editing secret is invalid.
-   * @param {H3Event} event - The incoming H3 event
-   * @returns {Promise<void>}
-   */
-  const handlePost = async (event: H3Event): Promise<void> => {
-    const requestOrigin = getRequestHeader(event, 'origin') || '';
-    const corsHeaders = getCorsHeaders(event);
-
-    const originHost = requestOrigin ? new URL(requestOrigin).host : '';
-    const requestHost = getRequestHeader(event, 'host') || '';
-    const bypassCors = requestHost.startsWith('localhost') || requestHost === originHost;
-
-    if (!bypassCors && !corsHeaders) {
-      setResponseStatus(event, 401);
-      await send(
-        event,
-        `<html><body>Requests from origin ${requestOrigin} not allowed</body></html>`
-      );
-      return;
-    }
-
-    const searchParams = new URL(event.path, 'http://localhost').searchParams;
-    if (!validateEditingSecret(searchParams.get(QUERY_PARAM_EDITING_SECRET) || '')) {
-      setResponseStatus(event, 401);
-      setResponseHeader(event, 'Content-Type', 'application/json');
-      await send(event, JSON.stringify({ html: INVALID_SECRET_HTML_MESSAGE }));
-      return;
-    }
-
-    const query: EditingRenderQueryParams = {} as EditingRenderQueryParams;
-    searchParams.forEach((value, key) => {
-      query[key] = value;
-    });
-
-    const propagatedQsParams = {
-      ...mapEditingParams(query as { [key: string]: string }),
-      ...(getAllowedQueryParams(query, config.allowedQueryParams).allowedQueryParams as {
-        [key: string]: string;
-      }),
-    };
-
-    const base = config.sitecoreInternalEditingHostUrl || resolveServerUrl(event);
-    const targetUrl = new URL('/', base);
-
-    for (const key in propagatedQsParams) {
-      if ({}.hasOwnProperty.call(propagatedQsParams, key)) {
-        propagatedQsParams[key] && targetUrl.searchParams.append(key, propagatedQsParams[key]);
-      }
-    }
-    targetUrl.searchParams.append('timestamp', Date.now().toString());
-
-    const previewCookies = getPreviewCookies(query.sc_site);
-    const existingCookie = getRequestHeader(event, 'cookie') || '';
-    const cookieHeader = existingCookie
-      ? `${existingCookie}; ${previewCookies.join('; ')}`
-      : previewCookies.join('; ');
-
-    setResponseHeader(event, 'cookie', cookieHeader);
-    setResponseHeader(event, 'Content-Security-Policy', getCSPHeader());
-
-    if (corsHeaders) {
-      Object.entries(corsHeaders).forEach(([key, value]) => setResponseHeader(event, key, value));
-    }
-
-    await proxyRequest(event, targetUrl.toString(), {
-      fetchOptions: {
-        method: 'POST',
-      },
-    });
-  };
-
-  /**
    * Handles an incoming OPTIONS preflight request.
    * Validates the origin and returns the appropriate CORS headers.
    *
@@ -374,5 +291,5 @@ export const createEditingRenderRoute = (config: EditingRenderRouteConfig = {}) 
     }
   };
 
-  return { handleGet, handlePost, handleOptions };
+  return { handleGet, handleOptions };
 };

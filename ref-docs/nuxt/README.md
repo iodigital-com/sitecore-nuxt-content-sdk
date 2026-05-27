@@ -70,6 +70,7 @@
 - [RouteData](interfaces/RouteData.md)
 - [SitecoreProviderState](interfaces/SitecoreProviderState.md)
 - [SitePathServiceConfig](interfaces/SitePathServiceConfig.md)
+- [UseDatasourceCheckOptions](interfaces/UseDatasourceCheckOptions.md)
 - [UseSitecoreContextOptions](interfaces/UseSitecoreContextOptions.md)
 
 ## Type Aliases
@@ -143,6 +144,7 @@
 - [analyticsMiddlewareAdapter](functions/analyticsMiddlewareAdapter.md)
 - [createHealthcheckRoute](functions/createHealthcheckRoute.md)
 - [defineConfig](functions/defineConfig.md)
+- [defineSitecoreComponent](functions/defineSitecoreComponent.md)
 - [getChildComponentProps](functions/getChildComponentProps.md)
 - [getChildPlaceholder](functions/getChildPlaceholder.md)
 - [getDesignLibraryStylesheetLinks](functions/getDesignLibraryStylesheetLinks.md)
@@ -157,6 +159,8 @@
 - [normalizePersonalizedRewrite](functions/normalizePersonalizedRewrite.md)
 - [normalizeSiteRewrite](functions/normalizeSiteRewrite.md)
 - [personalizeLayout](functions/personalizeLayout.md)
+- [useDatasourceCheck](functions/useDatasourceCheck.md)
+- [useEditorChromes](functions/useEditorChromes.md)
 
 ## References
 
@@ -184,6 +188,18 @@ Renames and re-exports [File](variables/File.md)
 
 ***
 
+### ErrorBoundary
+
+Renames and re-exports [File](variables/File.md)
+
+***
+
+### ErrorBoundaryProps
+
+Renames and re-exports [File](variables/File.md)
+
+***
+
 ### FileField
 
 Renames and re-exports [File](variables/File.md)
@@ -196,7 +212,73 @@ Renames and re-exports [File](variables/File.md)
 
 ***
 
+### Form
+
+Renames and re-exports [File](variables/File.md)
+
+***
+
+### FormProps
+
+Renames and re-exports [File](variables/File.md)
+
+***
+
 ### HiddenRendering
+
+Renames and re-exports [File](variables/File.md)
+
+***
+
+### Image
+
+Renames and re-exports [File](variables/File.md)
+
+***
+
+### ImageField
+
+Renames and re-exports [File](variables/File.md)
+
+***
+
+### ImageFieldValue
+
+Renames and re-exports [File](variables/File.md)
+
+***
+
+### ImageProps
+
+Renames and re-exports [File](variables/File.md)
+
+***
+
+### ImageSizeParameters
+
+Renames and re-exports [File](variables/File.md)
+
+***
+
+### Link
+
+Renames and re-exports [File](variables/File.md)
+
+***
+
+### LinkField
+
+Renames and re-exports [File](variables/File.md)
+
+***
+
+### LinkFieldValue
+
+Renames and re-exports [File](variables/File.md)
+
+***
+
+### LinkProps
 
 Renames and re-exports [File](variables/File.md)
 

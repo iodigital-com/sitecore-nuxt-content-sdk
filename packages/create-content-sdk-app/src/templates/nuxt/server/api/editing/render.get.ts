@@ -1,6 +1,6 @@
 import { defineEventHandler } from 'h3';
 import { createEditingRenderRoute } from '@sitecore-content-sdk/nuxt/routes';
 
-const { handlePost } = createEditingRenderRoute();
+const { handleGet } = createEditingRenderRoute();
 
-export default defineEventHandler(handlePost);
+export default defineEventHandler(handleGet);

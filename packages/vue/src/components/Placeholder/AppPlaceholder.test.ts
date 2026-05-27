@@ -22,6 +22,28 @@ import * as SxaRichText from '../../test-data/sxa-rich-text';
 import { Page, PageMode } from '@sitecore-content-sdk/content/client';
 import AppPlaceholder from './AppPlaceholder.vue';
 
+vi.mock('@sitecore-feaas/clientside', () => ({}));
+
+vi.mock('../FEaaS/FEaaSWrapper.vue', () => ({
+  default: defineComponent({
+    name: 'FEaaSWrapper',
+    setup: () => () =>
+      h('div', { class: 'feaas-wrapper' }, [h('p', { class: 'feaas-component' }, 'Foo')]),
+  }),
+}));
+
+vi.mock('../FEaaS/feaas-utils', async (importOriginal) => {
+  const actual = await importOriginal<typeof import('../FEaaS/feaas-utils')>();
+  return {
+    ...actual,
+    fetchFEaaSComponentServerProps: vi.fn().mockResolvedValue({
+      template: '',
+      fetchedData: {},
+      revisionFallback: 'published',
+    }),
+  };
+});
+
 describe('App Placeholder logic', () => {
   const getPage = (): Page => ({
     locale: 'en',

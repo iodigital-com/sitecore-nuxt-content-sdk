@@ -50,7 +50,7 @@ const isEditing = computed(() => context.page.value.mode.isEditing);
 // flush: 'post' ensures the DOM is updated with the form HTML before
 // executeScriptElements and subscribeToFormSubmitEvent run
 onMounted(async () => {
-  const edgeId = context.api?.edge?.contextId;
+  const edgeId = context.api?.edge?.clientContextId;
   const edgeUrl = context.api?.edge?.edgeUrl;
   const formId = props.params.FormId;
   const uid = props.rendering.uid;

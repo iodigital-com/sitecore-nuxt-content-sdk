@@ -8,7 +8,7 @@
 
 > **PersonalizeMiddlewareConfig** = [`MiddlewareBaseConfig`](MiddlewareBaseConfig.md) & [`SitecoreConfig`](SitecoreConfig.md)\[`"api"`\]\[`"edge"`\] & [`SitecoreConfig`](SitecoreConfig.md)\[`"personalize"`\] & `object`
 
-Defined in: [packages/nuxt/src/middleware/personalize-middleware.ts:47](https://github.com/weareyou/sitecore-nuxt-content-sdk/blob/f9df27f3b8d16cd24df156046de00eadab843a8d/packages/nuxt/src/middleware/personalize-middleware.ts#L47)
+Defined in: [packages/nuxt/src/middleware/personalize-middleware.ts:47](https://github.com/weareyou/sitecore-nuxt-content-sdk/blob/e1d697260f8666d7ac77ee73644c4bf6a6972edd/packages/nuxt/src/middleware/personalize-middleware.ts#L47)
 
 Configuration for the PersonalizeMiddleware.
 
@@ -54,6 +54,18 @@ Optional callback to provide additional UTM parameters for the experience contex
 `Partial`\<[`ExperienceParams`](ExperienceParams.md)\[`"utm"`\]\>
 
 Additional UTM parameters to merge
+
+### locales?
+
+> `optional` **locales**: `string`[]
+
+List of locale prefixes to strip from the pathname before personalization lookup.
+
+#### Example
+
+```ts
+['en', 'nl-NL']
+```
 
 ### personalizeService?
 

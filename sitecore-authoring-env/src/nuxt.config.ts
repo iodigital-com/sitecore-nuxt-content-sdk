@@ -11,26 +11,37 @@ export default defineNuxtConfig({
       include: [
         '@vue/devtools-core',
         '@vue/devtools-kit',
+        'debug', // CJS
         'graphql-request',
-        'debug',
-        'url-parse',
-        'memory-cache',
-        'regex-parser',
+        'memory-cache', // CJS
+        'url-parse', // CJS
+        'regex-parser', // CJS
+        '@sitecore-feaas/clientside',
+      ],
+    },
+    server: {
+      allowedHosts: [
+        '.sitecorecloud.io',
+        '.sitecorecloud.net',
+        '.sitecorecloud.dev',
+        '.trycloudflare.com',
       ],
     },
   },
   routeRules: {
     '*': {
       headers: {
-        'X-Frame-Options': 'ALLOWALL',
+        'Content-Security-Policy':
+          "frame-ancestors 'self' https://designlibrary.sitecorecloud.io https://pages.sitecorecloud.io https://xmapps.sitecorecloud.io",
       },
     },
-    '/robots.txt': { cache: { maxAge: 60 } },
-    '/sitemap.xml': { cache: { maxAge: 60 } },
     '/api/editing/**': {
       headers: {
+        'Access-Control-Allow-Origin': 'https://app.sitecorecloud.io',
+        'Access-Control-Allow-Credentials': 'true',
         'Access-Control-Allow-Methods': 'GET, POST, OPTIONS',
-        'Access-Control-Allow-Headers': 'Content-Type, Authorization',
+        'Access-Control-Allow-Headers':
+          'Content-Type, Authorization, X-Requested-With, X-Sitecore-Editing-Secret, X-Tunnel-Skip-Browser-Warning',
       },
     },
   },
