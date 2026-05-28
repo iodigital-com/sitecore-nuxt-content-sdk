@@ -13,7 +13,7 @@
     "api-extractor": "lerna run api-extractor",
     "api-extractor:verify": "lerna run api-extractor:verify",
     "version": "yarn install && git stage yarn.lock",
-    "build:vercel": "lerna run build --scope '@sitecore-content-sdk/cli' --scope '@sitecore-content-sdk/analytics-core' --scope '@sitecore-content-sdk/events' --scope '@sitecore-content-sdk/nuxt' && cd sitecore-authoring-env/src && npm install && npm run build:vercel"
+    "build:vercel": "lerna run build && cd sitecore-authoring-env/src && npm install && npm run build"  
   },
   "author": {
     "name": "Sitecore Corporation",
