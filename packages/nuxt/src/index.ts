@@ -19,7 +19,7 @@ export {
   initContentSdk,
 } from '@sitecore-content-sdk/core';
 
-export { HTMLLink, PageMode, ErrorPage, Page, StaticPath } from '@sitecore-content-sdk/content';
+export { HTMLLink, StaticPath } from '@sitecore-content-sdk/content';
 
 export {
   LayoutServiceData,
@@ -41,7 +41,6 @@ export {
   getContentStylesheetLink,
   EditMode,
   RenderingType,
-  ComponentLayoutService,
 } from '@sitecore-content-sdk/content/layout';
 
 export { mediaApi } from '@sitecore-content-sdk/content/media';
