@@ -1,4 +1,5 @@
 {
   "buildCommand": "yarn build:vercel",
-  "outputDirectory": "sitecore-authoring-env/src/.output"
+  "outputDirectory": "sitecore-authoring-env/src/.output",
+  "installCommand": "yarn install"
 }
