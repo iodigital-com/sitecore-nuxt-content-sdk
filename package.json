@@ -12,8 +12,7 @@
     "generate-docs": "lerna run generate-docs",
     "api-extractor": "lerna run api-extractor",
     "api-extractor:verify": "lerna run api-extractor:verify",
-    "version": "yarn install && git stage yarn.lock",
-    "build:vercel": "lerna run build && cd sitecore-authoring-env/src && npm install && chmod +x node_modules/.bin/sitecore-tools && npm run build:vercel"
+    "version": "yarn install && git stage yarn.lock"
   },
   "author": {
     "name": "Sitecore Corporation",
