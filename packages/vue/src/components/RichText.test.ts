@@ -85,7 +85,7 @@ describe('<RichText />', () => {
           `<code type="text/sitecore" chrometype="field" class="scpm" kind="open">${JSON.stringify(
             testMetadata
           )}</code>`,
-          '<div suppresshydrationwarning="true">value</div>',
+          '<div suppress-hydration-warning="true">value</div>',
           '<code type="text/sitecore" chrometype="field" class="scpm" kind="close"></code>',
         ].join('')
       );
@@ -136,10 +136,10 @@ describe('<RichText />', () => {
       expect(stripComments(wrapper.html())).toBe('');
     });
 
-    it('should apply suppresshydrationwarning attribute when in editing mode', () => {
+    it('should apply suppress-hydration-warning attribute when in editing mode', () => {
       const field = { value: 'value', metadata: testMetadata };
       const wrapper = mount(RichText, { props: { field } });
-      expect(wrapper.html()).toContain('suppresshydrationwarning="true"');
+      expect(wrapper.html()).toContain('suppress-hydration-warning="true"');
     });
   });
 });

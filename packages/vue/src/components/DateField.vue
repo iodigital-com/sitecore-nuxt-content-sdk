@@ -55,17 +55,18 @@ const dateContent = computed(() => {
 <template>
   <template v-if="!isFieldValueEmpty(field) || showMetadata">
     <FieldMetadataComponent v-if="showMetadata" :metadata="field!.metadata!">
-      <component v-if="showEmpty" :is="emptyComponent" />
+      <component :is="emptyComponent" v-if="showEmpty" />
       <component
-        v-else-if="tag"
         :is="tag"
+        v-else-if="tag"
         v-bind="attrs"
-        :suppressHydrationWarning="showMetadata || undefined"
-        >{{ dateContent }}</component
+        :suppress-hydration-warning="showMetadata || undefined"
       >
+        {{ dateContent }}
+      </component>
       <template v-else>{{ dateContent }}</template>
     </FieldMetadataComponent>
-    <component v-else-if="tag" :is="tag" v-bind="attrs">{{ dateContent }}</component>
+    <component :is="tag" v-else-if="tag" v-bind="attrs">{{ dateContent }}</component>
     <template v-else>{{ dateContent }}</template>
   </template>
 </template>

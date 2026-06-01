@@ -112,7 +112,7 @@ describe('Form', () => {
     expect(subscribeSpy).toHaveBeenCalledTimes(1);
     expect(execSpy).toHaveBeenCalledTimes(1);
     expect(normalizeHtml(wrapper.html())).toContain(
-      '<div class="form-class" id="form-id">' +
+      '<div id="form-id" class="form-class">' +
         '<form id="test-form"><script>console.log(1);</script></form></div>'
     );
   });
@@ -137,7 +137,7 @@ describe('Form', () => {
     await flushPromises();
 
     expect(loadFormSpy).not.toHaveBeenCalled();
-    expect(normalizeHtml(wrapper.html())).toContain('<div class="form-class" id="form-id"></div>');
+    expect(normalizeHtml(wrapper.html())).toContain('<div id="form-id" class="form-class"></div>');
   });
 
   it('renders form in edit mode (scripts executed, no submit subscription)', async () => {
@@ -172,7 +172,7 @@ describe('Form', () => {
     const wrapper = createWrapper(ctx.page.normal);
     await flushPromises();
 
-    expect(normalizeHtml(wrapper.html())).toContain('<div class="form-class" id="form-id"></div>');
+    expect(normalizeHtml(wrapper.html())).toContain('<div id="form-id" class="form-class"></div>');
   });
 
   it('renders error component on load failure in edit mode', async () => {

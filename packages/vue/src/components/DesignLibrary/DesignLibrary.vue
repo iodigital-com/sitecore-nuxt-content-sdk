@@ -138,9 +138,9 @@ onUnmounted(() => {
           <PlaceholderMetadata v-if="rendering" :rendering="rendering">
             <component
               :is="DynamicComp"
+              :key="renderKey"
               :fields="propsState.fields"
               :params="propsState.params"
-              :key="renderKey"
             />
           </PlaceholderMetadata>
         </DesignLibraryErrorBoundary>
@@ -149,9 +149,9 @@ onUnmounted(() => {
         <div :id="EDITING_COMPONENT_ID">
           <Placeholder
             v-if="route"
+            :key="renderKey"
             :name="EDITING_COMPONENT_PLACEHOLDER"
             :rendering="route"
-            :key="renderKey"
           />
         </div>
       </template>

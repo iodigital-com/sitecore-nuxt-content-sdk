@@ -28,6 +28,7 @@
     "@vue/test-utils": "^2.4.0",
     "del-cli": "^6.0.0",
     "eslint": "^9.32.0",
+    "eslint-plugin-vue": "^10.9.1",
     "jsdom": "^29.0.1",
     "nyc": "^17.1.0",
     "typedoc": "^0.27.0",
@@ -35,7 +36,8 @@
     "typescript": "~5.8.3",
     "vite": "^5.0.0",
     "vitest": "^2.0.0",
-    "vue": "^3.5.31"
+    "vue": "^3.5.31",
+    "vue-eslint-parser": "^10.4.0"
   },
   "peerDependencies": {
     "typescript": "^5.4.0",

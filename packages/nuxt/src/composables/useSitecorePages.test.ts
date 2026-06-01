@@ -1,4 +1,3 @@
-/* eslint-disable react-hooks/rules-of-hooks */
 /* eslint-disable no-unused-expressions */
 import { describe, it, beforeEach, afterEach, vi, expect } from 'vitest';
 import type { Page } from '@sitecore-content-sdk/content/client';

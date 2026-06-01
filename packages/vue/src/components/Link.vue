@@ -94,7 +94,7 @@ const linkText = computed(() => {
 <template>
   <template v-if="!isFieldValueEmpty(field) || showMetadata">
     <FieldMetadataComponent v-if="showMetadata" :metadata="field!.metadata!">
-      <component v-if="showEmpty" :is="emptyComponent" />
+      <component :is="emptyComponent" v-if="showEmpty" />
       <a v-else-if="linkAttrs" v-bind="linkAttrs">{{ linkText }}<slot /></a>
     </FieldMetadataComponent>
     <a v-else-if="linkAttrs" v-bind="linkAttrs">{{ linkText }}<slot /></a>

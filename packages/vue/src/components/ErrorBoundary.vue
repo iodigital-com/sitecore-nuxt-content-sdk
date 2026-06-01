@@ -48,11 +48,10 @@ onErrorCaptured((err: Error) => {
 
 <template>
   <template v-if="error">
-    <component v-if="errorComponent" :is="errorComponent" :error="error" />
+    <component :is="errorComponent" v-if="errorComponent" :error="error" />
     <div v-else-if="showErrorDetails">
       <ErrorComponent>
-        A rendering error occurred in component <em>{{ rendering?.componentName }}</em
-        ><br />
+        A rendering error occurred in component <em>{{ rendering?.componentName }} </em><br />
         Error: <em>{{ error.message || JSON.stringify(error) }}</em>
       </ErrorComponent>
     </div>

@@ -46,7 +46,7 @@ const hasDefaultSlot = computed(() => !!slots.default);
       <template v-if="!hasDefaultSlot && linkText">
         {{ linkText }}
       </template>
-      <slot></slot>
+      <slot />
     </a>
   </template>
 </template>

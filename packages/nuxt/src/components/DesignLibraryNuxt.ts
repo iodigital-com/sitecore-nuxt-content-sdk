@@ -1,4 +1,3 @@
-/* eslint-disable react-hooks/rules-of-hooks */
 import { defineComponent, h } from 'vue';
 import { DesignLibrary } from '@sitecore-content-sdk/vue';
 import { useDesignLibraryActions } from '../composables/useDesignLibraryActions';

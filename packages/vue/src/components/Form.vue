@@ -89,9 +89,9 @@ onMounted(async () => {
   <ErrorComponent v-if="isEditing && error" message="There was a problem loading this section" />
   <div
     v-else
-    ref="formRef"
-    v-html="content"
-    :class="params.styles?.trimEnd() || undefined"
     :id="params.RenderingIdentifier || undefined"
+    ref="formRef"
+    :class="params.styles?.trimEnd() || undefined"
+    v-html="content"
   />
 </template>

@@ -125,7 +125,7 @@ describe('<Text />', () => {
           `<code type="text/sitecore" chrometype="field" class="scpm" kind="open">${JSON.stringify(
             testMetadata
           )}</code>`,
-          '<span suppresshydrationwarning="true">value</span>',
+          '<span suppress-hydration-warning="true">value</span>',
           '<code type="text/sitecore" chrometype="field" class="scpm" kind="close"></code>',
         ].join('')
       );
@@ -176,12 +176,12 @@ describe('<Text />', () => {
       expect(stripComments(wrapper.html())).toBe('');
     });
 
-    it('should apply suppresshydrationwarning attribute when in editing mode', () => {
+    it('should apply suppress-hydration-warning attribute when in editing mode', () => {
       const field = { value: 'value', metadata: testMetadata };
       const wrapper = mount(Text, { props: { field, tag: 'span' } });
-      expect(wrapper.element.querySelector('span')?.hasAttribute('suppresshydrationwarning')).toBe(
-        true
-      );
+      expect(
+        wrapper.element.querySelector('span')?.hasAttribute('suppress-hydration-warning')
+      ).toBe(true);
     });
   });
 });

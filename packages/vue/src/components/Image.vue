@@ -104,7 +104,7 @@ const imageAttrs = computed(() => {
 <template>
   <template v-if="!isFieldValueEmpty(field) || showMetadata">
     <FieldMetadataComponent v-if="showMetadata" :metadata="field!.metadata!">
-      <component v-if="showEmpty" :is="emptyComponent" v-bind="attrs" :class="props.class" />
+      <component :is="emptyComponent" v-if="showEmpty" v-bind="attrs" :class="props.class" />
       <img v-else-if="imageAttrs" v-bind="imageAttrs" />
     </FieldMetadataComponent>
     <img v-else-if="imageAttrs" v-bind="imageAttrs" />
