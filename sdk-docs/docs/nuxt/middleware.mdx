@@ -1,0 +1,298 @@
+---
+sidebar_position: 4
+---
+
+# Middleware
+
+The Nuxt SDK provides server middleware classes for handling multi-site resolution, locale detection, personalization, redirects, and preview mode.
+
+## Overview
+
+Middleware in the Nuxt SDK runs on the server side via Nitro's `server/middleware/` directory. Each middleware class extends `MiddlewareBase` and implements a `handle(event: H3Event)` method.
+
+**Execution order** is determined by filename (alphabetical). Name your files to control the order:
+
+```
+server/middleware/
+├── 01.locale.ts
+├── 02.multisite.ts
+├── 03.personalize.ts
+├── 04.redirects.ts
+└── 05.preview.ts
+```
+
+:::info
+Unlike Next.js which uses a single `proxy.ts` file with chained calls, Nuxt middleware uses separate files per concern. Each middleware mutates the H3 event directly.
+:::
+
+## LocaleMiddleware
+
+Resolves the active locale from the request path and shares it with downstream middleware via the `x-sc-locale` response header.
+
+### Setup
+
+```ts title="server/middleware/01.locale.ts"
+import { defineEventHandler } from 'h3';
+import { LocaleMiddleware } from '@sitecore-content-sdk/nuxt';
+import config from '../../sitecore.config';
+
+const middleware = new LocaleMiddleware({
+  locales: ['en', 'nl', 'de'],
+  sites: config.sites,
+  defaultLanguage: config.defaultLanguage,
+});
+
+export default defineEventHandler((event) => middleware.handle(event));
+```
+
+### Configuration
+
+| Option | Type | Description |
+|--------|------|-------------|
+| `locales` | `string[]` | Supported locale prefixes |
+| `sites` | `SiteInfo[]` | Site configuration list |
+| `defaultLanguage` | `string` | Fallback language (default: `'en'`) |
+| `skip` | `(event) => boolean` | Custom skip logic |
+
+### How It Works
+
+1. Extracts locale from the URL path (e.g. `/nl/about` → `nl`)
+2. Sets the `x-sc-locale` response header for downstream middleware
+3. Strips the locale prefix from the path for Nuxt routing
+
+:::tip
+Nuxt i18n handles the actual locale routing and path rewriting. This middleware only shares the resolved locale with other SDK middleware (like PersonalizeMiddleware).
+:::
+
+## MultisiteMiddleware
+
+Resolves the current site based on hostname and rewrites the request path to include the site prefix.
+
+### Setup
+
+```ts title="server/middleware/02.multisite.ts"
+import { defineEventHandler } from 'h3';
+import { MultisiteMiddleware } from '@sitecore-content-sdk/nuxt';
+import config from '../../sitecore.config';
+
+const middleware = new MultisiteMiddleware({
+  sites: config.sites,
+  defaultHostname: 'localhost',
+});
+
+export default defineEventHandler((event) => middleware.handle(event));
+```
+
+### Configuration
+
+| Option | Type | Description |
+|--------|------|-------------|
+| `sites` | `SiteInfo[]` | Site configuration list |
+| `defaultHostname` | `string` | Fallback hostname (default: `'localhost'`) |
+| `defaultLanguage` | `string` | Fallback language |
+| `skip` | `(event) => boolean` | Custom skip logic |
+
+### How It Works
+
+1. Reads the hostname from the request
+2. Resolves the matching site from your sites configuration
+3. Sets a site cookie for subsequent requests
+4. Rewrites the request path with the site prefix (e.g. `/_site_mysite/about`)
+
+## PersonalizeMiddleware
+
+Integrates Sitecore Personalize (CDP) into the request pipeline. Identifies personalized variants and rewrites the request accordingly.
+
+### Setup
+
+```ts title="server/middleware/03.personalize.ts"
+import { defineEventHandler } from 'h3';
+import { PersonalizeMiddleware } from '@sitecore-content-sdk/nuxt';
+import config from '../../sitecore.config';
+
+const middleware = new PersonalizeMiddleware({
+  enabled: true,
+  contextId: process.env.SITECORE_EDGE_CONTEXT_ID,
+  clientContextId: process.env.NUXT_PUBLIC_SITECORE_EDGE_CONTEXT_ID,
+  edgeUrl: process.env.SITECORE_EDGE_URL,
+  edgeTimeout: 400,
+  cdpTimeout: 400,
+  sites: config.sites,
+  locales: ['en', 'nl'],
+});
+
+export default defineEventHandler((event) => middleware.handle(event));
+```
+
+### Configuration
+
+| Option | Type | Description |
+|--------|------|-------------|
+| `enabled` | `boolean` | Enable/disable personalization |
+| `contextId` | `string` | Sitecore Edge Context ID |
+| `clientContextId` | `string` | Client-side Edge Context ID |
+| `edgeUrl` | `string` | Edge platform URL |
+| `edgeTimeout` | `number` | Edge API timeout (ms) |
+| `cdpTimeout` | `number` | CDP call timeout (ms) |
+| `sites` | `SiteInfo[]` | Site configuration list |
+| `locales` | `string[]` | Locale prefixes to strip before lookup |
+| `scope` | `string` | Personalize scope |
+| `channel` | `string` | CDP channel (default: `'WEB'`) |
+| `currency` | `string` | Currency code (default: `'USD'`) |
+| `extractGeoDataCb` | `(event?) => GeoData` | Optional geo data extraction |
+| `getExtraUtmParams` | `(event) => Partial<UTM>` | Optional extra UTM params |
+
+### How It Works
+
+1. Resolves the current site and page
+2. Fetches personalization rules from the Edge API
+3. Calls CDP to identify applicable variants
+4. Rewrites the request path to the personalized variant
+
+### Skipped When
+
+- Middleware is globally disabled
+- Request is a static file, API route, or Nuxt internal route
+- Request is in preview or prefetch mode
+- No personalization rules found for the current page
+- Edge configuration is missing (expected in local development)
+
+## RedirectsMiddleware
+
+Fetches redirect rules from Sitecore and applies matching redirects (301, 302, or server transfer).
+
+### Setup
+
+```ts title="server/middleware/04.redirects.ts"
+import { defineEventHandler } from 'h3';
+import { RedirectsMiddleware } from '@sitecore-content-sdk/nuxt';
+import config from '../../sitecore.config';
+
+const middleware = new RedirectsMiddleware({
+  enabled: true,
+  contextId: process.env.SITECORE_EDGE_CONTEXT_ID,
+  edgeUrl: process.env.SITECORE_EDGE_URL,
+  locales: ['en', 'nl'],
+  sites: config.sites,
+});
+
+export default defineEventHandler((event) => middleware.handle(event));
+```
+
+### Configuration
+
+| Option | Type | Description |
+|--------|------|-------------|
+| `enabled` | `boolean` | Enable/disable redirects |
+| `contextId` | `string` | Sitecore Edge Context ID |
+| `edgeUrl` | `string` | Edge platform URL |
+| `locales` | `string[]` | Supported locales for redirect pattern matching |
+| `sites` | `SiteInfo[]` | Site configuration list |
+| `redirectsService` | `RedirectsService` | Optional custom redirects service |
+
+### Redirect Types
+
+| Type | Behavior |
+|------|----------|
+| 301 | Permanent redirect via HTTP response |
+| 302 | Temporary redirect via HTTP response |
+| Server Transfer | Internal rewrite (URL stays the same in browser) |
+
+### How It Works
+
+1. Fetches all redirect rules for the current site
+2. Matches the incoming URL against patterns (supports regex)
+3. Applies 301/302 redirects or server-transfer rewrites
+4. Handles query string preservation and locale prefixes
+
+## PreviewMiddleware
+
+Manages Sitecore preview mode using cookie-based state. Replaces Next.js `draftMode()` functionality.
+
+### Setup
+
+```ts title="server/middleware/05.preview.ts"
+import { defineEventHandler } from 'h3';
+import { PreviewMiddleware } from '@sitecore-content-sdk/nuxt';
+import config from '../../sitecore.config';
+
+const middleware = new PreviewMiddleware({
+  sites: config.sites,
+});
+
+export default defineEventHandler((event) => middleware.handle(event));
+```
+
+### How It Works
+
+1. Reads the preview cookie from the request
+2. When in preview mode, bypasses caching
+3. Sets appropriate cache-control headers
+
+## MiddlewareBase
+
+All middleware classes extend `MiddlewareBase`, which provides shared functionality:
+
+### Shared Methods
+
+| Method | Description |
+|--------|-------------|
+| `isPreview(event)` | Check if request is in preview mode |
+| `isPrefetch(event)` | Check if request is a prefetch |
+| `disabled(event)` | Check if middleware should be skipped |
+| `getLanguage(event)` | Get the resolved language from `x-sc-locale` header |
+| `getHostHeader(event)` | Get the host from request headers |
+| `getSite(event)` | Resolve current site (by cookie or hostname) |
+| `rewrite(path, event)` | Rewrite the request path |
+
+### Creating Custom Middleware
+
+You can extend `MiddlewareBase` for custom middleware:
+
+```ts title="server/middleware/custom.ts"
+import { H3Event } from 'h3';
+import { MiddlewareBase, MiddlewareBaseConfig } from '@sitecore-content-sdk/nuxt';
+
+class CustomMiddleware extends MiddlewareBase {
+  constructor(config: MiddlewareBaseConfig) {
+    super(config);
+  }
+
+  handle = async (event: H3Event): Promise<void> => {
+    if (this.disabled(event)) return;
+
+    const site = this.getSite(event);
+    const language = this.getLanguage(event);
+
+    // Your custom logic here
+    console.log(`Request for site: ${site.name}, language: ${language}`);
+  };
+}
+```
+
+## Skipping Middleware
+
+All middleware automatically skips:
+- API routes (`/api/*`)
+- Sitecore internal routes (`/sitecore/*`)
+- Nuxt internal routes (`/_nuxt/*`)
+- Static files (paths with extensions)
+
+You can also provide a custom `skip` function:
+
+```ts
+const middleware = new LocaleMiddleware({
+  sites: config.sites,
+  locales: ['en', 'nl'],
+  skip: (event) => {
+    const url = event.path;
+    return url.startsWith('/health') || url.startsWith('/custom-api');
+  },
+});
+```
+
+## See Also
+
+- [Composables](/nuxt/composables) - Access middleware-resolved data in components
+- [Editing Integration](/nuxt/editing) - Server-side editing routes
+- [Configuration](/nuxt/configuration) - SDK configuration options

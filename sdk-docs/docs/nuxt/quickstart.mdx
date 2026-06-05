@@ -1,0 +1,240 @@
+---
+sidebar_position: 1
+---
+
+# Quickstart
+
+Get started with the Sitecore Content SDK for Nuxt 3 in minutes.
+
+## What is the Nuxt SDK?
+
+The Sitecore Content SDK for Nuxt provides a complete toolkit for building headless Sitecore XM Cloud applications with Nuxt 3. It includes:
+
+- **Automatic page rendering** with Sitecore layout data
+- **Multi-site support** with automatic site resolution
+- **Experience Editor integration** for inline editing
+- **Personalization & Analytics** with CDP/Personalize
+- **Middleware** for locale, redirects, preview mode
+- **Composables** for data fetching and context access
+- **Vue components** for fields (Text, RichText, Image, etc.)
+
+## Installation
+
+Install the Nuxt and Vue SDK packages:
+
+```bash
+yarn add @sitecore-content-sdk/nuxt @sitecore-content-sdk/vue
+```
+
+Or with npm:
+
+```bash
+npm install @sitecore-content-sdk/nuxt @sitecore-content-sdk/vue
+```
+
+## Configuration
+
+### 1. Configure Sitecore API endpoints
+
+Create or update your `sitecore.config.ts` in the root of your Nuxt project:
+
+```ts title="sitecore.config.ts"
+import { defineConfig } from '@sitecore-content-sdk/nuxt/config';
+
+export default defineConfig({
+  defaultSite: 'mysite',
+  defaultLanguage: 'en',
+  api: {
+    edge: {
+      contextId: process.env.NUXT_PUBLIC_SITECORE_EDGE_CONTEXT_ID,
+      clientContextId: process.env.NUXT_PUBLIC_SITECORE_EDGE_CONTEXT_ID,
+      edgeUrl: process.env.NUXT_PUBLIC_SITECORE_EDGE_PLATFORM_HOSTNAME,
+    },
+  },
+});
+```
+
+### 2. Set environment variables
+
+Create `.env` file with your Sitecore credentials:
+
+```bash title=".env"
+NUXT_PUBLIC_SITECORE_EDGE_CONTEXT_ID=your-context-id
+NUXT_PUBLIC_SITECORE_EDGE_PLATFORM_HOSTNAME=https://edge-platform.sitecorecloud.io
+NUXT_PUBLIC_DEFAULT_SITE_NAME=mysite
+```
+
+:::tip
+Never commit `.env` files to version control. Use `.env.example` for documentation.
+:::
+
+### 3. Update nuxt.config.ts
+
+Configure runtime config to expose your environment variables:
+
+```ts title="nuxt.config.ts"
+export default defineNuxtConfig({
+  runtimeConfig: {
+    public: {
+      SITECORE_EDGE_CONTEXT_ID: process.env.NUXT_PUBLIC_SITECORE_EDGE_CONTEXT_ID,
+      SITECORE_EDGE_PLATFORM_HOSTNAME: process.env.NUXT_PUBLIC_SITECORE_EDGE_PLATFORM_HOSTNAME,
+      DEFAULT_SITE_NAME: process.env.NUXT_PUBLIC_DEFAULT_SITE_NAME,
+    },
+  },
+});
+```
+
+## Create a Component Map
+
+Create a component map to tell the SDK which Vue components to use for each Sitecore rendering:
+
+```ts title="app/components/componentMap.ts"
+import type { ComponentMap } from '@sitecore-content-sdk/nuxt';
+
+// Import your components
+import Hero from './Hero.vue';
+import ContentBlock from './ContentBlock.vue';
+
+const componentMap: ComponentMap = new Map([
+  ['Hero', Hero],
+  ['ContentBlock', ContentBlock],
+]);
+
+export default componentMap;
+```
+
+## Create a Catch-All Page Route
+
+Create a dynamic route that handles all Sitecore pages:
+
+```vue title="app/pages/[...slug].vue"
+<script setup lang="ts">
+import { computed } from 'vue';
+import { createError } from 'nuxt/app';
+import { SitecoreProvider, Placeholder } from '@sitecore-content-sdk/nuxt';
+import { useSitecorePage } from '@sitecore-content-sdk/nuxt/composables';
+import componentMap from '../components/componentMap';
+
+const { page, error } = await useSitecorePage();
+
+if (error.value) {
+  throw createError({ statusCode: 500, message: error.value.message });
+}
+
+if (!page.value) {
+  throw createError({ statusCode: 404, message: 'Page not found' });
+}
+
+const route = computed(() => page.value?.layout?.sitecore?.route);
+</script>
+
+<template>
+  <SitecoreProvider :page="page" :componentMap="componentMap">
+    <Placeholder name="headless-header" :rendering="route" />
+    <Placeholder name="headless-main" :rendering="route" />
+    <Placeholder name="headless-footer" :rendering="route" />
+  </SitecoreProvider>
+</template>
+```
+
+## Create Your First Component
+
+Create a simple component that uses Sitecore fields:
+
+```vue title="app/components/Hero.vue"
+<script setup lang="ts">
+import { Text, RichText, Image } from '@sitecore-content-sdk/nuxt';
+
+// Props are automatically passed by the SDK
+const props = defineProps<{
+  fields?: {
+    Title?: any;
+    Body?: any;
+    Image?: any;
+  };
+}>();
+</script>
+
+<template>
+  <div class="hero">
+    <Image :field="fields?.Image" />
+    <Text tag="h1" :field="fields?.Title" />
+    <RichText :field="fields?.Body" />
+  </div>
+</template>
+
+<style scoped>
+.hero {
+  padding: 2rem;
+  text-align: center;
+}
+</style>
+```
+
+## Run Your Application
+
+Start the development server:
+
+```bash
+yarn dev
+```
+
+Your Sitecore-powered Nuxt application is now running at `http://localhost:3000`!
+
+## Next Steps
+
+- [Composables](./composables) - Learn about `useSitecoreContext()` and `useSitecorePage()`
+- [Components](./components) - Explore Text, RichText, Image, Link components
+- [Middleware](./middleware) - Set up multi-site, personalization, and preview mode
+- [Editing Integration](./editing) - Enable Experience Editor support
+
+## Common Patterns
+
+### Accessing Sitecore Context
+
+Use the `useSitecoreContext()` composable to access page data anywhere:
+
+```vue
+<script setup lang="ts">
+import { useSitecoreContext } from '@sitecore-content-sdk/nuxt/composables';
+
+const { page, componentMap } = useSitecoreContext();
+
+// Access route fields
+const route = page.value?.layout?.sitecore?.route;
+const title = route?.fields?.Title?.value;
+</script>
+```
+
+### Multi-Site Setup
+
+The SDK automatically resolves the site based on the request hostname. Configure your sites in `.sitecore/sites.json`:
+
+```json title=".sitecore/sites.json"
+[
+  {
+    "name": "mysite",
+    "hostName": "www.mysite.com",
+    "language": "en"
+  },
+  {
+    "name": "othersite",
+    "hostName": "www.othersite.com",
+    "language": "nl"
+  }
+]
+```
+
+## Troubleshooting
+
+### Page returns 404
+
+- Verify your `SITECORE_EDGE_CONTEXT_ID` is correct
+- Check that the page exists in Sitecore
+- Ensure the site name matches your configuration
+
+### Components not rendering
+
+- Verify component names in your component map match the Sitecore rendering names exactly
+- Check browser console for errors
+- Ensure all required fields are present in your component props

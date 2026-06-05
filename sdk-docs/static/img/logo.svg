@@ -1,0 +1,18 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 220 160" fill="none">
+  <defs>
+    <mask id="o-mask">
+      <circle cx="158" cy="80" r="56" fill="white"/>
+      <circle cx="158" cy="80" r="29" fill="black"/>
+    </mask>
+  </defs>
+
+  <!-- i: thick arc crescent, open on upper-right -->
+  <path d="M 58 128 A 56 56 0 1 1 58 32"
+        stroke="#242424"
+        stroke-width="27"
+        fill="none"
+        stroke-linecap="round"/>
+
+  <!-- O: donut ring -->
+  <circle cx="158" cy="80" r="56" fill="#242424" mask="url(#o-mask)"/>
+</svg>

@@ -1,0 +1,216 @@
+---
+sidebar_position: 2
+---
+
+# Composables
+
+The Nuxt SDK provides composables for accessing Sitecore context, fetching page data, and managing component state.
+
+## useSitecoreContext
+
+Access the current Sitecore page context and component map from anywhere in your application.
+
+### Usage
+
+```vue
+<script setup lang="ts">
+import { useSitecoreContext } from '@sitecore-content-sdk/nuxt/composables';
+
+const { page, componentMap } = useSitecoreContext();
+
+// Access route data
+const route = page.value?.layout?.sitecore?.route;
+const fields = route?.fields;
+</script>
+```
+
+### Returns
+
+- **`page`** (`Ref<Page>`) - The complete Sitecore layout data for the current page
+- **`componentMap`** (ComponentMap) - Map of component names to Vue components
+- **`sitecoreContext`** (`Ref<SitecoreContext>`) - Raw context information
+
+### When to Use
+
+Use `useSitecoreContext()` when you need to:
+
+- Access page data in a child component without prop drilling
+- Read route-level fields (title, metadata, etc.)
+- Check page mode (editing, preview, normal)
+- Access the component map for dynamic rendering
+
+### Example: Reading Route Fields
+
+```vue
+<script setup lang="ts">
+import { useSitecoreContext } from '@sitecore-content-sdk/nuxt/composables';
+import { computed } from 'vue';
+
+const { page } = useSitecoreContext();
+
+const pageTitle = computed(() => {
+  const route = page.value?.layout?.sitecore?.route;
+  return route?.fields?.Title?.value || 'Untitled Page';
+});
+</script>
+
+<template>
+  <h1>{{ pageTitle }}</h1>
+</template>
+```
+
+## useSitecorePage
+
+Fetch Sitecore page data asynchronously. This is typically used in the main page component.
+
+### Usage
+
+```vue
+<script setup lang="ts">
+import { useSitecorePage } from '@sitecore-content-sdk/nuxt/composables';
+
+const { page, error } = await useSitecorePage();
+
+if (error.value) {
+  throw createError({ statusCode: 500, message: error.value.message });
+}
+</script>
+```
+
+### Returns
+
+- **`page`** (`Ref<Page | null>`) - The fetched page data
+- **`error`** (`Ref<Error | null>`) - Any error that occurred during fetch
+- **`isLoading`** (`Ref<boolean>`) - Loading state
+
+### Options
+
+You can pass options to customize the fetch behavior:
+
+```ts
+const { page, error } = await useSitecorePage({
+  site: 'mysite',
+  locale: 'en',
+  // Custom fetch options
+});
+```
+
+## useDatasourceCheck
+
+Ensures a component has a valid data source before rendering. Used in components that require a data source item.
+
+### Usage
+
+```vue
+<script setup lang="ts">
+import { useDatasourceCheck } from '@sitecore-content-sdk/nuxt/composables';
+
+const props = defineProps<{
+  rendering: ComponentRendering;
+}>();
+
+const { renderState } = useDatasourceCheck(props.rendering);
+
+// renderState can be: 'component' | 'error' | 'null'
+</script>
+
+<template>
+  <div v-if="renderState === 'component'">
+    <!-- Your component content -->
+  </div>
+  <div v-else-if="renderState === 'error'">No data source selected</div>
+</template>
+```
+
+### Returns
+
+- **`renderState`** (`Ref<'component' | 'error' | 'null'>`) - Current render state
+  - `'component'` - Has valid data source or is in Design Library mode
+  - `'error'` - Missing required data source
+  - `'null'` - Should not render
+
+### When to Use
+
+Use this composable when:
+
+- Your component requires a data source item to function
+- You want to show an error message when no data source is selected
+- You're building a component that editors will configure in Experience Editor
+
+## useEditorChromes
+
+Provides editing chrome metadata for Experience Editor integration.
+
+### Usage
+
+```vue
+<script setup lang="ts">
+import { useEditorChromes } from '@sitecore-content-sdk/nuxt/composables';
+
+const props = defineProps<{
+  rendering: ComponentRendering;
+}>();
+
+const { chromeData } = useEditorChromes(props.rendering);
+</script>
+
+<template>
+  <div v-bind="chromeData">
+    <!-- Component content -->
+  </div>
+</template>
+```
+
+### Returns
+
+- **`chromeData`** (object) - Attributes to bind to your component's root element for editing chrome support
+
+### When to Use
+
+Use this composable when:
+
+- Building components that need to be editable in Experience Editor
+- You want to add editing chrome metadata to your components
+- You're implementing custom editing behavior
+
+## Best Practices
+
+### Context Access
+
+✅ **DO:** Use `useSitecoreContext()` for read-only access to page data
+
+```vue
+const { page } = useSitecoreContext(); const route = page.value?.layout?.sitecore?.route;
+```
+
+❌ **DON'T:** Mutate page data directly
+
+```vue
+// Bad - don't modify context directly page.value.layout = someNewLayout;
+```
+
+### Data Fetching
+
+✅ **DO:** Use `await useSitecorePage()` in top-level page components
+
+```vue
+// pages/[...slug].vue const { page, error } = await useSitecorePage();
+```
+
+❌ **DON'T:** Call `useSitecorePage()` in child components (use `useSitecoreContext()` instead)
+
+### Error Handling
+
+✅ **DO:** Always check for errors when using `useSitecorePage()`
+
+```vue
+const { page, error } = await useSitecorePage(); if (error.value) { throw createError({ statusCode:
+500, message: error.value.message }); } if (!page.value) { throw createError({ statusCode: 404,
+message: 'Page not found' }); }
+```
+
+## See Also
+
+- [Components](/nuxt/components) - SDK Vue components for rendering Sitecore fields
+- [Middleware](/nuxt/middleware) - Server middleware for multi-site, personalization
+- [API Reference](https://github.com/Sitecore/content-sdk/tree/main/ref-docs/nuxt) - Complete API documentation

@@ -1,0 +1,225 @@
+---
+sidebar_position: 5
+---
+
+# Editing Integration
+
+The Nuxt SDK supports Sitecore Experience Editor and Pages (Page Builder) for inline content editing.
+
+## Overview
+
+To enable editing in Sitecore, your Nuxt application exposes server API routes that Sitecore calls to render pages and retrieve configuration. The SDK provides route handler factories that handle CORS, secret validation, and page rendering.
+
+## Editing Routes
+
+Create the following server route files:
+
+```
+server/api/editing/
+├── config.get.ts
+├── config.options.ts
+└── render.get.ts
+```
+
+### Config Route
+
+Returns the editing configuration including available components and metadata.
+
+```ts title="server/api/editing/config.get.ts"
+import { defineEventHandler } from 'h3';
+import { createEditingConfigRoute } from '@sitecore-content-sdk/nuxt/routes';
+import componentMap from '~/components/componentMap';
+import metadata from '~/.sitecore/metadata.json';
+
+const { handle } = createEditingConfigRoute({
+  components: componentMap,
+  metadata,
+});
+
+export default defineEventHandler(handle);
+```
+
+```ts title="server/api/editing/config.options.ts"
+import { defineEventHandler } from 'h3';
+import { createEditingConfigRoute } from '@sitecore-content-sdk/nuxt/routes';
+import componentMap from '~/components/componentMap';
+import metadata from '~/.sitecore/metadata.json';
+
+const { handleOptions } = createEditingConfigRoute({
+  components: componentMap,
+  metadata,
+});
+
+export default defineEventHandler(handleOptions);
+```
+
+### Render Route
+
+Handles page rendering requests from Sitecore Page Builder.
+
+```ts title="server/api/editing/render.get.ts"
+import { defineEventHandler } from 'h3';
+import { createEditingRenderRoute } from '@sitecore-content-sdk/nuxt/routes';
+
+const { handleGet } = createEditingRenderRoute();
+
+export default defineEventHandler(handleGet);
+```
+
+### Render Route Options
+
+```ts
+const { handleGet } = createEditingRenderRoute({
+  // Custom URL resolver for special routing setups
+  resolvePageUrl: (itemPath) => `/${itemPath}`,
+
+  // Optional: specify allowed query parameters
+  allowedQueryParams: ['utm_source', 'utm_campaign'],
+
+  // Optional: internal editing host URL for CORS
+  sitecoreInternalEditingHostUrl: 'http://editing-host:9000',
+});
+```
+
+## CORS Configuration
+
+Sitecore Page Builder connects from a different origin, so CORS must be configured. Add route rules in `nuxt.config.ts`:
+
+```ts title="nuxt.config.ts"
+export default defineNuxtConfig({
+  routeRules: {
+    '/api/editing/**': {
+      headers: {
+        'Access-Control-Allow-Methods': 'GET, POST, OPTIONS',
+        'Access-Control-Allow-Headers': 'Content-Type, Authorization',
+      },
+    },
+  },
+});
+```
+
+:::info
+The SDK automatically validates CORS origins against Sitecore's allowed origins list. Nitro handles OPTIONS preflight requests.
+:::
+
+## Editing Secret
+
+The editing routes validate a secret to ensure requests come from Sitecore. Set the secret as an environment variable:
+
+```bash title=".env"
+SITECORE_EDITING_SECRET=your-editing-secret
+```
+
+This must match the value configured in Sitecore's rendering host settings.
+
+## Preview Mode
+
+The Nuxt SDK uses cookie-based preview state (via `PreviewMiddleware`) instead of Next.js's `draftMode()`.
+
+When Sitecore requests a page in preview/edit mode:
+1. The render route sets preview cookies
+2. `PreviewMiddleware` reads these cookies on subsequent requests
+3. Cache is bypassed for preview requests
+4. The SDK client fetches preview data instead of published content
+
+## Design Library
+
+The SDK supports Sitecore's Design Library for component development.
+
+### Setup
+
+Use `DesignLibraryNuxt` in your page template when in design library mode:
+
+```vue title="app/pages/[...slug].vue"
+<script setup lang="ts">
+import { SitecoreProvider, Placeholder } from '@sitecore-content-sdk/nuxt';
+import { DesignLibraryNuxt } from '@sitecore-content-sdk/nuxt';
+import { useSitecorePage } from '@sitecore-content-sdk/nuxt/composables';
+import componentMap from '~/components/componentMap';
+
+const { page } = await useSitecorePage();
+const route = page.value?.layout?.sitecore?.route;
+</script>
+
+<template>
+  <SitecoreProvider :page="page" :componentMap="componentMap">
+    <template v-if="page?.mode?.isDesignLibrary">
+      <DesignLibraryNuxt />
+    </template>
+    <template v-else>
+      <Placeholder name="headless-main" :rendering="route" />
+    </template>
+  </SitecoreProvider>
+</template>
+```
+
+### How It Works
+
+- In **library mode**: Renders the component with its real Sitecore data
+- In **library-metadata mode**: Renders with metadata chromes for Page Builder
+- Uses `useDesignLibraryActions` composable for variant generation handshakes
+
+## Component Metadata
+
+Generate component metadata for Sitecore registration:
+
+```bash
+yarn sitecore-tools generate-metadata
+```
+
+This creates `.sitecore/metadata.json` which the config route returns to Sitecore.
+
+## Editing Stylesheets
+
+To include Sitecore's content styles in editing mode:
+
+```vue
+<script setup lang="ts">
+import { getContentStylesheetLink } from '@sitecore-content-sdk/nuxt';
+import { useSitecoreContext } from '@sitecore-content-sdk/nuxt/composables';
+
+const { page } = useSitecoreContext();
+
+const stylesheetLink = page.value?.mode?.isEditing
+  ? getContentStylesheetLink(page.value.layout)
+  : null;
+</script>
+
+<template>
+  <Head v-if="stylesheetLink">
+    <link rel="stylesheet" :href="stylesheetLink.href" />
+  </Head>
+  <!-- rest of layout -->
+</template>
+```
+
+## Troubleshooting
+
+### "Invalid editing secret" error
+
+- Verify `SITECORE_EDITING_SECRET` matches the rendering host config in Sitecore
+- Check the environment variable is available on the server
+
+### CORS errors in Page Builder
+
+- Verify route rules are set in `nuxt.config.ts`
+- Check that `JSS_ALLOWED_ORIGINS` environment variable includes your Sitecore CM hostname
+- Ensure the OPTIONS handler is registered
+
+### Components not editable
+
+- Verify your components use SDK field components (`Text`, `RichText`, etc.)
+- Check that `componentMap` includes all components referenced in Sitecore
+- Ensure the `rendering` prop is passed correctly
+
+### Preview not working
+
+- Verify `PreviewMiddleware` is registered and runs before other middleware
+- Check that preview cookies are being set correctly
+- Confirm your `useSitecorePage` composable handles preview mode
+
+## See Also
+
+- [Components](/nuxt/components) - SDK field components with editing support
+- [Middleware](/nuxt/middleware) - Preview and other middleware
+- [Configuration](/nuxt/configuration) - Environment variables and SDK config

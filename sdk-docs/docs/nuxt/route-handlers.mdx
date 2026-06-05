@@ -1,0 +1,168 @@
+---
+sidebar_position: 7
+---
+
+# Route Handlers
+
+The Nuxt SDK provides server route handlers for SEO (robots.txt, sitemap), health checks, and editing integration.
+
+## Overview
+
+Route handlers are created using factory functions that return handler methods. Register them as Nuxt server routes using `defineEventHandler()`.
+
+## Robots Route
+
+Serves a dynamic `robots.txt` file fetched from Sitecore, resolved per site.
+
+### Setup
+
+```ts title="server/routes/robots.txt.ts"
+import { defineEventHandler } from 'h3';
+import { createRobotsRoute } from '@sitecore-content-sdk/nuxt/routes';
+import { useSitecoreClient } from '@sitecore-content-sdk/nuxt';
+import sites from '../../.sitecore/sites.json';
+
+const client = useSitecoreClient();
+const { handle } = createRobotsRoute({ client, sites });
+
+export default defineEventHandler(handle);
+```
+
+### Options
+
+| Option | Type | Description |
+|--------|------|-------------|
+| `client` | `SitecoreClient` | Sitecore client instance |
+| `sites` | `SiteInfo[]` | Sites list for hostname resolution |
+
+### Caching
+
+Configure caching via `routeRules` in `nuxt.config.ts`:
+
+```ts title="nuxt.config.ts"
+export default defineNuxtConfig({
+  routeRules: {
+    '/robots.txt': { cache: { maxAge: 60 } },
+  },
+});
+```
+
+### How It Works
+
+1. Resolves the current site by hostname
+2. Fetches robots.txt content from Sitecore via the Edge API
+3. Returns plain text response
+4. Returns 404 with a default disallow-all robots.txt if no site or content is found
+
+## Sitemap Route
+
+Serves XML sitemaps from Sitecore.
+
+### Setup
+
+```ts title="server/routes/sitemap.xml.ts"
+import { defineEventHandler } from 'h3';
+import { createSitemapRoute } from '@sitecore-content-sdk/nuxt/routes';
+import { useSitecoreClient } from '@sitecore-content-sdk/nuxt';
+import sites from '../../.sitecore/sites.json';
+
+const client = useSitecoreClient();
+const { handle } = createSitemapRoute({ client, sites });
+
+export default defineEventHandler(handle);
+```
+
+### Options
+
+| Option | Type | Description |
+|--------|------|-------------|
+| `client` | `SitecoreClient` | Sitecore client instance |
+| `sites` | `SiteInfo[]` | Sites list for hostname resolution |
+
+### Caching
+
+```ts title="nuxt.config.ts"
+export default defineNuxtConfig({
+  routeRules: {
+    '/sitemap.xml': { cache: { maxAge: 60 } },
+  },
+});
+```
+
+### How It Works
+
+1. Resolves the current site by hostname
+2. Fetches sitemap XML from Sitecore
+3. Returns XML response with correct content-type
+4. Returns 404 if not found, 500 on error
+
+## Healthcheck Route
+
+Simple health check endpoint for monitoring and deployment verification.
+
+### Setup
+
+```ts title="server/routes/healthz.ts"
+import { defineEventHandler } from 'h3';
+import { createHealthcheckRoute } from '@sitecore-content-sdk/nuxt/monitoring';
+
+const { handle } = createHealthcheckRoute();
+
+export default defineEventHandler(handle);
+```
+
+### Response
+
+Returns HTTP 200 with body `"Healthy"`.
+
+## Editing Routes
+
+See [Editing Integration](/nuxt/editing) for detailed documentation on the editing render and config routes.
+
+### Quick Reference
+
+```
+server/api/editing/
+├── config.get.ts      → createEditingConfigRoute().handle
+├── config.options.ts  → createEditingConfigRoute().handleOptions
+└── render.get.ts      → createEditingRenderRoute().handleGet
+```
+
+## Creating Custom Route Handlers
+
+You can follow the same pattern for custom routes:
+
+```ts title="server/routes/custom.ts"
+import { defineEventHandler } from 'h3';
+import type { H3Event } from 'h3';
+
+const handle = async (event: H3Event) => {
+  // Access headers
+  const host = event.req.headers.get('host');
+
+  // Set response headers
+  event.res.headers.set('Content-Type', 'application/json');
+
+  // Return response (h3 v2 style)
+  return JSON.stringify({ status: 'ok', host });
+};
+
+export default defineEventHandler(handle);
+```
+
+## Error Handling
+
+All route handlers follow a consistent error handling pattern:
+
+- **401** - Invalid origin or editing secret
+- **400** - Missing required parameters
+- **404** - Resource not found
+- **500** - Internal server error
+
+Errors are logged to the console and return appropriate HTTP status codes.
+
+## See Also
+
+- [Editing Integration](/nuxt/editing) - Full editing route documentation
+- [Configuration](/nuxt/configuration) - Route rules and caching setup
+- [Middleware](/nuxt/middleware) - Request processing before route handlers
