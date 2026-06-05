@@ -2,7 +2,6 @@ import { defineConfig, globalIgnores } from 'eslint/config';
 import js from '@eslint/js';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
-import reactHooks from 'eslint-plugin-react-hooks';
 import importPlugin from 'eslint-plugin-import';
 
 import tsParser from '@typescript-eslint/parser';
@@ -13,7 +12,6 @@ import prettier from 'eslint-plugin-prettier';
 import jsdoc from 'eslint-plugin-jsdoc';
 import eslintConfigPrettier from 'eslint-config-prettier';
 import globals from 'globals';
-import pluginNext from '@next/eslint-plugin-next';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -55,21 +53,13 @@ export default defineConfig([
       },
     },
     plugins: {
-      '@next/next': pluginNext,
       '@typescript-eslint': typescriptEslint,
       '@stylistic': stylistic,
-      'react-hooks': reactHooks,
       import: importPlugin,
       prettier,
       jsdoc,
     },
     rules: {
-      ...(pluginNext.configs?.recommended?.rules ?? {}),
-      ...(pluginNext.configs?.['core-web-vitals']?.rules ?? {}),
-      '@next/next/no-html-link-for-pages': 'off',
-      '@next/next/no-img-element': 'off',
-      '@next/next/no-sync-scripts': 'off',
-      '@next/next/no-assign-module-variable': 'off',
       // Include ESLint recommended rules
       ...(js.configs?.recommended?.rules ?? {}),
       // Include JSDoc recommended rules
@@ -110,10 +100,9 @@ export default defineConfig([
       radix: 'error',
       'default-case': 'error',
       eqeqeq: 'error',
-      'jsx-quotes': ['error', 'prefer-double'],
 
       // Formatting
-      'prettier/prettier': 'off', // handled via specific rules below
+      'prettier/prettier': 'off',
       '@stylistic/space-before-function-paren': [
         'error',
         {
@@ -122,8 +111,6 @@ export default defineConfig([
           asyncArrow: 'always',
         },
       ],
-      'react-hooks/rules-of-hooks': 'error',
-      'react-hooks/exhaustive-deps': 'warn',
       'import/no-anonymous-default-export': 'error',
 
       // Prettier conflict resolution - must come LAST to override conflicting rules
@@ -165,7 +152,7 @@ export default defineConfig([
     files: ['**/*.test.{js,jsx,ts,tsx}', '**/__tests__/**/*.{js,jsx,ts,tsx}'],
     languageOptions: {
       globals: {
-        ...globals.jest
+        ...globals.jest,
       },
     },
   },

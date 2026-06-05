@@ -51,8 +51,7 @@
   "dependencies": {
     "@sitecore-content-sdk/content": "2.0.0-canary.20",
     "@sitecore-content-sdk/core": "2.0.0-canary.20",
-    "@sitecore-content-sdk/search": "0.2.0-canary.30",
-    "@sitecore-feaas/clientside": "^0.6.4"
+    "@sitecore-content-sdk/search": "0.2.0-canary.30"
   },
   "type": "module",
   "exports": {
