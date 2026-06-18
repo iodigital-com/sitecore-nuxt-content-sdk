@@ -34,6 +34,8 @@ import metadata from '~/.sitecore/metadata.json';
 const { handle } = createEditingConfigRoute({
   components: componentMap,
   metadata,
+  // Optional: specify client-only components for Page Builder
+  // clientComponents: clientComponentMap,
 });
 
 export default defineEventHandler(handle);
@@ -52,6 +54,14 @@ const { handleOptions } = createEditingConfigRoute({
 
 export default defineEventHandler(handleOptions);
 ```
+
+### Config Route Options
+
+| Option             | Type                                  | Description                                             |
+| ------------------ | ------------------------------------- | ------------------------------------------------------- |
+| `components`       | `ComponentMap \| string[]`            | Components available in the application                 |
+| `metadata`         | `Metadata`                            | Application metadata (package info)                     |
+| `clientComponents` | `ComponentMap \| string[]` (optional) | Client-only components for Page Builder differentiation |
 
 ### Render Route
 
@@ -117,6 +127,7 @@ This must match the value configured in Sitecore's rendering host settings.
 The Nuxt SDK uses cookie-based preview state (via `PreviewMiddleware`) instead of Next.js's `draftMode()`.
 
 When Sitecore requests a page in preview/edit mode:
+
 1. The render route sets preview cookies
 2. `PreviewMiddleware` reads these cookies on subsequent requests
 3. Cache is bypassed for preview requests
