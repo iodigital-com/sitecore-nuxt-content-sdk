@@ -1,0 +1,48 @@
+name: Changelog
+
+on:
+  push:
+    branches: [dev]
+
+jobs:
+  changelog:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      pull-requests: write
+
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Generate changelog
+        id: changelog
+        uses: TriPSs/conventional-changelog-action@v5
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          output-file: "CHANGELOG.md"
+          skip-version-file: "true"
+          skip-commit: "false"
+          git-message: "chore(release): update CHANGELOG.md"
+          preset: "conventionalcommits"
+
+      - name: Create PR with changelog
+        if: steps.changelog.outputs.skipped == 'false'
+        uses: peter-evans/create-pull-request@v6
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          commit-message: "chore(release): update CHANGELOG.md"
+          title: "chore: update CHANGELOG.md"
+          body: |
+            Auto-generated changelog update based on conventional commits.
+
+            ${{ steps.changelog.outputs.changelog }}
+          branch: chore/update-changelog
+          labels: |
+            chore
+            automerge
