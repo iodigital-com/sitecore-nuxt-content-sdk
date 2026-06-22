@@ -30,3 +30,4 @@ samples/
 packages/*/temp/
 .vercel
 .env*.local
+*.env*
