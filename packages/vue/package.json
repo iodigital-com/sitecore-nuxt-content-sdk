@@ -51,6 +51,7 @@
   "dependencies": {
     "@sitecore-content-sdk/content": "^2.1.0",
     "@sitecore-content-sdk/core": "^2.1.0",
+    "@sitecore-content-sdk/events": "^2.1.0",
     "@sitecore-content-sdk/search": "^0.3.0"
   },
   "type": "module",

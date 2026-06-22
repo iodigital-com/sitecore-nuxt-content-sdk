@@ -4727,6 +4727,7 @@ __metadata:
   dependencies:
     "@sitecore-content-sdk/content": "npm:^2.1.0"
     "@sitecore-content-sdk/core": "npm:^2.1.0"
+    "@sitecore-content-sdk/events": "npm:^2.1.0"
     "@sitecore-content-sdk/search": "npm:^0.3.0"
     "@testing-library/vue": "npm:^8.1.0"
     "@types/jsdom": "npm:^28.0.1"

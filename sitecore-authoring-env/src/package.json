@@ -12,8 +12,8 @@
     "postinstall": "nuxt prepare"
   },
   "dependencies": {
-    "@sitecore-content-sdk/analytics-core": "file:./../../packages/analytics-core",
-    "@sitecore-content-sdk/events": "file:./../../packages/events",
+    "@sitecore-content-sdk/analytics-core": "^2.1.0",
+    "@sitecore-content-sdk/events": "^2.1.0",
     "@sitecore-content-sdk/nuxt": "file:./../../packages/nuxt",
     "@types/node": "^24.10.4",
     "nuxt": "^4.4.2",
@@ -22,6 +22,6 @@
     "vue-router": "^5.0.4"
   },
   "devDependencies": {
-    "@sitecore-content-sdk/cli": "file:./../../packages/cli"
+    "@sitecore-content-sdk/cli": "^2.1.0"
   }
 }
