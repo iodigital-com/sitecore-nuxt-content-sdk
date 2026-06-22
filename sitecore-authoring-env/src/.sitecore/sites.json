@@ -1,0 +1,17 @@
+[
+  {
+    "name": "home",
+    "hostName": "*",
+    "language": "en"
+  },
+  {
+    "name": "home",
+    "hostName": "*",
+    "language": "en"
+  },
+  {
+    "name": "test",
+    "hostName": "test.*",
+    "language": "en"
+  }
+]
