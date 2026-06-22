@@ -28,3 +28,7 @@ export {
   RedirectsMiddleware as RedirectsMiddleware,
   RedirectsMiddlewareConfig,
 } from './redirects-middleware';
+export {
+  BotTrackingMiddleware as BotTrackingMiddleware,
+  BotTrackingMiddlewareConfig,
+} from './bot-tracking-middleware';

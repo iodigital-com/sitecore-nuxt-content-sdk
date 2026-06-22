@@ -1,6 +1,6 @@
 {
   "name": "@sitecore-content-sdk/vue",
-  "version": "2.0.0-canary.20",
+  "version": "2.1.0",
   "main": "dist/cjs/index.js",
   "sideEffects": false,
   "scripts": {
@@ -49,10 +49,9 @@
     }
   },
   "dependencies": {
-    "@sitecore-content-sdk/content": "2.0.0-canary.20",
-    "@sitecore-content-sdk/core": "2.0.0-canary.20",
-    "@sitecore-content-sdk/search": "0.2.0-canary.30",
-    "@sitecore-feaas/clientside": "^0.6.4"
+    "@sitecore-content-sdk/content": "^2.1.0",
+    "@sitecore-content-sdk/core": "^2.1.0",
+    "@sitecore-content-sdk/search": "^0.3.0"
   },
   "type": "module",
   "exports": {

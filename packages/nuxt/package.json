@@ -1,6 +1,6 @@
 {
   "name": "@sitecore-content-sdk/nuxt",
-  "version": "2.0.0-canary.20",
+  "version": "2.1.0",
   "main": "dist/index.js",
   "module": "dist/index.js",
   "sideEffects": false,
@@ -18,8 +18,8 @@
   },
   "license": "Apache-2.0",
   "devDependencies": {
-    "@sitecore-content-sdk/analytics-core": "2.0.0-canary.20",
-    "@sitecore-content-sdk/personalize": "2.0.0-canary.20",
+    "@sitecore-content-sdk/analytics-core": "^2.1.0",
+    "@sitecore-content-sdk/personalize": "^2.1.0",
     "@types/node": "^24.10.4",
     "@typescript-eslint/eslint-plugin": "8.39.0",
     "@typescript-eslint/parser": "8.39.0",
@@ -41,8 +41,8 @@
     "vue-eslint-parser": "^10.4.0"
   },
   "peerDependencies": {
-    "@sitecore-content-sdk/analytics-core": "^2.0.0-canary.20",
-    "@sitecore-content-sdk/personalize": "^2.0.0-canary.20",
+    "@sitecore-content-sdk/analytics-core": "^2.1.0",
+    "@sitecore-content-sdk/personalize": "^2.1.0",
     "nuxt": "^4.0.0",
     "typescript": "^5.4.0"
   },
@@ -52,9 +52,9 @@
     }
   },
   "dependencies": {
-    "@sitecore-content-sdk/content": "workspace:*",
-    "@sitecore-content-sdk/core": "workspace:*",
-    "@sitecore-content-sdk/vue": "workspace:*",
+    "@sitecore-content-sdk/content": "^2.1.0",
+    "@sitecore-content-sdk/core": "^2.1.0",
+    "@sitecore-content-sdk/vue": "^2.1.0",
     "std-env": "^4.0.0"
   },
   "exports": {
