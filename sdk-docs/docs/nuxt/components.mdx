@@ -151,10 +151,7 @@ const props = defineProps<{
 </script>
 
 <template>
-  <Image 
-    :field="fields?.HeroImage" 
-    :imageParams="{ mw: 1200, mh: 600 }"
-  />
+  <Image :field="fields?.HeroImage" :imageParams="{ mw: 1200, mh: 600 }" />
 </template>
 ```
 
@@ -168,13 +165,13 @@ const props = defineProps<{
 #### Image Parameters
 
 ```vue
-<Image 
-  :field="fields.Image" 
+<Image
+  :field="fields.Image"
   :imageParams="{
-    mw: 1200,  // max width
-    mh: 600,   // max height
-    q: 85,     // quality (0-100)
-    as: 1      // allow stretch
+    mw: 1200, // max width
+    mh: 600, // max height
+    q: 85, // quality (0-100)
+    as: 1, // allow stretch
   }"
 />
 ```
@@ -195,9 +192,7 @@ const props = defineProps<{
 </script>
 
 <template>
-  <Link :field="fields?.CallToAction">
-    Click here
-  </Link>
+  <Link :field="fields?.CallToAction"> Click here </Link>
 </template>
 ```
 
@@ -223,10 +218,7 @@ const props = defineProps<{
 </script>
 
 <template>
-  <DateField 
-    :field="fields?.PublishDate" 
-    tag="time"
-  />
+  <DateField :field="fields?.PublishDate" tag="time" />
 </template>
 ```
 
@@ -252,9 +244,7 @@ const props = defineProps<{
 </script>
 
 <template>
-  <File :field="fields?.DownloadPDF">
-    Download PDF
-  </File>
+  <File :field="fields?.DownloadPDF"> Download PDF </File>
 </template>
 ```
 
@@ -405,9 +395,7 @@ const { renderState } = useDatasourceCheck(props.rendering);
     <Text tag="h3" :field="fields?.ProductName" />
     <Text tag="p" :field="fields?.Price" />
   </div>
-  <div v-else-if="renderState === 'error'" class="error">
-    Please select a product data source
-  </div>
+  <div v-else-if="renderState === 'error'" class="error">Please select a product data source</div>
 </template>
 ```
 
@@ -456,6 +444,6 @@ const props = defineProps<{
 
 ## See Also
 
-- [Composables](/nuxt/composables) - Access Sitecore context and page data
-- [Middleware](/nuxt/middleware) - Server-side request handling
-- [Editing Integration](/nuxt/editing) - Experience Editor setup
+- [Composables](./composables) - Access Sitecore context and page data
+- [Middleware](./middleware) - Server-side request handling
+- [Editing Integration](./editing) - Experience Editor setup

@@ -25,19 +25,19 @@ jobs:
         uses: TriPSs/conventional-changelog-action@v5
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
-          output-file: "CHANGELOG.md"
-          skip-version-file: "true"
-          skip-commit: "false"
-          git-message: "chore(release): update CHANGELOG.md"
-          preset: "conventionalcommits"
+          output-file: 'CHANGELOG.md'
+          skip-version-file: 'true'
+          skip-commit: 'false'
+          git-message: 'chore(release): update CHANGELOG.md'
+          preset: 'conventionalcommits'
 
       - name: Create PR with changelog
         if: steps.changelog.outputs.skipped == 'false'
         uses: peter-evans/create-pull-request@v6
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
-          commit-message: "chore(release): update CHANGELOG.md"
-          title: "chore: update CHANGELOG.md"
+          commit-message: 'chore(release): update CHANGELOG.md'
+          title: 'chore: update CHANGELOG.md'
           body: |
             Auto-generated changelog update based on conventional commits.
 
