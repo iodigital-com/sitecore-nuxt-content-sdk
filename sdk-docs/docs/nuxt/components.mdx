@@ -1,0 +1,461 @@
+---
+sidebar_position: 3
+---
+
+# Components
+
+The Nuxt SDK provides Vue components for rendering Sitecore fields and managing layout structure.
+
+## Core Components
+
+### SitecoreProvider
+
+Provides Sitecore context (page data and component map) to all child components via Vue's provide/inject.
+
+```vue
+<script setup lang="ts">
+import { SitecoreProvider, Placeholder } from '@sitecore-content-sdk/nuxt';
+import { useSitecorePage } from '@sitecore-content-sdk/nuxt/composables';
+import componentMap from '~/components/componentMap';
+
+const { page } = await useSitecorePage();
+const route = page.value?.layout?.sitecore?.route;
+</script>
+
+<template>
+  <SitecoreProvider :page="page" :componentMap="componentMap">
+    <Placeholder name="headless-main" :rendering="route" />
+  </SitecoreProvider>
+</template>
+```
+
+#### Props
+
+- **`page`** (Page, required) - The Sitecore layout data
+- **`componentMap`** (ComponentMap, required) - Map of component names to Vue components
+
+### Placeholder
+
+Renders components from Sitecore layout data for a given placeholder name.
+
+```vue
+<template>
+  <Placeholder name="headless-main" :rendering="route" />
+</template>
+```
+
+#### Props
+
+- **`name`** (string, required) - The placeholder key from Sitecore
+- **`rendering`** (ComponentRendering | RouteData, required) - The rendering or route data
+- **`fields`** (object, optional) - Additional fields to merge with component fields
+- **`params`** (object, optional) - Additional params to merge with component params
+- **`missingComponentComponent`** (Component, optional) - Custom component to render when a component is not found
+- **`errorComponent`** (Component, optional) - Custom error boundary component
+
+#### Example: Multiple Placeholders
+
+```vue
+<script setup lang="ts">
+import { Placeholder } from '@sitecore-content-sdk/nuxt';
+import { useSitecoreContext } from '@sitecore-content-sdk/nuxt/composables';
+
+const { page } = useSitecoreContext();
+const route = page.value?.layout?.sitecore?.route;
+</script>
+
+<template>
+  <div class="layout">
+    <header>
+      <Placeholder name="headless-header" :rendering="route" />
+    </header>
+    <main>
+      <Placeholder name="headless-main" :rendering="route" />
+    </main>
+    <footer>
+      <Placeholder name="headless-footer" :rendering="route" />
+    </footer>
+  </div>
+</template>
+```
+
+## Field Components
+
+### Text
+
+Renders a simple text field from Sitecore.
+
+```vue
+<script setup lang="ts">
+import { Text } from '@sitecore-content-sdk/nuxt';
+
+const props = defineProps<{
+  fields?: {
+    Title?: any;
+  };
+}>();
+</script>
+
+<template>
+  <Text tag="h1" :field="fields?.Title" />
+</template>
+```
+
+#### Props
+
+- **`field`** (TextField, required) - The text field data from Sitecore
+- **`tag`** (string, optional, default: 'span') - HTML tag to render
+- **`editable`** (boolean, optional, default: true) - Whether the field is editable in Experience Editor
+- **`emptyFieldEditingComponent`** (Component, optional) - Component to show when field is empty in edit mode
+
+### RichText
+
+Renders a rich text field with HTML content.
+
+```vue
+<script setup lang="ts">
+import { RichText } from '@sitecore-content-sdk/nuxt';
+
+const props = defineProps<{
+  fields?: {
+    Body?: any;
+  };
+}>();
+</script>
+
+<template>
+  <RichText tag="div" :field="fields?.Body" />
+</template>
+```
+
+#### Props
+
+- **`field`** (RichTextField, required) - The rich text field data
+- **`tag`** (string, optional, default: 'div') - HTML tag to wrap the content
+- **`editable`** (boolean, optional, default: true) - Whether the field is editable
+- **`emptyFieldEditingComponent`** (Component, optional) - Component for empty state in edit mode
+
+### Image
+
+Renders an image field with responsive image support.
+
+```vue
+<script setup lang="ts">
+import { Image } from '@sitecore-content-sdk/nuxt';
+
+const props = defineProps<{
+  fields?: {
+    HeroImage?: any;
+  };
+}>();
+</script>
+
+<template>
+  <Image 
+    :field="fields?.HeroImage" 
+    :imageParams="{ mw: 1200, mh: 600 }"
+  />
+</template>
+```
+
+#### Props
+
+- **`field`** (ImageField, required) - The image field data
+- **`imageParams`** (object, optional) - Sitecore image parameters (width, height, quality, etc.)
+- **`editable`** (boolean, optional, default: true) - Whether the field is editable
+- **`loading`** (string, optional) - Image loading strategy ('lazy' | 'eager')
+
+#### Image Parameters
+
+```vue
+<Image 
+  :field="fields.Image" 
+  :imageParams="{
+    mw: 1200,  // max width
+    mh: 600,   // max height
+    q: 85,     // quality (0-100)
+    as: 1      // allow stretch
+  }"
+/>
+```
+
+### Link
+
+Renders a link field with proper routing.
+
+```vue
+<script setup lang="ts">
+import { Link } from '@sitecore-content-sdk/nuxt';
+
+const props = defineProps<{
+  fields?: {
+    CallToAction?: any;
+  };
+}>();
+</script>
+
+<template>
+  <Link :field="fields?.CallToAction">
+    Click here
+  </Link>
+</template>
+```
+
+#### Props
+
+- **`field`** (LinkField, required) - The link field data
+- **`editable`** (boolean, optional, default: true) - Whether the field is editable
+- **`showLinkTextWithChildrenPresent`** (boolean, optional, default: true) - Show field text even when slot content exists
+
+### DateField
+
+Renders a date field with formatting options.
+
+```vue
+<script setup lang="ts">
+import { DateField } from '@sitecore-content-sdk/nuxt';
+
+const props = defineProps<{
+  fields?: {
+    PublishDate?: any;
+  };
+}>();
+</script>
+
+<template>
+  <DateField 
+    :field="fields?.PublishDate" 
+    tag="time"
+  />
+</template>
+```
+
+#### Props
+
+- **`field`** (DateField, required) - The date field data
+- **`tag`** (string, optional, default: 'span') - HTML tag to render
+- **`editable`** (boolean, optional, default: true) - Whether the field is editable
+
+### File
+
+Renders a file/download link.
+
+```vue
+<script setup lang="ts">
+import { File } from '@sitecore-content-sdk/nuxt';
+
+const props = defineProps<{
+  fields?: {
+    DownloadPDF?: any;
+  };
+}>();
+</script>
+
+<template>
+  <File :field="fields?.DownloadPDF">
+    Download PDF
+  </File>
+</template>
+```
+
+#### Props
+
+- **`field`** (FileField, required) - The file field data
+- **`editable`** (boolean, optional, default: true) - Whether the field is editable
+
+## Editing Components
+
+### FieldMetadata
+
+Wraps field content with editing metadata for Experience Editor.
+
+```vue
+<template>
+  <FieldMetadata :metadata="field.metadata">
+    <span>{{ field.value }}</span>
+  </FieldMetadata>
+</template>
+```
+
+This is typically used internally by field components, but you can use it directly for custom field rendering.
+
+### HiddenRendering
+
+Placeholder for components that are hidden in Sitecore but need to be present for editing.
+
+```vue
+<template>
+  <HiddenRendering :rendering="rendering" />
+</template>
+```
+
+### MissingComponent
+
+Default component shown when a component is not found in the component map.
+
+```vue
+<template>
+  <MissingComponent :rendering="rendering" />
+</template>
+```
+
+## Component Map
+
+The component map tells the SDK which Vue component to render for each Sitecore rendering.
+
+```ts title="app/components/componentMap.ts"
+import type { ComponentMap } from '@sitecore-content-sdk/nuxt';
+import Hero from './Hero.vue';
+import ContentBlock from './ContentBlock.vue';
+import Navigation from './Navigation.vue';
+
+const componentMap: ComponentMap = new Map([
+  ['Hero', Hero],
+  ['ContentBlock', ContentBlock],
+  ['Navigation', Navigation],
+]);
+
+export default componentMap;
+```
+
+### Dynamic Imports
+
+For better code splitting, use dynamic imports:
+
+```ts
+import type { ComponentMap } from '@sitecore-content-sdk/nuxt';
+import { defineAsyncComponent } from 'vue';
+
+const componentMap: ComponentMap = new Map([
+  ['Hero', defineAsyncComponent(() => import('./Hero.vue'))],
+  ['ContentBlock', defineAsyncComponent(() => import('./ContentBlock.vue'))],
+]);
+
+export default componentMap;
+```
+
+## Creating Custom Components
+
+### Basic Component
+
+```vue title="components/Hero.vue"
+<script setup lang="ts">
+import { Text, RichText, Image } from '@sitecore-content-sdk/nuxt';
+
+const props = defineProps<{
+  fields?: {
+    Title?: any;
+    Subtitle?: any;
+    Image?: any;
+  };
+  params?: {
+    styles?: string;
+  };
+}>();
+</script>
+
+<template>
+  <div class="hero" :class="params?.styles">
+    <Image :field="fields?.Image" />
+    <div class="hero__content">
+      <Text tag="h1" :field="fields?.Title" />
+      <RichText tag="p" :field="fields?.Subtitle" />
+    </div>
+  </div>
+</template>
+
+<style scoped>
+.hero {
+  position: relative;
+  min-height: 400px;
+}
+
+.hero__content {
+  position: absolute;
+  bottom: 2rem;
+  left: 2rem;
+  color: white;
+}
+</style>
+```
+
+### Component with Data Source Check
+
+```vue title="components/ProductCard.vue"
+<script setup lang="ts">
+import { Text, Image } from '@sitecore-content-sdk/nuxt';
+import { useDatasourceCheck } from '@sitecore-content-sdk/nuxt/composables';
+import type { ComponentRendering } from '@sitecore-content-sdk/content/layout';
+
+const props = defineProps<{
+  rendering: ComponentRendering;
+  fields?: {
+    ProductName?: any;
+    ProductImage?: any;
+    Price?: any;
+  };
+}>();
+
+const { renderState } = useDatasourceCheck(props.rendering);
+</script>
+
+<template>
+  <div v-if="renderState === 'component'" class="product-card">
+    <Image :field="fields?.ProductImage" />
+    <Text tag="h3" :field="fields?.ProductName" />
+    <Text tag="p" :field="fields?.Price" />
+  </div>
+  <div v-else-if="renderState === 'error'" class="error">
+    Please select a product data source
+  </div>
+</template>
+```
+
+## Best Practices
+
+### Always Use Field Components
+
+✅ **DO:** Use SDK field components for Sitecore fields
+
+```vue
+<Text tag="h1" :field="fields?.Title" />
+```
+
+❌ **DON'T:** Render field values directly
+
+```vue
+<!-- Bad - loses editing support -->
+<h1>{{ fields?.Title?.value }}</h1>
+```
+
+### Handle Missing Fields
+
+✅ **DO:** Use optional chaining and provide fallbacks
+
+```vue
+<Text tag="h1" :field="fields?.Title || { value: 'Untitled' }" />
+```
+
+### Component Props
+
+SDK components receive these props automatically from the Placeholder:
+
+- **`fields`** - Field data from Sitecore
+- **`params`** - Rendering parameters
+- **`rendering`** - Full rendering object (includes uid, componentName, etc.)
+
+```vue
+<script setup lang="ts">
+const props = defineProps<{
+  fields?: Record<string, any>;
+  params?: Record<string, any>;
+  rendering?: ComponentRendering;
+}>();
+</script>
+```
+
+## See Also
+
+- [Composables](/nuxt/composables) - Access Sitecore context and page data
+- [Middleware](/nuxt/middleware) - Server-side request handling
+- [Editing Integration](/nuxt/editing) - Experience Editor setup

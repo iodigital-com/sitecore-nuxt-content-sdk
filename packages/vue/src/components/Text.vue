@@ -44,8 +44,12 @@ const hasLineBreaks = computed(() => formattedParts.value.length > 1);
 <template>
   <template v-if="!isEmpty || showMetadata">
     <FieldMetadataComponent v-if="showMetadata" :metadata="field!.metadata!">
-      <component v-if="showEmpty" :is="emptyComponent" v-bind="{ tag }" />
-      <component v-else-if="encode" :is="tag" :suppressHydrationWarning="showMetadata || undefined">
+      <component :is="emptyComponent" v-if="showEmpty" v-bind="{ tag }" />
+      <component
+        :is="tag"
+        v-else-if="encode"
+        :suppress-hydration-warning="showMetadata || undefined"
+      >
         <template v-if="hasLineBreaks">
           <template v-for="(part, i) in formattedParts" :key="i">
             {{ part }}<br v-if="i < formattedParts.length - 1" />
@@ -53,11 +57,11 @@ const hasLineBreaks = computed(() => formattedParts.value.length > 1);
         </template>
         <template v-else>{{ field?.value }}</template>
       </component>
-      <component v-else :is="tag" v-html="field?.value" />
+      <component :is="tag" v-else v-html="field?.value" />
     </FieldMetadataComponent>
     <template v-else-if="!showMetadata && !isEmpty">
-      <component v-if="!encode" :is="tag" v-html="String(field?.value ?? '')" />
-      <component v-else-if="tag !== 'span'" :is="tag">
+      <component :is="tag" v-if="!encode" v-html="String(field?.value ?? '')" />
+      <component :is="tag" v-else-if="tag !== 'span'">
         <template v-if="hasLineBreaks">
           <template v-for="(part, i) in formattedParts" :key="i">
             {{ part }}<br v-if="i < formattedParts.length - 1" />

@@ -1,1 +1,0 @@
-export { DesignLibraryApp } from './DesignLibraryApp';

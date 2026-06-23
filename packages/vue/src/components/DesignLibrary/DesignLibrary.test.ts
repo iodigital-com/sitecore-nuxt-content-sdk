@@ -1,4 +1,5 @@
 /* eslint-disable jsdoc/require-jsdoc */
+/* eslint-disable vue/one-component-per-file */
 import { describe, it, expect, beforeEach, beforeAll, afterAll, vi } from 'vitest';
 import { mount, flushPromises } from '@vue/test-utils';
 import { defineComponent, h, nextTick } from 'vue';

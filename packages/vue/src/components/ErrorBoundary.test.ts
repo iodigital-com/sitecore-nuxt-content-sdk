@@ -1,3 +1,4 @@
+/* eslint-disable vue/one-component-per-file */
 import { mount } from '@vue/test-utils';
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import { defineComponent, defineAsyncComponent, h, nextTick } from 'vue';
@@ -7,10 +8,10 @@ import SitecoreProvider from './SitecoreProvider.vue';
 
 const createErrorComponent = (message: string) =>
   defineComponent({
-    template: '<div></div>',
     mounted() {
       throw new Error(message);
     },
+    template: '<div></div>',
   });
 
 const normalPage = {

@@ -1,3 +1,4 @@
+/* eslint-disable vue/one-component-per-file */
 import { defineComponent, h } from 'vue';
 import type { Field } from '@sitecore-content-sdk/content/layout';
 

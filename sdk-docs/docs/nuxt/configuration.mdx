@@ -1,0 +1,242 @@
+---
+sidebar_position: 6
+---
+
+# Configuration
+
+Configure the Nuxt SDK for your SitecoreAI environment.
+
+## sitecore.config.ts
+
+The main configuration file defines how the SDK connects to Sitecore:
+
+```ts title="sitecore.config.ts"
+import { defineConfig } from '@sitecore-content-sdk/nuxt/config';
+
+export default defineConfig({
+  defaultSite: process.env.NUXT_PUBLIC_DEFAULT_SITE_NAME || 'mysite',
+  defaultLanguage: 'en',
+  api: {
+    edge: {
+      contextId:
+        process.env.SITECORE_EDGE_CONTEXT_ID || process.env.NUXT_PUBLIC_SITECORE_EDGE_CONTEXT_ID,
+      clientContextId:
+        process.env.NUXT_PUBLIC_SITECORE_EDGE_CONTEXT_ID || process.env.SITECORE_EDGE_CONTEXT_ID,
+      edgeUrl:
+        process.env.NUXT_PUBLIC_SITECORE_EDGE_PLATFORM_HOSTNAME ||
+        'https://edge-platform.sitecorecloud.io',
+    },
+  },
+  personalize: {
+    enabled: true,
+    edgeTimeout: 400,
+    cdpTimeout: 400,
+    scope: '',
+  },
+  redirects: {
+    enabled: true,
+    locales: ['en', 'nl'],
+  },
+});
+```
+
+### Configuration Options
+
+| Option                     | Type       | Description                       |
+| -------------------------- | ---------- | --------------------------------- |
+| `defaultSite`              | `string`   | Default site name for resolution  |
+| `defaultLanguage`          | `string`   | Fallback language                 |
+| `api.edge.contextId`       | `string`   | Server-side Edge Context ID       |
+| `api.edge.clientContextId` | `string`   | Client-side Edge Context ID       |
+| `api.edge.edgeUrl`         | `string`   | Edge platform URL                 |
+| `personalize.enabled`      | `boolean`  | Enable personalization middleware |
+| `personalize.edgeTimeout`  | `number`   | Edge API timeout (ms)             |
+| `personalize.cdpTimeout`   | `number`   | CDP call timeout (ms)             |
+| `personalize.scope`        | `string`   | Personalization scope             |
+| `redirects.enabled`        | `boolean`  | Enable redirects middleware       |
+| `redirects.locales`        | `string[]` | Supported locale prefixes         |
+
+## Environment Variables
+
+### How Nuxt Environment Variables Work
+
+Nuxt uses `runtimeConfig` for environment variable management:
+
+- **Server-only** variables: defined at the top level of `runtimeConfig`
+- **Public** (browser-accessible) variables: defined under `runtimeConfig.public`
+
+The `NUXT_` prefix in `.env` files maps automatically to `runtimeConfig`:
+
+```bash
+# Maps to runtimeConfig.public.sitecoreEdgeContextId
+NUXT_PUBLIC_SITECORE_EDGE_CONTEXT_ID=your-id
+```
+
+### Required Variables
+
+| Variable                                      | Scope  | Description                     |
+| --------------------------------------------- | ------ | ------------------------------- |
+| `NUXT_PUBLIC_SITECORE_EDGE_CONTEXT_ID`        | Public | Edge API context ID             |
+| `NUXT_PUBLIC_SITECORE_EDGE_PLATFORM_HOSTNAME` | Public | Edge platform URL               |
+| `NUXT_PUBLIC_DEFAULT_SITE_NAME`               | Public | Default site name               |
+| `SITECORE_EDITING_SECRET`                     | Server | Editing route validation secret |
+
+### Optional Variables
+
+| Variable                             | Scope  | Description                                                   |
+| ------------------------------------ | ------ | ------------------------------------------------------------- |
+| `SITECORE_EDGE_CONTEXT_ID`           | Server | Server-side context ID (if different from public)             |
+| `SITECORE_INTERNAL_EDITING_HOST_URL` | Server | Internal URL for editing proxy (e.g. `http://localhost:3000`) |
+| `JSS_ALLOWED_ORIGINS`                | Server | Additional allowed origins for CORS                           |
+| `SITECORE`                           | Server | Set to `true` when running in XM Cloud                        |
+| `VERCEL`                             | Server | Auto-set by Vercel deployment                                 |
+| `NETLIFY`                            | Server | Auto-set by Netlify deployment                                |
+
+### Example .env File
+
+```bash title=".env.example"
+# Sitecore Edge API
+NUXT_PUBLIC_SITECORE_EDGE_CONTEXT_ID=
+NUXT_PUBLIC_SITECORE_EDGE_PLATFORM_HOSTNAME=https://edge-platform.sitecorecloud.io
+
+# Site Configuration
+NUXT_PUBLIC_DEFAULT_SITE_NAME=mysite
+
+# Editing (server-only)
+SITECORE_EDITING_SECRET=
+
+# Optional: Internal editing host
+# SITECORE_INTERNAL_EDITING_HOST_URL=http://localhost:3000
+```
+
+## nuxt.config.ts
+
+Configure Nuxt-specific settings alongside the SDK:
+
+```ts title="nuxt.config.ts"
+export default defineNuxtConfig({
+  // Runtime config for environment variables
+  runtimeConfig: {
+    public: {
+      SITECORE_EDGE_CONTEXT_ID: '',
+      SITECORE_EDGE_PLATFORM_HOSTNAME: 'https://edge-platform.sitecorecloud.io',
+      DEFAULT_SITE_NAME: 'mysite',
+    },
+  },
+
+  // Route rules for caching and headers
+  routeRules: {
+    // Cache robots.txt and sitemap
+    '/robots.txt': { cache: { maxAge: 60 } },
+    '/sitemap.xml': { cache: { maxAge: 60 } },
+
+    // CORS for editing routes
+    '/api/editing/**': {
+      headers: {
+        'Access-Control-Allow-Methods': 'GET, POST, OPTIONS',
+        'Access-Control-Allow-Headers': 'Content-Type, Authorization',
+      },
+    },
+  },
+
+  // Vite configuration for dependency optimization
+  vite: {
+    optimizeDeps: {
+      include: ['@sitecore-content-sdk/nuxt', '@sitecore-content-sdk/vue'],
+    },
+  },
+});
+```
+
+## CLI Configuration
+
+The Sitecore CLI tools use a separate configuration for code generation:
+
+```ts title="sitecore.cli.config.ts"
+import { defineSitecoreCliConfig } from '@sitecore-content-sdk/nuxt/config-cli';
+import { generateMetadata, generateSites } from '@sitecore-content-sdk/nuxt/tools';
+
+export default defineSitecoreCliConfig({
+  commands: {
+    generate: {
+      commands: [generateMetadata(), generateSites()],
+    },
+    componentMap: {
+      paths: ['components'],
+      exclude: ['components/content-sdk/*'],
+    },
+  },
+});
+```
+
+### CLI Commands
+
+```bash
+# Generate metadata and sites configuration
+yarn sitecore-tools generate
+
+# Generate component map
+yarn sitecore-tools generate-map
+```
+
+## Sites Configuration
+
+Site resolution is powered by `.sitecore/sites.json`:
+
+```json title=".sitecore/sites.json"
+[
+  {
+    "name": "mysite",
+    "hostName": "www.mysite.com|mysite.localhost",
+    "language": "en"
+  },
+  {
+    "name": "brand-b",
+    "hostName": "www.brand-b.com",
+    "language": "nl"
+  }
+]
+```
+
+This file is generated by the CLI tools:
+
+```bash
+yarn sitecore-tools generate
+```
+
+## Caching
+
+The Nuxt SDK relies on Nuxt's built-in `routeRules` for caching. No custom caching utilities are needed:
+
+```ts title="nuxt.config.ts"
+export default defineNuxtConfig({
+  routeRules: {
+    '/robots.txt': { cache: { maxAge: 60 } },
+    '/sitemap.xml': { cache: { maxAge: 60 } },
+    // Cache specific routes
+    '/static/**': { cache: { maxAge: 3600 } },
+  },
+});
+```
+
+## Module System
+
+The Nuxt SDK uses **ESM** (ECMAScript Modules) exclusively:
+
+- All source files use `import`/`export`
+- Output is ESM (no CommonJS)
+- Compatible with Nuxt 3+ and Vite
+
+Ensure your `package.json` includes:
+
+```json
+{
+  "type": "module"
+}
+```
+
+## See Also
+
+- [Quickstart](/nuxt/quickstart) - Get started in minutes
+- [Middleware](/nuxt/middleware) - Configure server middleware
+- [Editing Integration](/nuxt/editing) - Sitecore editing setup

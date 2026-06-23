@@ -28,3 +28,6 @@ samples/
 .npmrc
 
 packages/*/temp/
+.vercel
+.env*.local
+*.env*

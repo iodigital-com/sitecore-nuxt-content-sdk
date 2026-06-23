@@ -1,5 +1,5 @@
-/* eslint-disable react-hooks/rules-of-hooks */
 /* eslint-disable no-unused-expressions */
+/* eslint-disable vue/one-component-per-file */
 import { describe, it, expect } from 'vitest';
 import { mount } from '@vue/test-utils';
 import { defineComponent } from 'vue';

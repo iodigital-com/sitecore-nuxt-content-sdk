@@ -28,5 +28,5 @@ const closeAttributes = { ...baseAttributes, kind: MetadataKind.Close };
 <template>
   <code v-bind="openAttributes">{{ data }}</code>
   <slot />
-  <code v-bind="closeAttributes"></code>
+  <code v-bind="closeAttributes" />
 </template>

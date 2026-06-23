@@ -1,0 +1,253 @@
+---
+sidebar_position: 8
+---
+
+# Data Fetching
+
+The Nuxt SDK provides multiple ways to fetch data from Sitecore XM Cloud.
+
+## SitecoreClient
+
+The `SitecoreClient` is the primary interface for communicating with Sitecore's Edge API.
+
+### Creating a Client
+
+```ts
+import { useSitecoreClient } from '@sitecore-content-sdk/nuxt';
+
+const client = useSitecoreClient();
+```
+
+### Available Methods
+
+| Method | Description |
+|--------|-------------|
+| `client.getPage(path, options)` | Fetch layout data for a page |
+| `client.getRobots(siteName)` | Fetch robots.txt content |
+| `client.getSiteMap(options)` | Fetch sitemap XML |
+| `client.getErrorPages(siteName, language)` | Fetch custom error pages |
+
+### Fetching Page Data
+
+```ts
+const page = await client.getPage('/about', {
+  site: 'mysite',
+  locale: 'en',
+});
+```
+
+## Page Data Flow
+
+The typical data flow in a Nuxt SDK application:
+
+```
+1. User navigates to a URL
+2. Nuxt server middleware resolves site, locale, personalization
+3. Page component calls useSitecorePage()
+4. SitecoreClient fetches layout data from Edge API
+5. Layout data is passed to SitecoreProvider
+6. Placeholder renders components from layout data
+7. Components receive fields/params via props
+```
+
+## useSitecorePage
+
+The primary composable for fetching page data in page-level components:
+
+```vue title="app/pages/[...slug].vue"
+<script setup lang="ts">
+import { useSitecorePage } from '@sitecore-content-sdk/nuxt/composables';
+
+const { page, error } = await useSitecorePage();
+</script>
+```
+
+This composable:
+- Automatically reads the current route path
+- Resolves site and locale from middleware headers
+- Handles SSR data serialization (no double-fetch on hydration)
+- Returns reactive refs
+
+## Component-Level Data Fetching
+
+Unlike Next.js (which uses a central `ComponentPropsService`), the Nuxt SDK follows Vue/Nuxt conventions where each component fetches its own data:
+
+```vue title="components/ProductList.vue"
+<script setup lang="ts">
+import { useAsyncData } from 'nuxt/app';
+
+const props = defineProps<{
+  fields?: {
+    CategoryId?: { value: string };
+  };
+}>();
+
+const { data: products } = await useAsyncData(
+  `products-${props.fields?.CategoryId?.value}`,
+  () => fetchProducts(props.fields?.CategoryId?.value)
+);
+</script>
+
+<template>
+  <ul>
+    <li v-for="product in products" :key="product.id">
+      {{ product.name }}
+    </li>
+  </ul>
+</template>
+```
+
+### Benefits of This Pattern
+
+- **Simpler** - No central orchestration needed
+- **Parallel** - Nuxt automatically parallelizes `useAsyncData` calls
+- **Cached** - Built-in deduplication and caching via Nuxt
+- **Type-safe** - Full TypeScript support per component
+
+## Dictionary Service
+
+Fetch translated labels and phrases from Sitecore:
+
+```ts
+import { DictionaryService } from '@sitecore-content-sdk/nuxt';
+
+const dictionaryService = new DictionaryService({
+  clientFactory: getClientFactory(),
+});
+
+const phrases = await dictionaryService.fetchDictionaryData('mysite', 'en');
+// { "Read More": "Lees meer", "Submit": "Verzenden" }
+```
+
+## GraphQL Client
+
+For custom queries, use the GraphQL client directly:
+
+```ts
+import { GraphQLRequestClient } from '@sitecore-content-sdk/nuxt';
+
+const client = new GraphQLRequestClient(edgeUrl, {
+  apiKey: contextId,
+});
+
+const result = await client.request({
+  query: `
+    query {
+      item(path: "/sitecore/content/mysite/home", language: "en") {
+        name
+        fields {
+          name
+          value
+        }
+      }
+    }
+  `,
+});
+```
+
+## Error Handling
+
+### Page Not Found
+
+```vue
+<script setup lang="ts">
+import { createError } from 'nuxt/app';
+import { useSitecorePage } from '@sitecore-content-sdk/nuxt/composables';
+
+const { page, error } = await useSitecorePage();
+
+if (error.value) {
+  throw createError({
+    statusCode: 500,
+    message: 'Failed to load page data',
+  });
+}
+
+if (!page.value?.layout?.sitecore?.route) {
+  throw createError({
+    statusCode: 404,
+    message: 'Page not found',
+  });
+}
+</script>
+```
+
+### Network Errors
+
+The SDK's `NativeDataFetcher` handles retries and timeouts. Configure via:
+
+```ts
+import { DefaultRetryStrategy } from '@sitecore-content-sdk/nuxt';
+
+// Custom retry strategy
+const retryStrategy = new DefaultRetryStrategy({
+  retries: 3,
+  retryDelay: 1000,
+});
+```
+
+## Caching Strategies
+
+### SSR Cache (Nuxt Route Rules)
+
+```ts title="nuxt.config.ts"
+export default defineNuxtConfig({
+  routeRules: {
+    // Cache all pages for 60 seconds
+    '/**': { cache: { maxAge: 60 } },
+    // Except preview pages
+    '/api/**': { cache: false },
+  },
+});
+```
+
+### Client-Side Cache
+
+Nuxt's `useAsyncData` automatically deduplicates and caches requests during SSR and navigation:
+
+```ts
+// This will only fetch once, even if called in multiple components
+const { data } = await useAsyncData('my-key', () => fetchData());
+```
+
+## Best Practices
+
+### Use composables for page data
+
+✅ **DO:** Use `useSitecorePage()` in page components
+
+```vue
+const { page } = await useSitecorePage();
+```
+
+❌ **DON'T:** Call SitecoreClient directly in components
+
+```ts
+// Bad - bypasses caching and SSR optimization
+const client = useSitecoreClient();
+const page = await client.getPage(route.path);
+```
+
+### Component data fetching
+
+✅ **DO:** Use `useAsyncData` with unique keys
+
+```ts
+const { data } = await useAsyncData(
+  `product-${props.rendering.uid}`,
+  () => fetchProduct(id)
+);
+```
+
+❌ **DON'T:** Fetch without keys (causes duplicate requests)
+
+```ts
+// Bad - no deduplication
+const data = await fetchProduct(id);
+```
+
+## See Also
+
+- [Composables](/nuxt/composables) - `useSitecorePage()` and `useSitecoreContext()`
+- [Components](/nuxt/components) - How components receive and render field data
+- [Configuration](/nuxt/configuration) - API endpoint configuration

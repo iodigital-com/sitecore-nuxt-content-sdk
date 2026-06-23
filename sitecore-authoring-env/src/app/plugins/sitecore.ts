@@ -30,25 +30,25 @@ export default defineNuxtPlugin(async () => {
   if (import.meta.client && contextId) {
     if (import.meta.dev) {
       console.debug('Browser Events SDK plugins are not initialized in development environment');
+    } else {
+      await initContentSdk({
+        config: {
+          contextId,
+          edgeUrl,
+          siteName,
+        },
+        plugins: [
+          analyticsPlugin({
+            options: {
+              enableCookie: true,
+              cookieDomain: window.location.hostname.replace(/^www\./, ''),
+            },
+            adapter: analyticsBrowserAdapter(),
+          }),
+          eventsPlugin(),
+        ],
+      });
     }
-
-    await initContentSdk({
-      config: {
-        contextId,
-        edgeUrl,
-        siteName,
-      },
-      plugins: [
-        analyticsPlugin({
-          options: {
-            enableCookie: true,
-            cookieDomain: window.location.hostname.replace(/^www\./, ''),
-          },
-          adapter: analyticsBrowserAdapter(),
-        }),
-        eventsPlugin(),
-      ],
-    });
   }
 
   return {

@@ -1,5 +1,6 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable @typescript-eslint/no-explicit-any */
+/* eslint-disable vue/one-component-per-file */
 import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest';
 import { defineComponent, h } from 'vue';
 import {

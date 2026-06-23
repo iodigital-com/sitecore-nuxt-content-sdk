@@ -1,6 +1,6 @@
 ﻿[
   {
-    "template": "nextjs",
+    "template": "nuxt",
     "args": {
       "prerender": "SSG",
       "silent": false

@@ -51,17 +51,17 @@ const { showEmpty, emptyComponent } = useEmptyFieldEditingComponent(
 <template>
   <template v-if="!isFieldValueEmpty(field) || showMetadata">
     <FieldMetadataComponent v-if="showMetadata" :metadata="field!.metadata!">
-      <component v-if="showEmpty" :is="emptyComponent" />
+      <component :is="emptyComponent" v-if="showEmpty" />
       <component
-        v-else
         :is="tag"
-        :suppressHydrationWarning="showMetadata || undefined"
+        v-else
+        :suppress-hydration-warning="showMetadata || undefined"
         v-html="editable && field?.editable ? field.editable : field?.value"
       />
     </FieldMetadataComponent>
     <component
-      v-else
       :is="tag"
+      v-else
       v-html="editable && field?.editable ? field.editable : field?.value"
     />
   </template>
