@@ -1,49 +1,49 @@
 version: 2
 updates:
   # Nuxt package dependencies
-  - package-ecosystem: "npm"
-    directory: "/packages/nuxt"
+  - package-ecosystem: 'npm'
+    directory: '/packages/nuxt'
     schedule:
-      interval: "weekly"
+      interval: 'weekly'
     labels:
-      - "dependencies"
-      - "automerge"
+      - 'dependencies'
+      - 'automerge'
     commit-message:
-      prefix: "chore(deps):"
+      prefix: 'chore(deps):'
     open-pull-requests-limit: 10
 
   # Vue package dependencies
-  - package-ecosystem: "npm"
-    directory: "/packages/vue"
+  - package-ecosystem: 'npm'
+    directory: '/packages/vue'
     schedule:
-      interval: "weekly"
+      interval: 'weekly'
     labels:
-      - "dependencies"
-      - "automerge"
+      - 'dependencies'
+      - 'automerge'
     commit-message:
-      prefix: "chore(deps):"
+      prefix: 'chore(deps):'
     open-pull-requests-limit: 10
 
   # Root dependencies
-  - package-ecosystem: "npm"
-    directory: "/"
+  - package-ecosystem: 'npm'
+    directory: '/'
     schedule:
-      interval: "weekly"
+      interval: 'weekly'
     labels:
-      - "dependencies"
-      - "automerge"
+      - 'dependencies'
+      - 'automerge'
     commit-message:
-      prefix: "chore(deps):"
+      prefix: 'chore(deps):'
     open-pull-requests-limit: 5
 
   # GitHub Actions
-  - package-ecosystem: "github-actions"
-    directory: "/"
+  - package-ecosystem: 'github-actions'
+    directory: '/'
     schedule:
-      interval: "weekly"
+      interval: 'weekly'
     labels:
-      - "dependencies"
-      - "automerge"
+      - 'dependencies'
+      - 'automerge'
     commit-message:
-      prefix: "chore(ci):"
+      prefix: 'chore(ci):'
     open-pull-requests-limit: 5
