@@ -14,6 +14,7 @@ Middleware in the Nuxt SDK runs on the server side via Nitro's `server/middlewar
 
 ```
 server/middleware/
+├── 00.bot-tracking.ts
 ├── 01.locale.ts
 ├── 02.multisite.ts
 ├── 03.personalize.ts
@@ -21,9 +22,70 @@ server/middleware/
 └── 05.preview.ts
 ```
 
+:::warning
+`BotTrackingMiddleware` must always run **first** in the middleware chain. It sets a bot detection cookie that downstream middleware (like `PersonalizeMiddleware`) uses to skip personalization for bots.
+:::
+
 :::info
 Unlike Next.js which uses a single `proxy.ts` file with chained calls, Nuxt middleware uses separate files per concern. Each middleware mutates the H3 event directly.
 :::
+
+## BotTrackingMiddleware
+
+Detects bots (search engines, crawlers, AI agents) via their user-agent and tracks their page views in Sitecore Analytics. This ensures bot traffic is separated from real visitor analytics.
+
+### Setup
+
+```ts title="server/middleware/00.bot-tracking.ts"
+import { defineEventHandler } from 'h3';
+import { BotTrackingMiddleware } from '@sitecore-content-sdk/nuxt';
+import config from '../../sitecore.config';
+
+const middleware = new BotTrackingMiddleware({
+  contextId: process.env.SITECORE_EDGE_CONTEXT_ID,
+  edgeUrl: process.env.SITECORE_EDGE_URL,
+  sites: config.sites,
+});
+
+export default defineEventHandler((event) => middleware.handle(event));
+```
+
+### Configuration
+
+| Option            | Type                 | Description                 |
+| ----------------- | -------------------- | --------------------------- |
+| `contextId`       | `string`             | Sitecore Edge Context ID    |
+| `clientContextId` | `string`             | Client-side Edge Context ID |
+| `edgeUrl`         | `string`             | Edge platform URL           |
+| `sites`           | `SiteInfo[]`         | Site configuration list     |
+| `skip`            | `(event) => boolean` | Custom skip logic           |
+
+### How It Works
+
+1. Checks the `user-agent` header against known bot patterns
+2. If it's a bot: sets the `sc_bot=1` cookie
+3. Initializes the SDK with analytics (without browser cookies)
+4. Sends a lightweight `botPageView` event to Sitecore Analytics with the page path, language, and user-agent
+
+### Skipped When
+
+- Running in development/local environment (unless `SITECORE_ENABLE_BOT_TRACKING=true`)
+- Request is a preview
+- Request is a prefetch
+- No `user-agent` header present
+- User-agent is not a known bot
+
+### Why Run First?
+
+The bot detection cookie must be available before `PersonalizeMiddleware` runs. Personalization can then skip CDP calls for bots (saving latency and API quota). Other middleware can also read the cookie to adjust behavior for bot traffic.
+
+### Environment Variables
+
+| Variable                       | Description                                                     |
+| ------------------------------ | --------------------------------------------------------------- |
+| `SITECORE_ENABLE_BOT_TRACKING` | Set to `'true'` to force bot tracking in local/dev environments |
+
+---
 
 ## LocaleMiddleware
 
@@ -47,12 +109,12 @@ export default defineEventHandler((event) => middleware.handle(event));
 
 ### Configuration
 
-| Option | Type | Description |
-|--------|------|-------------|
-| `locales` | `string[]` | Supported locale prefixes |
-| `sites` | `SiteInfo[]` | Site configuration list |
-| `defaultLanguage` | `string` | Fallback language (default: `'en'`) |
-| `skip` | `(event) => boolean` | Custom skip logic |
+| Option            | Type                 | Description                         |
+| ----------------- | -------------------- | ----------------------------------- |
+| `locales`         | `string[]`           | Supported locale prefixes           |
+| `sites`           | `SiteInfo[]`         | Site configuration list             |
+| `defaultLanguage` | `string`             | Fallback language (default: `'en'`) |
+| `skip`            | `(event) => boolean` | Custom skip logic                   |
 
 ### How It Works
 
@@ -85,12 +147,12 @@ export default defineEventHandler((event) => middleware.handle(event));
 
 ### Configuration
 
-| Option | Type | Description |
-|--------|------|-------------|
-| `sites` | `SiteInfo[]` | Site configuration list |
-| `defaultHostname` | `string` | Fallback hostname (default: `'localhost'`) |
-| `defaultLanguage` | `string` | Fallback language |
-| `skip` | `(event) => boolean` | Custom skip logic |
+| Option            | Type                 | Description                                |
+| ----------------- | -------------------- | ------------------------------------------ |
+| `sites`           | `SiteInfo[]`         | Site configuration list                    |
+| `defaultHostname` | `string`             | Fallback hostname (default: `'localhost'`) |
+| `defaultLanguage` | `string`             | Fallback language                          |
+| `skip`            | `(event) => boolean` | Custom skip logic                          |
 
 ### How It Works
 
@@ -126,21 +188,21 @@ export default defineEventHandler((event) => middleware.handle(event));
 
 ### Configuration
 
-| Option | Type | Description |
-|--------|------|-------------|
-| `enabled` | `boolean` | Enable/disable personalization |
-| `contextId` | `string` | Sitecore Edge Context ID |
-| `clientContextId` | `string` | Client-side Edge Context ID |
-| `edgeUrl` | `string` | Edge platform URL |
-| `edgeTimeout` | `number` | Edge API timeout (ms) |
-| `cdpTimeout` | `number` | CDP call timeout (ms) |
-| `sites` | `SiteInfo[]` | Site configuration list |
-| `locales` | `string[]` | Locale prefixes to strip before lookup |
-| `scope` | `string` | Personalize scope |
-| `channel` | `string` | CDP channel (default: `'WEB'`) |
-| `currency` | `string` | Currency code (default: `'USD'`) |
-| `extractGeoDataCb` | `(event?) => GeoData` | Optional geo data extraction |
-| `getExtraUtmParams` | `(event) => Partial<UTM>` | Optional extra UTM params |
+| Option              | Type                      | Description                            |
+| ------------------- | ------------------------- | -------------------------------------- |
+| `enabled`           | `boolean`                 | Enable/disable personalization         |
+| `contextId`         | `string`                  | Sitecore Edge Context ID               |
+| `clientContextId`   | `string`                  | Client-side Edge Context ID            |
+| `edgeUrl`           | `string`                  | Edge platform URL                      |
+| `edgeTimeout`       | `number`                  | Edge API timeout (ms)                  |
+| `cdpTimeout`        | `number`                  | CDP call timeout (ms)                  |
+| `sites`             | `SiteInfo[]`              | Site configuration list                |
+| `locales`           | `string[]`                | Locale prefixes to strip before lookup |
+| `scope`             | `string`                  | Personalize scope                      |
+| `channel`           | `string`                  | CDP channel (default: `'WEB'`)         |
+| `currency`          | `string`                  | Currency code (default: `'USD'`)       |
+| `extractGeoDataCb`  | `(event?) => GeoData`     | Optional geo data extraction           |
+| `getExtraUtmParams` | `(event) => Partial<UTM>` | Optional extra UTM params              |
 
 ### How It Works
 
@@ -181,21 +243,21 @@ export default defineEventHandler((event) => middleware.handle(event));
 
 ### Configuration
 
-| Option | Type | Description |
-|--------|------|-------------|
-| `enabled` | `boolean` | Enable/disable redirects |
-| `contextId` | `string` | Sitecore Edge Context ID |
-| `edgeUrl` | `string` | Edge platform URL |
-| `locales` | `string[]` | Supported locales for redirect pattern matching |
-| `sites` | `SiteInfo[]` | Site configuration list |
-| `redirectsService` | `RedirectsService` | Optional custom redirects service |
+| Option             | Type               | Description                                     |
+| ------------------ | ------------------ | ----------------------------------------------- |
+| `enabled`          | `boolean`          | Enable/disable redirects                        |
+| `contextId`        | `string`           | Sitecore Edge Context ID                        |
+| `edgeUrl`          | `string`           | Edge platform URL                               |
+| `locales`          | `string[]`         | Supported locales for redirect pattern matching |
+| `sites`            | `SiteInfo[]`       | Site configuration list                         |
+| `redirectsService` | `RedirectsService` | Optional custom redirects service               |
 
 ### Redirect Types
 
-| Type | Behavior |
-|------|----------|
-| 301 | Permanent redirect via HTTP response |
-| 302 | Temporary redirect via HTTP response |
+| Type            | Behavior                                         |
+| --------------- | ------------------------------------------------ |
+| 301             | Permanent redirect via HTTP response             |
+| 302             | Temporary redirect via HTTP response             |
 | Server Transfer | Internal rewrite (URL stays the same in browser) |
 
 ### How It Works
@@ -235,15 +297,15 @@ All middleware classes extend `MiddlewareBase`, which provides shared functional
 
 ### Shared Methods
 
-| Method | Description |
-|--------|-------------|
-| `isPreview(event)` | Check if request is in preview mode |
-| `isPrefetch(event)` | Check if request is a prefetch |
-| `disabled(event)` | Check if middleware should be skipped |
-| `getLanguage(event)` | Get the resolved language from `x-sc-locale` header |
-| `getHostHeader(event)` | Get the host from request headers |
-| `getSite(event)` | Resolve current site (by cookie or hostname) |
-| `rewrite(path, event)` | Rewrite the request path |
+| Method                 | Description                                         |
+| ---------------------- | --------------------------------------------------- |
+| `isPreview(event)`     | Check if request is in preview mode                 |
+| `isPrefetch(event)`    | Check if request is a prefetch                      |
+| `disabled(event)`      | Check if middleware should be skipped               |
+| `getLanguage(event)`   | Get the resolved language from `x-sc-locale` header |
+| `getHostHeader(event)` | Get the host from request headers                   |
+| `getSite(event)`       | Resolve current site (by cookie or hostname)        |
+| `rewrite(path, event)` | Rewrite the request path                            |
 
 ### Creating Custom Middleware
 
@@ -273,6 +335,7 @@ class CustomMiddleware extends MiddlewareBase {
 ## Skipping Middleware
 
 All middleware automatically skips:
+
 - API routes (`/api/*`)
 - Sitecore internal routes (`/sitecore/*`)
 - Nuxt internal routes (`/_nuxt/*`)
