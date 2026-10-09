@@ -15,14 +15,14 @@ const config: Config = {
   },
 
   // Set the production url of your site here
-  url: 'https://weareyou.github.io',
+  url: 'https://iodigital-com.github.io',
   // Set the /<baseUrl>/ pathname under which your site is served
   // For GitHub pages deployment, it is often '/<projectName>/'
   baseUrl: '/sitecore-nuxt-content-sdk/',
 
   // GitHub pages deployment config.
   // If you aren't using GitHub pages, you don't need these.
-  organizationName: 'weareyou', // Usually your GitHub org/user name.
+  organizationName: 'iodigital-com', // Usually your GitHub org/user name.
   projectName: 'sitecore-nuxt-content-sdk', // Usually your repo name.
 
   onBrokenLinks: 'throw',
@@ -71,7 +71,7 @@ const config: Config = {
           label: 'Tutorial',
         },
         {
-          href: 'https://github.com/weareyou/sitecore-nuxt-content-sdk',
+          href: 'https://github.com/iodigital-com/sitecore-nuxt-content-sdk',
           label: 'GitHub',
           position: 'right',
         },
@@ -111,7 +111,7 @@ const config: Config = {
           items: [
             {
               label: 'GitHub',
-              href: 'https://github.com/weareyou/sitecore-nuxt-content-sdk/',
+              href: 'https://github.com/iodigital-com/sitecore-nuxt-content-sdk',
             },
           ],
         },
