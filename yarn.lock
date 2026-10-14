@@ -4650,7 +4650,7 @@ __metadata:
     "@vitest/coverage-v8": "npm:2.1.9"
     "@vue/test-utils": "npm:^2.4.0"
     cross-env: "npm:^10.1.0"
-    del-cli: "npm:^6.0.0"
+    del-cli: "npm:^7.0.0"
     eslint: "npm:^10.5.0"
     eslint-plugin-vue: "npm:^10.9.1"
     jsdom: "npm:^29.1.1"
@@ -4714,7 +4714,7 @@ __metadata:
     "@vitest/coverage-v8": "npm:2.1.9"
     "@vue/compiler-sfc": "npm:^3.5.31"
     "@vue/test-utils": "npm:^2.4.0"
-    del-cli: "npm:^6.0.0"
+    del-cli: "npm:^7.0.0"
     eslint: "npm:^10.5.0"
     eslint-plugin-vue: "npm:^10.9.1"
     jsdom: "npm:^29.0.1"
@@ -7829,7 +7829,7 @@ __metadata:
     chalk: "npm:^4.1.2"
     chokidar: "npm:^4.0.3"
     cross-spawn: "npm:^7.0.6"
-    del-cli: "npm:^6.0.0"
+    del-cli: "npm:^7.0.0"
     ejs: "npm:^3.1.10"
     eslint: "npm:^10.5.0"
     eslint-config-prettier: "npm:^10.1.8"
@@ -8354,20 +8354,21 @@ __metadata:
   languageName: node
   linkType: hard
 
-"del-cli@npm:^6.0.0":
-  version: 6.0.0
-  resolution: "del-cli@npm:6.0.0"
+"del-cli@npm:^7.0.0":
+  version: 7.0.0
+  resolution: "del-cli@npm:7.0.0"
   dependencies:
-    del: "npm:^8.0.0"
-    meow: "npm:^13.2.0"
+    del: "npm:^8.0.1"
+    meow: "npm:^14.0.0"
+    presentable-error: "npm:^0.0.1"
   bin:
     del: cli.js
     del-cli: cli.js
-  checksum: 10/5441e55c9181f364e84a1d211e53a03476a806e795f6b7d576673f164a9f76e0dc846413a47730f6224913974ba54dabb1884f854a9cf4d418084872bdaaa229
+  checksum: 10/ecd0642d3da8a7de56173936300a991eacb4e5225f6f73dfafae58e8e014214364bc01eb8e10c92dba3d787a10e6d60980da825ea502998c1df76e8651727cd0
   languageName: node
   linkType: hard
 
-"del@npm:^8.0.0":
+"del@npm:^8.0.1":
   version: 8.0.1
   resolution: "del@npm:8.0.1"
   dependencies:
@@ -12741,10 +12742,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"meow@npm:^13.2.0":
-  version: 13.2.0
-  resolution: "meow@npm:13.2.0"
-  checksum: 10/4eff5bc921fed0b8a471ad79069d741a0210036d717547d0c7f36fdaf84ef7a3036225f38b6a53830d84dc9cbf8b944b097fde62381b8b5b215119e735ce1063
+"meow@npm:^14.0.0":
+  version: 14.1.0
+  resolution: "meow@npm:14.1.0"
+  checksum: 10/c6a22b3912a6bc849dee0d6475cd8bb63b9307e26919ca3ace28dc1aaf3d30257071de32bba496f7b5eec3e62b03a6b7731e3d04d18efb3c3103b829aad52ca5
   languageName: node
   linkType: hard
 
