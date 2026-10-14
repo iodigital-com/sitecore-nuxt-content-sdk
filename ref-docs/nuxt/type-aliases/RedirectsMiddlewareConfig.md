@@ -8,7 +8,7 @@
 
 > **RedirectsMiddlewareConfig** = `Omit`\<[`RedirectsServiceConfig`](RedirectsServiceConfig.md), `"fetch"` \| `"clientFactory"`\> & [`SitecoreConfig`](SitecoreConfig.md)\[`"api"`\]\[`"edge"`\] & `Partial`\<`NonNullable`\<[`SitecoreConfig`](SitecoreConfig.md)\[`"api"`\]\[`"local"`\]\>\> & [`MiddlewareBaseConfig`](MiddlewareBaseConfig.md) & [`SitecoreConfig`](SitecoreConfig.md)\[`"redirects"`\] & `object`
 
-Defined in: [packages/nuxt/src/middleware/redirects-middleware.ts:35](https://github.com/iodigital-com/sitecore-nuxt-content-sdk/blob/7a1e7de41f189807cf81c37cfd6c2421fef22a67/packages/nuxt/src/middleware/redirects-middleware.ts#L35)
+Defined in: [packages/nuxt/src/middleware/redirects-middleware.ts:35](https://github.com/iodigital-com/sitecore-nuxt-content-sdk/blob/4e1825ea844316bc3551dd4ba9c4c01dbd454c12/packages/nuxt/src/middleware/redirects-middleware.ts#L35)
 
 Configuration for the RedirectsMiddleware.
 

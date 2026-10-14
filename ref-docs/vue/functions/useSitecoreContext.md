@@ -8,7 +8,7 @@
 
 > **useSitecoreContext**(`options?`): [`SitecoreProviderState`](../interfaces/SitecoreProviderState.md)
 
-Defined in: [src/composables/useSitecoreContext.ts:56](https://github.com/iodigital-com/sitecore-nuxt-content-sdk/blob/7a1e7de41f189807cf81c37cfd6c2421fef22a67/packages/vue/src/composables/useSitecoreContext.ts#L56)
+Defined in: [src/composables/useSitecoreContext.ts:56](https://github.com/iodigital-com/sitecore-nuxt-content-sdk/blob/4e1825ea844316bc3551dd4ba9c4c01dbd454c12/packages/vue/src/composables/useSitecoreContext.ts#L56)
 
 Composable that provides access to the current Sitecore page and API configuration.
 Must be used within a component tree wrapped by `SitecoreProvider`.

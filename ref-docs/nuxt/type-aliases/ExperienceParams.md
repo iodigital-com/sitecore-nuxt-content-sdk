@@ -8,7 +8,7 @@
 
 > **ExperienceParams** = `object`
 
-Defined in: [packages/nuxt/src/middleware/personalize-middleware.ts:79](https://github.com/iodigital-com/sitecore-nuxt-content-sdk/blob/7a1e7de41f189807cf81c37cfd6c2421fef22a67/packages/nuxt/src/middleware/personalize-middleware.ts#L79)
+Defined in: [packages/nuxt/src/middleware/personalize-middleware.ts:79](https://github.com/iodigital-com/sitecore-nuxt-content-sdk/blob/4e1825ea844316bc3551dd4ba9c4c01dbd454c12/packages/nuxt/src/middleware/personalize-middleware.ts#L79)
 
 Experience context data passed to the CDP personalize call.
 
@@ -18,7 +18,7 @@ Experience context data passed to the CDP personalize call.
 
 > **referrer**: `string`
 
-Defined in: [packages/nuxt/src/middleware/personalize-middleware.ts:81](https://github.com/iodigital-com/sitecore-nuxt-content-sdk/blob/7a1e7de41f189807cf81c37cfd6c2421fef22a67/packages/nuxt/src/middleware/personalize-middleware.ts#L81)
+Defined in: [packages/nuxt/src/middleware/personalize-middleware.ts:81](https://github.com/iodigital-com/sitecore-nuxt-content-sdk/blob/4e1825ea844316bc3551dd4ba9c4c01dbd454c12/packages/nuxt/src/middleware/personalize-middleware.ts#L81)
 
 The referrer URL of the request.
 
@@ -28,7 +28,7 @@ The referrer URL of the request.
 
 > **utm**: `object`
 
-Defined in: [packages/nuxt/src/middleware/personalize-middleware.ts:82](https://github.com/iodigital-com/sitecore-nuxt-content-sdk/blob/7a1e7de41f189807cf81c37cfd6c2421fef22a67/packages/nuxt/src/middleware/personalize-middleware.ts#L82)
+Defined in: [packages/nuxt/src/middleware/personalize-middleware.ts:82](https://github.com/iodigital-com/sitecore-nuxt-content-sdk/blob/4e1825ea844316bc3551dd4ba9c4c01dbd454c12/packages/nuxt/src/middleware/personalize-middleware.ts#L82)
 
 #### Index Signature
 

@@ -6,7 +6,7 @@
 
 # Interface: FileFieldValue
 
-Defined in: [src/components/File.d.ts:7](https://github.com/iodigital-com/sitecore-nuxt-content-sdk/blob/7a1e7de41f189807cf81c37cfd6c2421fef22a67/packages/vue/src/components/File.d.ts#L7)
+Defined in: [src/components/File.d.ts:7](https://github.com/iodigital-com/sitecore-nuxt-content-sdk/blob/4e1825ea844316bc3551dd4ba9c4c01dbd454c12/packages/vue/src/components/File.d.ts#L7)
 
 Represents the value of a File field from Sitecore.
 
@@ -20,7 +20,7 @@ Represents the value of a File field from Sitecore.
 
 > `optional` **displayName**: `string`
 
-Defined in: [src/components/File.d.ts:11](https://github.com/iodigital-com/sitecore-nuxt-content-sdk/blob/7a1e7de41f189807cf81c37cfd6c2421fef22a67/packages/vue/src/components/File.d.ts#L11)
+Defined in: [src/components/File.d.ts:11](https://github.com/iodigital-com/sitecore-nuxt-content-sdk/blob/4e1825ea844316bc3551dd4ba9c4c01dbd454c12/packages/vue/src/components/File.d.ts#L11)
 
 ***
 
@@ -28,7 +28,7 @@ Defined in: [src/components/File.d.ts:11](https://github.com/iodigital-com/sitec
 
 > `optional` **src**: `string`
 
-Defined in: [src/components/File.d.ts:9](https://github.com/iodigital-com/sitecore-nuxt-content-sdk/blob/7a1e7de41f189807cf81c37cfd6c2421fef22a67/packages/vue/src/components/File.d.ts#L9)
+Defined in: [src/components/File.d.ts:9](https://github.com/iodigital-com/sitecore-nuxt-content-sdk/blob/4e1825ea844316bc3551dd4ba9c4c01dbd454c12/packages/vue/src/components/File.d.ts#L9)
 
 ***
 
@@ -36,4 +36,4 @@ Defined in: [src/components/File.d.ts:9](https://github.com/iodigital-com/siteco
 
 > `optional` **title**: `string`
 
-Defined in: [src/components/File.d.ts:10](https://github.com/iodigital-com/sitecore-nuxt-content-sdk/blob/7a1e7de41f189807cf81c37cfd6c2421fef22a67/packages/vue/src/components/File.d.ts#L10)
+Defined in: [src/components/File.d.ts:10](https://github.com/iodigital-com/sitecore-nuxt-content-sdk/blob/4e1825ea844316bc3551dd4ba9c4c01dbd454c12/packages/vue/src/components/File.d.ts#L10)

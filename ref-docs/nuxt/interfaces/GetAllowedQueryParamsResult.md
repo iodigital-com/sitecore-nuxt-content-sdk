@@ -6,7 +6,7 @@
 
 # Interface: GetAllowedQueryParamsResult
 
-Defined in: [packages/nuxt/src/sharedTypes/editing-types.ts:36](https://github.com/iodigital-com/sitecore-nuxt-content-sdk/blob/7a1e7de41f189807cf81c37cfd6c2421fef22a67/packages/nuxt/src/sharedTypes/editing-types.ts#L36)
+Defined in: [packages/nuxt/src/sharedTypes/editing-types.ts:36](https://github.com/iodigital-com/sitecore-nuxt-content-sdk/blob/4e1825ea844316bc3551dd4ba9c4c01dbd454c12/packages/nuxt/src/sharedTypes/editing-types.ts#L36)
 
 **`Internal`**
 
@@ -18,7 +18,7 @@ Result of processing allowed query parameters, including any missing required pa
 
 > **allowedQueryParams**: `object`
 
-Defined in: [packages/nuxt/src/sharedTypes/editing-types.ts:38](https://github.com/iodigital-com/sitecore-nuxt-content-sdk/blob/7a1e7de41f189807cf81c37cfd6c2421fef22a67/packages/nuxt/src/sharedTypes/editing-types.ts#L38)
+Defined in: [packages/nuxt/src/sharedTypes/editing-types.ts:38](https://github.com/iodigital-com/sitecore-nuxt-content-sdk/blob/4e1825ea844316bc3551dd4ba9c4c01dbd454c12/packages/nuxt/src/sharedTypes/editing-types.ts#L38)
 
 #### Index Signature
 
@@ -30,4 +30,4 @@ Defined in: [packages/nuxt/src/sharedTypes/editing-types.ts:38](https://github.c
 
 > **missingAllowedParams**: `string`[]
 
-Defined in: [packages/nuxt/src/sharedTypes/editing-types.ts:37](https://github.com/iodigital-com/sitecore-nuxt-content-sdk/blob/7a1e7de41f189807cf81c37cfd6c2421fef22a67/packages/nuxt/src/sharedTypes/editing-types.ts#L37)
+Defined in: [packages/nuxt/src/sharedTypes/editing-types.ts:37](https://github.com/iodigital-com/sitecore-nuxt-content-sdk/blob/4e1825ea844316bc3551dd4ba9c4c01dbd454c12/packages/nuxt/src/sharedTypes/editing-types.ts#L37)

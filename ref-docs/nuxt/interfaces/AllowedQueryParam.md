@@ -6,7 +6,7 @@
 
 # Interface: AllowedQueryParam
 
-Defined in: [packages/nuxt/src/sharedTypes/editing-types.ts:5](https://github.com/iodigital-com/sitecore-nuxt-content-sdk/blob/7a1e7de41f189807cf81c37cfd6c2421fef22a67/packages/nuxt/src/sharedTypes/editing-types.ts#L5)
+Defined in: [packages/nuxt/src/sharedTypes/editing-types.ts:5](https://github.com/iodigital-com/sitecore-nuxt-content-sdk/blob/4e1825ea844316bc3551dd4ba9c4c01dbd454c12/packages/nuxt/src/sharedTypes/editing-types.ts#L5)
 
 Represents an allowed query parameter.
 
@@ -16,7 +16,7 @@ Represents an allowed query parameter.
 
 > **name**: `string`
 
-Defined in: [packages/nuxt/src/sharedTypes/editing-types.ts:9](https://github.com/iodigital-com/sitecore-nuxt-content-sdk/blob/7a1e7de41f189807cf81c37cfd6c2421fef22a67/packages/nuxt/src/sharedTypes/editing-types.ts#L9)
+Defined in: [packages/nuxt/src/sharedTypes/editing-types.ts:9](https://github.com/iodigital-com/sitecore-nuxt-content-sdk/blob/4e1825ea844316bc3551dd4ba9c4c01dbd454c12/packages/nuxt/src/sharedTypes/editing-types.ts#L9)
 
 The name of the query parameter to allow.
 
@@ -26,6 +26,6 @@ The name of the query parameter to allow.
 
 > `optional` **required**: `boolean`
 
-Defined in: [packages/nuxt/src/sharedTypes/editing-types.ts:13](https://github.com/iodigital-com/sitecore-nuxt-content-sdk/blob/7a1e7de41f189807cf81c37cfd6c2421fef22a67/packages/nuxt/src/sharedTypes/editing-types.ts#L13)
+Defined in: [packages/nuxt/src/sharedTypes/editing-types.ts:13](https://github.com/iodigital-com/sitecore-nuxt-content-sdk/blob/4e1825ea844316bc3551dd4ba9c4c01dbd454c12/packages/nuxt/src/sharedTypes/editing-types.ts#L13)
 
 Whether the query parameter is required.

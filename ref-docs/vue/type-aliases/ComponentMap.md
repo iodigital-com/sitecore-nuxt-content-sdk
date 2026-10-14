@@ -8,7 +8,7 @@
 
 > **ComponentMap**\<`TComponent`\> = `Map`\<`string`, `TComponent`\>
 
-Defined in: [src/sharedTypes/components.ts:31](https://github.com/iodigital-com/sitecore-nuxt-content-sdk/blob/7a1e7de41f189807cf81c37cfd6c2421fef22a67/packages/vue/src/sharedTypes/components.ts#L31)
+Defined in: [src/sharedTypes/components.ts:31](https://github.com/iodigital-com/sitecore-nuxt-content-sdk/blob/4e1825ea844316bc3551dd4ba9c4c01dbd454c12/packages/vue/src/sharedTypes/components.ts#L31)
 
 The type of the component map.
 

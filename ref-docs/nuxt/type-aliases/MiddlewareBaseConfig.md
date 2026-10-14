@@ -8,7 +8,7 @@
 
 > **MiddlewareBaseConfig** = `object`
 
-Defined in: [packages/nuxt/src/middleware/middleware.ts:31](https://github.com/iodigital-com/sitecore-nuxt-content-sdk/blob/7a1e7de41f189807cf81c37cfd6c2421fef22a67/packages/nuxt/src/middleware/middleware.ts#L31)
+Defined in: [packages/nuxt/src/middleware/middleware.ts:31](https://github.com/iodigital-com/sitecore-nuxt-content-sdk/blob/4e1825ea844316bc3551dd4ba9c4c01dbd454c12/packages/nuxt/src/middleware/middleware.ts#L31)
 
 The interface for the Middleware configuration
 
@@ -18,7 +18,7 @@ The interface for the Middleware configuration
 
 > `optional` **defaultHostname**: `string`
 
-Defined in: [packages/nuxt/src/middleware/middleware.ts:42](https://github.com/iodigital-com/sitecore-nuxt-content-sdk/blob/7a1e7de41f189807cf81c37cfd6c2421fef22a67/packages/nuxt/src/middleware/middleware.ts#L42)
+Defined in: [packages/nuxt/src/middleware/middleware.ts:42](https://github.com/iodigital-com/sitecore-nuxt-content-sdk/blob/4e1825ea844316bc3551dd4ba9c4c01dbd454c12/packages/nuxt/src/middleware/middleware.ts#L42)
 
 Fallback hostname in case `host` header is not present
 
@@ -34,7 +34,7 @@ localhost
 
 > `optional` **defaultLanguage**: `string`
 
-Defined in: [packages/nuxt/src/middleware/middleware.ts:48](https://github.com/iodigital-com/sitecore-nuxt-content-sdk/blob/7a1e7de41f189807cf81c37cfd6c2421fef22a67/packages/nuxt/src/middleware/middleware.ts#L48)
+Defined in: [packages/nuxt/src/middleware/middleware.ts:48](https://github.com/iodigital-com/sitecore-nuxt-content-sdk/blob/4e1825ea844316bc3551dd4ba9c4c01dbd454c12/packages/nuxt/src/middleware/middleware.ts#L48)
 
 Fallback language in locale cannot be extracted from request URL
 
@@ -50,7 +50,7 @@ Fallback language in locale cannot be extracted from request URL
 
 > **sites**: [`SiteInfo`](SiteInfo.md)[]
 
-Defined in: [packages/nuxt/src/middleware/middleware.ts:53](https://github.com/iodigital-com/sitecore-nuxt-content-sdk/blob/7a1e7de41f189807cf81c37cfd6c2421fef22a67/packages/nuxt/src/middleware/middleware.ts#L53)
+Defined in: [packages/nuxt/src/middleware/middleware.ts:53](https://github.com/iodigital-com/sitecore-nuxt-content-sdk/blob/4e1825ea844316bc3551dd4ba9c4c01dbd454c12/packages/nuxt/src/middleware/middleware.ts#L53)
 
 Site resolution implementation by name/hostname
 
@@ -60,7 +60,7 @@ Site resolution implementation by name/hostname
 
 > `optional` **skip**: (`event`) => `boolean`
 
-Defined in: [packages/nuxt/src/middleware/middleware.ts:36](https://github.com/iodigital-com/sitecore-nuxt-content-sdk/blob/7a1e7de41f189807cf81c37cfd6c2421fef22a67/packages/nuxt/src/middleware/middleware.ts#L36)
+Defined in: [packages/nuxt/src/middleware/middleware.ts:36](https://github.com/iodigital-com/sitecore-nuxt-content-sdk/blob/4e1825ea844316bc3551dd4ba9c4c01dbd454c12/packages/nuxt/src/middleware/middleware.ts#L36)
 
 function, determines if the middleware execution should be skipped, based on cookie, header, or other considerations
 
