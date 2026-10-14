@@ -111,7 +111,7 @@ type PersonalizeExecution = {
  * @public
  * @example
  * // server/middleware/personalize.ts
- * import { PersonalizeMiddleware } from '@sitecore-content-sdk/nuxt';
+ * import { PersonalizeMiddleware } from '@sitecore-content-sdk/nuxt/middleware';
  *
  * const middleware = new PersonalizeMiddleware({
  *   enabled: true,
