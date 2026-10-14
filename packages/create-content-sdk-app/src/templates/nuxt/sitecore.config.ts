@@ -6,11 +6,11 @@ export default defineConfig({
       contextId:
         process.env.SITECORE_EDGE_CONTEXT_ID ||
         process.env.NUXT_PUBLIC_SITECORE_EDGE_CONTEXT_ID ||
-        'placeholder',
+        '',
       clientContextId:
         process.env.NUXT_PUBLIC_SITECORE_EDGE_CONTEXT_ID ||
         process.env.SITECORE_EDGE_CONTEXT_ID ||
-        'placeholder',
+        '',
       edgeUrl:
         process.env.NUXT_PUBLIC_SITECORE_EDGE_PLATFORM_HOSTNAME ||
         process.env.SITECORE_EDGE_PLATFORM_HOSTNAME ||
