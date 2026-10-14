@@ -30,7 +30,7 @@
     "eslint": "^10.5.0",
     "eslint-plugin-vue": "^10.9.1",
     "jsdom": "^29.0.1",
-    "nyc": "^17.1.0",
+    "nyc": "^18.0.0",
     "typedoc": "^0.27.0",
     "typedoc-plugin-markdown": "^4.0.0",
     "typescript": "~5.8.3",
