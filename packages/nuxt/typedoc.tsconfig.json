@@ -1,0 +1,17 @@
+{
+  "extends": "./tsconfig.json",
+  "exclude": [
+    "node_modules",
+    "types",
+    "typings",
+    "dist",
+    "proxy.d.ts",
+    "editing.d.ts",
+    "routes.d.ts",
+    "errors.d.ts",
+    "src/tests/*",
+    "src/test-data/*",
+    "**/*.test.ts",
+    "api"
+  ]
+}

@@ -8,6 +8,6 @@
 
 > `const` **DEFAULT\_EXPORT\_NAME**: `"Default"` = `'Default'`
 
-Defined in: [src/sharedTypes/components.ts:7](https://github.com/iodigital-com/sitecore-nuxt-content-sdk/blob/506c0785c8d8cee7fc34f92cd6f25e430868b713/packages/vue/src/sharedTypes/components.ts#L7)
+Defined in: [src/sharedTypes/components.ts:7](https://github.com/iodigital-com/sitecore-nuxt-content-sdk/blob/7a1e7de41f189807cf81c37cfd6c2421fef22a67/packages/vue/src/sharedTypes/components.ts#L7)
 
 SXA uses custom default export name

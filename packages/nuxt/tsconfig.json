@@ -23,7 +23,8 @@
     "src/tests/*",
     "src/test-data/*",
     "**/*.test.ts",
-    "api"
+    "api",
+    "src/typedoc-entry.ts"
   ],
   "include": ["src/**/*"]
 }

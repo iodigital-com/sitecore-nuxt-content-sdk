@@ -37,7 +37,7 @@ render state and error component to use
 
 ### renderState
 
-> **renderState**: `ComputedRef`\<`"error"` \| `"null"` \| `"component"`\>
+> **renderState**: `ComputedRef`\<`"null"` \| `"error"` \| `"component"`\>
 
 ## Example
 
