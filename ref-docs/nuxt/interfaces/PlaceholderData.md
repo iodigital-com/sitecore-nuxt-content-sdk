@@ -6,7 +6,7 @@
 
 # Interface: PlaceholderData
 
-Defined in: packages/content/types/layout/models.d.ts:144
+Defined in: @sitecore-content-sdk/content/types/layout/models.d.ts:144
 
 Contents of a single placeholder returned from placeholder service
 
@@ -16,7 +16,7 @@ Contents of a single placeholder returned from placeholder service
 
 > **elements**: [`ComponentRendering`](ComponentRendering.md)\<[`ComponentFields`](ComponentFields.md)\>[]
 
-Defined in: packages/content/types/layout/models.d.ts:147
+Defined in: @sitecore-content-sdk/content/types/layout/models.d.ts:147
 
 ***
 
@@ -24,7 +24,7 @@ Defined in: packages/content/types/layout/models.d.ts:147
 
 > **name**: `string`
 
-Defined in: packages/content/types/layout/models.d.ts:145
+Defined in: @sitecore-content-sdk/content/types/layout/models.d.ts:145
 
 ***
 
@@ -32,4 +32,4 @@ Defined in: packages/content/types/layout/models.d.ts:145
 
 > **path**: `string`
 
-Defined in: packages/content/types/layout/models.d.ts:146
+Defined in: @sitecore-content-sdk/content/types/layout/models.d.ts:146

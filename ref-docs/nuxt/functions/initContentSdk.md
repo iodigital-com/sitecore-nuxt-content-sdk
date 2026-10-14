@@ -8,7 +8,7 @@
 
 > **initContentSdk**(`params`): `Promise`\<`void`\>
 
-Defined in: packages/core/types/initialization/init-content-sdk.d.ts:14
+Defined in: @sitecore-content-sdk/core/types/initialization/init-content-sdk.d.ts:14
 
 Initializes the Content SDK with the provided params.
 

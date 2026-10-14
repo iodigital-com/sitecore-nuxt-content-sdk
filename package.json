@@ -9,7 +9,7 @@
     "coverage-packages": "lerna run coverage",
     "test-packages": "lerna run test",
     "install-git-hooks": "node ./scripts/install-hooks.js",
-    "generate-docs": "lerna run generate-docs",
+    "generate-docs": "lerna run generate-docs && node ./scripts/normalize-ref-doc-sources.js",
     "api-extractor": "lerna run api-extractor",
     "api-extractor:verify": "lerna run api-extractor:verify",
     "version": "yarn install && git stage yarn.lock"

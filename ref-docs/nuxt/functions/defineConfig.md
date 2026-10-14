@@ -8,7 +8,7 @@
 
 > **defineConfig**(`config?`): [`SitecoreConfig`](../type-aliases/SitecoreConfig.md)
 
-Defined in: [packages/nuxt/src/config/define-config.ts:77](https://github.com/weareyou/sitecore-nuxt-content-sdk/blob/e1d697260f8666d7ac77ee73644c4bf6a6972edd/packages/nuxt/src/config/define-config.ts#L77)
+Defined in: [packages/nuxt/src/config/define-config.ts:77](https://github.com/iodigital-com/sitecore-nuxt-content-sdk/blob/506c0785c8d8cee7fc34f92cd6f25e430868b713/packages/nuxt/src/config/define-config.ts#L77)
 
 Accepts a SitecoreConfigInput object and returns full sitecore configuration
 

@@ -6,7 +6,7 @@
 
 # Class: ErrorPagesService
 
-Defined in: packages/content/types/site/error-pages-service.d.ts:46
+Defined in: @sitecore-content-sdk/content/types/site/error-pages-service.d.ts:46
 
 Service that fetch the error pages data using Sitecore's GraphQL API.
 
@@ -16,7 +16,7 @@ Service that fetch the error pages data using Sitecore's GraphQL API.
 
 > **new ErrorPagesService**(`options`): `ErrorPagesService`
 
-Defined in: packages/content/types/site/error-pages-service.d.ts:53
+Defined in: @sitecore-content-sdk/content/types/site/error-pages-service.d.ts:53
 
 Creates an instance of graphQL error pages service with the provided options
 
@@ -36,7 +36,7 @@ Creates an instance of graphQL error pages service with the provided options
 
 > **options**: [`ErrorPagesServiceConfig`](../interfaces/ErrorPagesServiceConfig.md)
 
-Defined in: packages/content/types/site/error-pages-service.d.ts:47
+Defined in: @sitecore-content-sdk/content/types/site/error-pages-service.d.ts:47
 
 ## Accessors
 
@@ -46,7 +46,7 @@ Defined in: packages/content/types/site/error-pages-service.d.ts:47
 
 > **get** `protected` **query**(): `string`
 
-Defined in: packages/content/types/site/error-pages-service.d.ts:54
+Defined in: @sitecore-content-sdk/content/types/site/error-pages-service.d.ts:54
 
 ##### Returns
 
@@ -58,7 +58,7 @@ Defined in: packages/content/types/site/error-pages-service.d.ts:54
 
 > **fetchErrorPages**(`siteName`, `locale?`, `fetchOptions?`): `Promise`\<[`ErrorPages`](../type-aliases/ErrorPages.md) \| `null`\>
 
-Defined in: packages/content/types/site/error-pages-service.d.ts:63
+Defined in: @sitecore-content-sdk/content/types/site/error-pages-service.d.ts:63
 
 Fetch list of error pages for the site
 
@@ -86,7 +86,7 @@ if the siteName is empty.
 
 > `protected` **getGraphQLClient**(): `GraphQLClient`
 
-Defined in: packages/content/types/site/error-pages-service.d.ts:70
+Defined in: @sitecore-content-sdk/content/types/site/error-pages-service.d.ts:70
 
 Gets a GraphQL client that can make requests to the API. Uses graphql-request as the default
 library for fetching graphql data (@see GraphQLRequestClient). Override this method if you

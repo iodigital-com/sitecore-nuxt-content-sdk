@@ -8,7 +8,7 @@
 
 > `const` **getPlaceholderRenderings**: (`rendering`, `name`, `isEditing`) => [`ComponentRendering`](../interfaces/ComponentRendering.md)\<[`ComponentFields`](../interfaces/ComponentFields.md)\>[]
 
-Defined in: packages/vue/types/components/Placeholder/placeholder-utils.d.ts:12
+Defined in: @sitecore-content-sdk/vue/types/components/Placeholder/placeholder-utils.d.ts:12
 
 Get the renderings for the specified placeholder from the rendering layout data.
 

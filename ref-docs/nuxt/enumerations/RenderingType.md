@@ -6,7 +6,7 @@
 
 # Enumeration: RenderingType
 
-Defined in: packages/content/types/layout/models.d.ts:153
+Defined in: @sitecore-content-sdk/content/types/layout/models.d.ts:153
 
 Editing rendering type
 
@@ -16,4 +16,4 @@ Editing rendering type
 
 > **Component**: `"component"`
 
-Defined in: packages/content/types/layout/models.d.ts:154
+Defined in: @sitecore-content-sdk/content/types/layout/models.d.ts:154

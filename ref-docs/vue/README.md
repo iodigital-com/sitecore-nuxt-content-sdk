@@ -31,4 +31,5 @@
 
 ## Functions
 
+- [defineSitecoreComponent](functions/defineSitecoreComponent.md)
 - [useSitecoreContext](functions/useSitecoreContext.md)

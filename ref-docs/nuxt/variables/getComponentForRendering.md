@@ -8,7 +8,7 @@
 
 > `const` **getComponentForRendering**: (`renderingDefinition`, `placeholderName`, `componentMap?`, `hiddenRenderingComponent?`, `missingComponentComponent?`) => `ComponentForRendering`
 
-Defined in: packages/vue/types/components/Placeholder/placeholder-utils.d.ts:44
+Defined in: @sitecore-content-sdk/vue/types/components/Placeholder/placeholder-utils.d.ts:44
 
 Get component implementation from the component map based on the rendering definition.
 

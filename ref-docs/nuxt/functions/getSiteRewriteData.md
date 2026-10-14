@@ -8,7 +8,7 @@
 
 > **getSiteRewriteData**(`pathname`, `defaultSiteName`): `SiteRewriteData`
 
-Defined in: packages/content/types/site/utils.d.ts:33
+Defined in: @sitecore-content-sdk/content/types/site/utils.d.ts:33
 
 Get site data from the rewrite path
 

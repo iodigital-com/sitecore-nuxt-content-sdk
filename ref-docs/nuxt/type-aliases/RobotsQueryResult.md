@@ -8,7 +8,7 @@
 
 > **RobotsQueryResult** = `object`
 
-Defined in: packages/content/types/site/robots-service.d.ts:22
+Defined in: @sitecore-content-sdk/content/types/site/robots-service.d.ts:22
 
 The schema of data returned in response to robots.txt request
 
@@ -18,7 +18,7 @@ The schema of data returned in response to robots.txt request
 
 > **site**: `object`
 
-Defined in: packages/content/types/site/robots-service.d.ts:23
+Defined in: @sitecore-content-sdk/content/types/site/robots-service.d.ts:23
 
 #### siteInfo
 

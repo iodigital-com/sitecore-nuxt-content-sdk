@@ -8,7 +8,7 @@
 
 > **VueContentSdkComponent** = `Component` \| [`VueModule`](VueModule.md) & `object`
 
-Defined in: packages/vue/types/sharedTypes/components.d.ts:19
+Defined in: @sitecore-content-sdk/vue/types/sharedTypes/components.d.ts:19
 
 Vue component import for use in the Sitecore component map.
 

@@ -8,7 +8,7 @@
 
 > **ErrorPages** = `object`
 
-Defined in: packages/content/types/site/error-pages-service.d.ts:24
+Defined in: @sitecore-content-sdk/content/types/site/error-pages-service.d.ts:24
 
 Object model of Error Pages result
 
@@ -18,7 +18,7 @@ Object model of Error Pages result
 
 > **notFoundPage**: \{ `rendered`: [`LayoutServiceData`](../interfaces/LayoutServiceData.md); \} \| `null`
 
-Defined in: packages/content/types/site/error-pages-service.d.ts:29
+Defined in: @sitecore-content-sdk/content/types/site/error-pages-service.d.ts:29
 
 Rendered 404 page layout.
 Can be null if the site has no error handling configured for the requested language.
@@ -29,7 +29,7 @@ Can be null if the site has no error handling configured for the requested langu
 
 > **notFoundPagePath**: `string`
 
-Defined in: packages/content/types/site/error-pages-service.d.ts:32
+Defined in: @sitecore-content-sdk/content/types/site/error-pages-service.d.ts:32
 
 ***
 
@@ -37,7 +37,7 @@ Defined in: packages/content/types/site/error-pages-service.d.ts:32
 
 > **serverErrorPage**: \{ `rendered`: [`LayoutServiceData`](../interfaces/LayoutServiceData.md); \} \| `null`
 
-Defined in: packages/content/types/site/error-pages-service.d.ts:37
+Defined in: @sitecore-content-sdk/content/types/site/error-pages-service.d.ts:37
 
 Rendered 500 page layout.
 Can be null if the site has no error handling configured for the requested language.
@@ -48,4 +48,4 @@ Can be null if the site has no error handling configured for the requested langu
 
 > **serverErrorPagePath**: `string`
 
-Defined in: packages/content/types/site/error-pages-service.d.ts:40
+Defined in: @sitecore-content-sdk/content/types/site/error-pages-service.d.ts:40

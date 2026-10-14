@@ -6,7 +6,7 @@
 
 # Class: ClientError
 
-Defined in: packages/core/node\_modules/graphql-request/build/esm/types.d.ts:42
+Defined in: packages/nuxt/node\_modules/graphql-request/build/esm/types.d.ts:42
 
 ## Extends
 
@@ -18,7 +18,7 @@ Defined in: packages/core/node\_modules/graphql-request/build/esm/types.d.ts:42
 
 > **new ClientError**(`response`, `request`): `ClientError`
 
-Defined in: packages/core/node\_modules/graphql-request/build/esm/types.d.ts:45
+Defined in: packages/nuxt/node\_modules/graphql-request/build/esm/types.d.ts:45
 
 #### Parameters
 
@@ -65,7 +65,7 @@ Defined in: node\_modules/typescript/lib/lib.es5.d.ts:1076
 
 > **request**: `GraphQLRequestContext`
 
-Defined in: packages/core/node\_modules/graphql-request/build/esm/types.d.ts:44
+Defined in: packages/nuxt/node\_modules/graphql-request/build/esm/types.d.ts:44
 
 ***
 
@@ -73,7 +73,7 @@ Defined in: packages/core/node\_modules/graphql-request/build/esm/types.d.ts:44
 
 > **response**: `GraphQLResponse`
 
-Defined in: packages/core/node\_modules/graphql-request/build/esm/types.d.ts:43
+Defined in: packages/nuxt/node\_modules/graphql-request/build/esm/types.d.ts:43
 
 ***
 

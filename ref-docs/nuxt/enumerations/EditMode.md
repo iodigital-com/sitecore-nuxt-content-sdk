@@ -6,7 +6,7 @@
 
 # Enumeration: EditMode
 
-Defined in: packages/content/types/layout/models.d.ts:23
+Defined in: @sitecore-content-sdk/content/types/layout/models.d.ts:23
 
 Represents the edit mode for rendering content in Sitecore Editors
 
@@ -16,4 +16,4 @@ Represents the edit mode for rendering content in Sitecore Editors
 
 > **Metadata**: `"metadata"`
 
-Defined in: packages/content/types/layout/models.d.ts:24
+Defined in: @sitecore-content-sdk/content/types/layout/models.d.ts:24

@@ -8,7 +8,7 @@
 
 > `const` **ERROR\_MESSAGES**: `object`
 
-Defined in: packages/core/types/constants.d.ts:37
+Defined in: @sitecore-content-sdk/core/types/constants.d.ts:37
 
 **`Internal`**
 

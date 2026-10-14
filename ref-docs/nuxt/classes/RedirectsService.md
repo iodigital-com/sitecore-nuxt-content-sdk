@@ -6,7 +6,7 @@
 
 # Class: RedirectsService
 
-Defined in: packages/content/types/site/redirects-service.d.ts:59
+Defined in: @sitecore-content-sdk/content/types/site/redirects-service.d.ts:59
 
 The RedirectsService class is used to query the Content SDK redirects using Graphql endpoint
 
@@ -16,7 +16,7 @@ The RedirectsService class is used to query the Content SDK redirects using Grap
 
 > **new RedirectsService**(`options`): `RedirectsService`
 
-Defined in: packages/content/types/site/redirects-service.d.ts:67
+Defined in: @sitecore-content-sdk/content/types/site/redirects-service.d.ts:67
 
 Creates an instance of graphQL redirects service with the provided options
 
@@ -38,7 +38,7 @@ Creates an instance of graphQL redirects service with the provided options
 
 > **get** `protected` **query**(): `string`
 
-Defined in: packages/content/types/site/redirects-service.d.ts:68
+Defined in: @sitecore-content-sdk/content/types/site/redirects-service.d.ts:68
 
 ##### Returns
 
@@ -50,7 +50,7 @@ Defined in: packages/content/types/site/redirects-service.d.ts:68
 
 > **fetchRedirects**(`siteName`, `fetchOptions?`): `Promise`\<[`RedirectInfo`](../type-aliases/RedirectInfo.md)[]\>
 
-Defined in: packages/content/types/site/redirects-service.d.ts:76
+Defined in: @sitecore-content-sdk/content/types/site/redirects-service.d.ts:76
 
 Fetch an array of redirects from API
 
@@ -77,7 +77,7 @@ if the siteName is empty.
 
 > `protected` **getCacheClient**(): [`CacheClient`](../interfaces/CacheClient.md)\<`RedirectsQueryResult`\>
 
-Defined in: packages/content/types/site/redirects-service.d.ts:89
+Defined in: @sitecore-content-sdk/content/types/site/redirects-service.d.ts:89
 
 Gets cache client implementation
 Override this method if custom cache needs to be used
@@ -94,7 +94,7 @@ CacheClient instance
 
 > `protected` **getGraphQLClient**(): `GraphQLClient`
 
-Defined in: packages/content/types/site/redirects-service.d.ts:83
+Defined in: @sitecore-content-sdk/content/types/site/redirects-service.d.ts:83
 
 Gets a GraphQL client that can make requests to the API. Uses graphql-request as the default
 library for fetching graphql data (@see GraphQLRequestClient). Override this method if you

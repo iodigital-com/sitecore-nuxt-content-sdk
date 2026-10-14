@@ -8,7 +8,7 @@
 
 > **useEditorChromes**(): `void`
 
-Defined in: packages/vue/types/composables/useEditorChromes.d.ts:18
+Defined in: @sitecore-content-sdk/vue/types/composables/useEditorChromes.d.ts:18
 
 Composable that resets Sitecore editor chromes on subsequent component updates.
 Call this in the setup of any component that needs to notify the Page Builder

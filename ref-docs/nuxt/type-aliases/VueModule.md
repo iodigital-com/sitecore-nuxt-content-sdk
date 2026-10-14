@@ -8,7 +8,7 @@
 
 > **VueModule** = `object`
 
-Defined in: packages/vue/types/sharedTypes/components.d.ts:10
+Defined in: @sitecore-content-sdk/vue/types/sharedTypes/components.d.ts:10
 
 Vue component import with account for custom exports
 
@@ -22,7 +22,7 @@ Vue component import with account for custom exports
 
 > `optional` **default**: `Component`
 
-Defined in: packages/vue/types/sharedTypes/components.d.ts:12
+Defined in: @sitecore-content-sdk/vue/types/sharedTypes/components.d.ts:12
 
 ***
 
@@ -30,4 +30,4 @@ Defined in: packages/vue/types/sharedTypes/components.d.ts:12
 
 > `optional` **Default**: `Component`
 
-Defined in: packages/vue/types/sharedTypes/components.d.ts:13
+Defined in: @sitecore-content-sdk/vue/types/sharedTypes/components.d.ts:13

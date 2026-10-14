@@ -8,7 +8,7 @@
 
 > **useDatasourceCheck**(`rendering`, `options?`): `object`
 
-Defined in: packages/vue/types/composables/useDatasourceCheck.d.ts:51
+Defined in: @sitecore-content-sdk/vue/types/composables/useDatasourceCheck.d.ts:51
 
 Composable that checks whether a Sitecore datasource is present and determines
 what to render depending on page mode.
@@ -37,7 +37,7 @@ render state and error component to use
 
 ### renderState
 
-> **renderState**: `ComputedRef`\<`"null"` \| `"error"` \| `"component"`\>
+> **renderState**: `ComputedRef`\<`"error"` \| `"null"` \| `"component"`\>
 
 ## Example
 

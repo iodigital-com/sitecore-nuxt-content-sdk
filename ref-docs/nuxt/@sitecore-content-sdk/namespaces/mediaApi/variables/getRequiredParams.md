@@ -8,7 +8,7 @@
 
 > `const` **getRequiredParams**: (`qs`) => `object`
 
-Defined in: packages/content/types/media/media-api.d.ts:7
+Defined in: @sitecore-content-sdk/content/types/media/media-api.d.ts:7
 
 Get required query string params which should be merged with user params
 

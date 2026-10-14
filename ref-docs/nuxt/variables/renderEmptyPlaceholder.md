@@ -8,7 +8,7 @@
 
 > `const` **renderEmptyPlaceholder**: (`node`) => `VNode`
 
-Defined in: packages/vue/types/components/Placeholder/placeholder-utils.d.ts:27
+Defined in: @sitecore-content-sdk/vue/types/components/Placeholder/placeholder-utils.d.ts:27
 
 Renders an empty placeholder wrapped in a div with the required CSS class for Page Builder edit mode.
 

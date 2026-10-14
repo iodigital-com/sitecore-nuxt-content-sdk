@@ -8,7 +8,7 @@
 
 > `const` **createGraphQLClientFactory**: (`options`) => [`GraphQLRequestClientFactory`](../type-aliases/GraphQLRequestClientFactory.md)
 
-Defined in: packages/content/types/client/utils.d.ts:14
+Defined in: @sitecore-content-sdk/content/types/client/utils.d.ts:14
 
 Creates a new GraphQLRequestClientFactory instance
 

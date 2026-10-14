@@ -6,7 +6,7 @@
 
 # Interface: ErrorPagesServiceConfig
 
-Defined in: packages/content/types/site/error-pages-service.d.ts:9
+Defined in: @sitecore-content-sdk/content/types/site/error-pages-service.d.ts:9
 
 Configuration for
 
@@ -24,7 +24,7 @@ ErrorPagesService instances
 
 > **clientFactory**: [`GraphQLRequestClientFactory`](../type-aliases/GraphQLRequestClientFactory.md)
 
-Defined in: packages/content/types/site/error-pages-service.d.ts:18
+Defined in: @sitecore-content-sdk/content/types/site/error-pages-service.d.ts:18
 
 A GraphQL Request Client Factory is a function that accepts configuration and returns an instance of a GraphQLRequestClient.
 This factory function is used to create and configure GraphQL clients for making GraphQL API requests.
@@ -37,9 +37,9 @@ This factory function is used to create and configure GraphQL clients for making
 
 ### debugger?
 
-> `optional` **debugger**: `Debugger`
+> `optional` **debugger**: `any`
 
-Defined in: packages/content/types/sitecore-service-base.d.ts:12
+Defined in: @sitecore-content-sdk/content/types/sitecore-service-base.d.ts:12
 
 Optional debug logger override
 
@@ -53,7 +53,7 @@ Optional debug logger override
 
 > **language**: `string`
 
-Defined in: packages/content/types/site/error-pages-service.d.ts:13
+Defined in: @sitecore-content-sdk/content/types/site/error-pages-service.d.ts:13
 
 The language
 
@@ -63,7 +63,7 @@ The language
 
 > `optional` **retries**: `object`
 
-Defined in: packages/content/types/config/models.d.ts:84
+Defined in: @sitecore-content-sdk/content/types/config/models.d.ts:84
 
 Retry configuration applied to Layout, Dictionary and ErrorPages services
 

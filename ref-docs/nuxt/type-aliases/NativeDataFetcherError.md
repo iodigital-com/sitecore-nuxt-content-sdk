@@ -8,7 +8,7 @@
 
 > **NativeDataFetcherError** = `Error` & `object`
 
-Defined in: packages/core/types/native-fetcher.d.ts:35
+Defined in: @sitecore-content-sdk/core/types/native-fetcher.d.ts:35
 
 Native fetcher error type to include response text and status
 

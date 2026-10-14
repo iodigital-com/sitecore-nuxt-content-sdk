@@ -6,7 +6,7 @@
 
 # Interface: DictionaryServiceConfig
 
-Defined in: packages/content/types/i18n/dictionary-service.d.ts:35
+Defined in: @sitecore-content-sdk/content/types/i18n/dictionary-service.d.ts:35
 
 Configuration options for
 
@@ -24,7 +24,7 @@ DictionaryService instances
 
 > `optional` **cacheEnabled**: `boolean`
 
-Defined in: packages/core/types/cache-client.d.ts:30
+Defined in: @sitecore-content-sdk/core/types/cache-client.d.ts:30
 
 Enable/disable caching mechanism
 
@@ -44,7 +44,7 @@ true
 
 > `optional` **cacheTimeout**: `number`
 
-Defined in: packages/core/types/cache-client.d.ts:35
+Defined in: @sitecore-content-sdk/core/types/cache-client.d.ts:35
 
 Cache timeout (sec)
 
@@ -64,7 +64,7 @@ Cache timeout (sec)
 
 > **clientFactory**: [`GraphQLRequestClientFactory`](../type-aliases/GraphQLRequestClientFactory.md)
 
-Defined in: packages/content/types/i18n/dictionary-service.d.ts:40
+Defined in: @sitecore-content-sdk/content/types/i18n/dictionary-service.d.ts:40
 
 A GraphQL Request Client Factory is a function that accepts configuration and returns an instance of a GraphQLRequestClient.
 This factory function is used to create and configure GraphQL clients for making GraphQL API requests.
@@ -77,9 +77,9 @@ This factory function is used to create and configure GraphQL clients for making
 
 ### debugger?
 
-> `optional` **debugger**: `Debugger`
+> `optional` **debugger**: `any`
 
-Defined in: packages/content/types/sitecore-service-base.d.ts:12
+Defined in: @sitecore-content-sdk/content/types/sitecore-service-base.d.ts:12
 
 Optional debug logger override
 
@@ -93,7 +93,7 @@ Optional debug logger override
 
 > `optional` **dictionaryEntryTemplateId**: `string`
 
-Defined in: packages/content/types/i18n/dictionary-service.d.ts:45
+Defined in: @sitecore-content-sdk/content/types/i18n/dictionary-service.d.ts:45
 
 Optional. The template ID to use when searching for dictionary entries.
 
@@ -109,7 +109,7 @@ Optional. The template ID to use when searching for dictionary entries.
 
 > `optional` **pageSize**: `number`
 
-Defined in: packages/content/types/i18n/dictionary-service.d.ts:52
+Defined in: @sitecore-content-sdk/content/types/i18n/dictionary-service.d.ts:52
 
 common variable for all GraphQL queries
 it will be used for every type of query to regulate result batch size
@@ -127,7 +127,7 @@ Optional. How many result items to fetch in each GraphQL call. This is needed fo
 
 > `optional` **retries**: `object`
 
-Defined in: packages/content/types/config/models.d.ts:84
+Defined in: @sitecore-content-sdk/content/types/config/models.d.ts:84
 
 Retry configuration applied to Layout, Dictionary and ErrorPages services
 

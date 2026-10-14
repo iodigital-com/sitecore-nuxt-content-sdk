@@ -8,7 +8,7 @@
 
 > **StaticPath** = `object`
 
-Defined in: packages/content/types/models.d.ts:12
+Defined in: @sitecore-content-sdk/content/types/models.d.ts:12
 
 Object model of a sitemap's site page item.
 
@@ -18,7 +18,7 @@ Object model of a sitemap's site page item.
 
 > `optional` **locale**: `string`
 
-Defined in: packages/content/types/models.d.ts:16
+Defined in: @sitecore-content-sdk/content/types/models.d.ts:16
 
 ***
 
@@ -26,7 +26,7 @@ Defined in: packages/content/types/models.d.ts:16
 
 > **params**: `object`
 
-Defined in: packages/content/types/models.d.ts:13
+Defined in: @sitecore-content-sdk/content/types/models.d.ts:13
 
 #### path
 

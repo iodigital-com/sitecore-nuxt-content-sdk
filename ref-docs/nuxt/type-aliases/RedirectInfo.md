@@ -8,7 +8,7 @@
 
 > **RedirectInfo** = `object`
 
-Defined in: packages/content/types/site/redirects-service.d.ts:21
+Defined in: @sitecore-content-sdk/content/types/site/redirects-service.d.ts:21
 
 Object model of Redirect Info result
 
@@ -18,7 +18,7 @@ Object model of Redirect Info result
 
 > `optional` **isLanguagePreserved**: `boolean`
 
-Defined in: packages/content/types/site/redirects-service.d.ts:26
+Defined in: @sitecore-content-sdk/content/types/site/redirects-service.d.ts:26
 
 ***
 
@@ -26,7 +26,7 @@ Defined in: packages/content/types/site/redirects-service.d.ts:26
 
 > **isQueryStringPreserved**: `boolean`
 
-Defined in: packages/content/types/site/redirects-service.d.ts:25
+Defined in: @sitecore-content-sdk/content/types/site/redirects-service.d.ts:25
 
 ***
 
@@ -34,7 +34,7 @@ Defined in: packages/content/types/site/redirects-service.d.ts:25
 
 > **locale**: `string`
 
-Defined in: packages/content/types/site/redirects-service.d.ts:27
+Defined in: @sitecore-content-sdk/content/types/site/redirects-service.d.ts:27
 
 ***
 
@@ -42,7 +42,7 @@ Defined in: packages/content/types/site/redirects-service.d.ts:27
 
 > **pattern**: `string`
 
-Defined in: packages/content/types/site/redirects-service.d.ts:22
+Defined in: @sitecore-content-sdk/content/types/site/redirects-service.d.ts:22
 
 ***
 
@@ -50,7 +50,7 @@ Defined in: packages/content/types/site/redirects-service.d.ts:22
 
 > **redirectType**: `string`
 
-Defined in: packages/content/types/site/redirects-service.d.ts:24
+Defined in: @sitecore-content-sdk/content/types/site/redirects-service.d.ts:24
 
 ***
 
@@ -58,4 +58,4 @@ Defined in: packages/content/types/site/redirects-service.d.ts:24
 
 > **target**: `string`
 
-Defined in: packages/content/types/site/redirects-service.d.ts:23
+Defined in: @sitecore-content-sdk/content/types/site/redirects-service.d.ts:23

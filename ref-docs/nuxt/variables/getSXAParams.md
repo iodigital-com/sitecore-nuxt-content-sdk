@@ -8,7 +8,7 @@
 
 > `const` **getSXAParams**: (`rendering`) => `""` \| \{ `styles`: `string`; \}
 
-Defined in: packages/vue/types/components/Placeholder/placeholder-utils.d.ts:18
+Defined in: @sitecore-content-sdk/vue/types/components/Placeholder/placeholder-utils.d.ts:18
 
 Get SXA specific params from Sitecore rendering params.
 

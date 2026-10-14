@@ -8,7 +8,7 @@
 
 > **defineSitecoreComponent**(`loader`, `componentType?`): [`VueContentSdkComponent`](../type-aliases/VueContentSdkComponent.md)
 
-Defined in: packages/vue/types/sharedTypes/components.d.ts:40
+Defined in: @sitecore-content-sdk/vue/types/sharedTypes/components.d.ts:39
 
 Define an async Vue component for use in the Sitecore component map. Enables Vue's async component loading and allows for more optimized builds by supporting tree-shaking of components that are not used on the server or client.
 
@@ -17,7 +17,7 @@ Define an async Vue component for use in the Sitecore component map. Enables Vue
 | Parameter | Type | Description |
 | ------ | ------ | ------ |
 | `loader` | () => `Promise`\<\{ `default`: `Component`; \}\> | Async loader that resolves to a module with a default component. |
-| `componentType?` | `"server"` \| `"client"` \| `"universal"` | Optional component type annotation. |
+| `componentType?` | `"client"` \| `"server"` \| `"universal"` | Optional component type annotation. |
 
 ## Returns
 
@@ -29,7 +29,6 @@ A VueContentSdkComponent ready for use in the component map.
 
 ```ts
 // app/components/componentMap.ts
-import { defineSitecoreComponent } from '@sitecore-content-sdk/nuxt';
 const componentMap: ComponentMap = new Map([
  ['MyComponent', defineSitecoreComponent(() => import('./MyComponent.vue'), 'client')],
 ]);

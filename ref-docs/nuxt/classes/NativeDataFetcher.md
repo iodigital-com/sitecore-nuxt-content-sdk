@@ -6,7 +6,7 @@
 
 # Class: NativeDataFetcher
 
-Defined in: packages/core/types/native-fetcher.d.ts:47
+Defined in: @sitecore-content-sdk/core/types/native-fetcher.d.ts:47
 
 Native data fetcher class
 
@@ -16,7 +16,7 @@ Native data fetcher class
 
 > **new NativeDataFetcher**(`config?`): `NativeDataFetcher`
 
-Defined in: packages/core/types/native-fetcher.d.ts:50
+Defined in: @sitecore-content-sdk/core/types/native-fetcher.d.ts:50
 
 #### Parameters
 
@@ -34,7 +34,7 @@ Defined in: packages/core/types/native-fetcher.d.ts:50
 
 > `protected` **config**: [`NativeDataFetcherConfig`](../type-aliases/NativeDataFetcherConfig.md)
 
-Defined in: packages/core/types/native-fetcher.d.ts:48
+Defined in: @sitecore-content-sdk/core/types/native-fetcher.d.ts:48
 
 ## Methods
 
@@ -42,7 +42,7 @@ Defined in: packages/core/types/native-fetcher.d.ts:48
 
 > **delete**\<`T`\>(`url`, `options?`): `Promise`\<[`NativeDataFetcherResponse`](../interfaces/NativeDataFetcherResponse.md)\<`T`\>\>
 
-Defined in: packages/core/types/native-fetcher.d.ts:79
+Defined in: @sitecore-content-sdk/core/types/native-fetcher.d.ts:79
 
 Perform a DELETE request
 
@@ -71,7 +71,7 @@ response
 
 > `protected` **extractDebugHeaders**(`incomingHeaders?`): `object`
 
-Defined in: packages/core/types/native-fetcher.d.ts:106
+Defined in: @sitecore-content-sdk/core/types/native-fetcher.d.ts:106
 
 Safely extract all headers for debug logging
 
@@ -93,7 +93,7 @@ Object with headers as key/value pairs
 
 > **fetch**\<`T`\>(`url`, `options?`): `Promise`\<[`NativeDataFetcherResponse`](../interfaces/NativeDataFetcherResponse.md)\<`T`\>\>
 
-Defined in: packages/core/types/native-fetcher.d.ts:57
+Defined in: @sitecore-content-sdk/core/types/native-fetcher.d.ts:57
 
 Implements a data fetcher.
 
@@ -122,7 +122,7 @@ response
 
 > **get**\<`T`\>(`url`, `options?`): `Promise`\<[`NativeDataFetcherResponse`](../interfaces/NativeDataFetcherResponse.md)\<`T`\>\>
 
-Defined in: packages/core/types/native-fetcher.d.ts:64
+Defined in: @sitecore-content-sdk/core/types/native-fetcher.d.ts:64
 
 Perform a GET request
 
@@ -151,7 +151,7 @@ response
 
 > `protected` **getRequestInit**(`init?`): `RequestInit`
 
-Defined in: packages/core/types/native-fetcher.d.ts:100
+Defined in: @sitecore-content-sdk/core/types/native-fetcher.d.ts:100
 
 Determines settings for the request
 
@@ -173,7 +173,7 @@ The final request settings
 
 > **head**\<`T`\>(`url`, `options?`): `Promise`\<[`NativeDataFetcherResponse`](../interfaces/NativeDataFetcherResponse.md)\<`T`\>\>
 
-Defined in: packages/core/types/native-fetcher.d.ts:94
+Defined in: @sitecore-content-sdk/core/types/native-fetcher.d.ts:94
 
 Perform a HEAD request
 
@@ -202,7 +202,7 @@ response
 
 > **post**\<`T`\>(`url`, `body`, `options?`): `Promise`\<[`NativeDataFetcherResponse`](../interfaces/NativeDataFetcherResponse.md)\<`T`\>\>
 
-Defined in: packages/core/types/native-fetcher.d.ts:72
+Defined in: @sitecore-content-sdk/core/types/native-fetcher.d.ts:72
 
 Perform a POST request
 
@@ -232,7 +232,7 @@ response
 
 > **put**\<`T`\>(`url`, `body`, `options?`): `Promise`\<[`NativeDataFetcherResponse`](../interfaces/NativeDataFetcherResponse.md)\<`T`\>\>
 
-Defined in: packages/core/types/native-fetcher.d.ts:87
+Defined in: @sitecore-content-sdk/core/types/native-fetcher.d.ts:87
 
 Perform a PUT request
 

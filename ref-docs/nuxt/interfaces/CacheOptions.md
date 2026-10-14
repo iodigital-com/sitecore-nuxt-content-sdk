@@ -6,7 +6,7 @@
 
 # Interface: CacheOptions
 
-Defined in: packages/core/types/cache-client.d.ts:25
+Defined in: @sitecore-content-sdk/core/types/cache-client.d.ts:25
 
 Minimum configuration options for classes that implement
 
@@ -24,7 +24,7 @@ CacheClient
 
 > `optional` **cacheEnabled**: `boolean`
 
-Defined in: packages/core/types/cache-client.d.ts:30
+Defined in: @sitecore-content-sdk/core/types/cache-client.d.ts:30
 
 Enable/disable caching mechanism
 
@@ -40,7 +40,7 @@ true
 
 > `optional` **cacheTimeout**: `number`
 
-Defined in: packages/core/types/cache-client.d.ts:35
+Defined in: @sitecore-content-sdk/core/types/cache-client.d.ts:35
 
 Cache timeout (sec)
 

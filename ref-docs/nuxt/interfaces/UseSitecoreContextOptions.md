@@ -6,7 +6,7 @@
 
 # Interface: UseSitecoreContextOptions
 
-Defined in: packages/vue/types/composables/useSitecoreContext.d.ts:29
+Defined in: @sitecore-content-sdk/vue/types/composables/useSitecoreContext.d.ts:29
 
 Options for the useSitecore composable.
 
@@ -16,6 +16,6 @@ Options for the useSitecore composable.
 
 > `optional` **updatable**: `boolean`
 
-Defined in: packages/vue/types/composables/useSitecoreContext.d.ts:33
+Defined in: @sitecore-content-sdk/vue/types/composables/useSitecoreContext.d.ts:33
 
 If set to true, the `setPage` method will be exposed.

@@ -8,7 +8,7 @@
 
 > **getChildComponentProps**\<`T`\>(`placeholderProps`, `componentRendering`): `ChildComponentProps`
 
-Defined in: packages/vue/types/components/Placeholder/placeholder-utils.d.ts:34
+Defined in: @sitecore-content-sdk/vue/types/components/Placeholder/placeholder-utils.d.ts:34
 
 Merge specific placeholder props with component field and params content props.
 

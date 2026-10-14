@@ -6,7 +6,7 @@
 
 # Interface: SitePathServiceConfig
 
-Defined in: packages/content/types/site/sitepath-service.d.ts:71
+Defined in: @sitecore-content-sdk/content/types/site/sitepath-service.d.ts:71
 
 Configuration options for
 
@@ -24,7 +24,7 @@ SitePathService instances
 
 > **clientFactory**: [`GraphQLRequestClientFactory`](../type-aliases/GraphQLRequestClientFactory.md)
 
-Defined in: packages/content/types/site/sitepath-service.d.ts:82
+Defined in: @sitecore-content-sdk/content/types/site/sitepath-service.d.ts:82
 
 A GraphQL Request Client Factory is a function that accepts configuration and returns an instance of a GraphQLRequestClient.
 This factory function is used to create and configure GraphQL clients for making GraphQL API requests.
@@ -35,7 +35,7 @@ This factory function is used to create and configure GraphQL clients for making
 
 > `optional` **excludedPaths**: `string`[]
 
-Defined in: packages/content/types/site/sitepath-service.d.ts:30
+Defined in: @sitecore-content-sdk/content/types/site/sitepath-service.d.ts:30
 
 Optional. Paths starting with these provided prefixes will be excluded from returned results.
 
@@ -49,7 +49,7 @@ Optional. Paths starting with these provided prefixes will be excluded from retu
 
 > `optional` **includedPaths**: `string`[]
 
-Defined in: packages/content/types/site/sitepath-service.d.ts:26
+Defined in: @sitecore-content-sdk/content/types/site/sitepath-service.d.ts:26
 
 Optional. Only paths starting with these provided prefixes will be returned.
 
@@ -63,7 +63,7 @@ Optional. Only paths starting with these provided prefixes will be returned.
 
 > `optional` **includePersonalizedRoutes**: `boolean`
 
-Defined in: packages/content/types/site/sitepath-service.d.ts:77
+Defined in: @sitecore-content-sdk/content/types/site/sitepath-service.d.ts:77
 
 A flag for whether to include personalized routes in service output.
 Only works on XM Cloud for pages using Embedded Personalization (not Component A/B testing).
@@ -75,7 +75,7 @@ Turned off by default.
 
 > `optional` **pageSize**: `number`
 
-Defined in: packages/content/types/site/sitepath-service.d.ts:37
+Defined in: @sitecore-content-sdk/content/types/site/sitepath-service.d.ts:37
 
 common variable for all GraphQL queries
 it will be used for every type of query to regulate result batch size
