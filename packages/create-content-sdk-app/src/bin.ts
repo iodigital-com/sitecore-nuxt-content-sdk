@@ -60,7 +60,7 @@ export const promptDestination = async (prompt: string, defaultDestination: stri
 };
 
 export const main = async (args: ParsedArgs) => {
-  let template: string = '';
+  let template: string;
 
   // check if template was provided
   if (args._?.length > 0 && args._[0] !== undefined) {

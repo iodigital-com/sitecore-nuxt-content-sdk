@@ -24,6 +24,7 @@
     "url": "https://github.com/sitecore/content-sdk/issues"
   },
   "devDependencies": {
+    "@eslint/js": "^10",
     "@microsoft/api-extractor": "^7.55.0",
     "@rushstack/eslint-patch": "^1.10.3",
     "@stylistic/eslint-plugin": "^5.2.2",
@@ -37,6 +38,7 @@
     "eslint-plugin-prettier": "^4.0.0",
     "eslint-plugin-react": "7.37.5",
     "eslint-plugin-react-hooks": "^5.2.0",
+    "globals": "^17.13.0",
     "lerna": "^5.6.2",
     "prettier": "^2.8.0",
     "typedoc": "^0.28.4",
