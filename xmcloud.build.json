@@ -1,7 +1,7 @@
 {
   "renderingHosts": {
     "nuxtstarter": {
-      "path": "./sitecore-authoring-env/src",
+      "path": "./demo/src",
       "nodeVersion": "24.22.0",
       "enabled": true,
       "type": "sxa",
