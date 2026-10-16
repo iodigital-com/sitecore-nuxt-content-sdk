@@ -88,6 +88,14 @@ export default defineNuxtConfig({
   build: {
     transpile: ['@sitecore-content-sdk/nuxt', '@sitecore-content-sdk/vue'],
   },
+  nitro: {
+    // Sitecore drops dot-prefixed directories when it deploys the editing host.
+    output: {
+      dir: 'output',
+      serverDir: 'output/server',
+      publicDir: 'output/public',
+    },
+  },
   typescript: {
     tsConfig: {
       compilerOptions: {
