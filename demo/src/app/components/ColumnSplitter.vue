@@ -11,7 +11,7 @@ const props = defineProps<{
 </script>
 
 <template>
-  <div :class="['column-splitter', params?.styles]" style="display: flex; flex-direction: row">
+  <div :class="['column-splitter', params?.styles]">
     <div :class="params?.ColumnWidth1" style="flex: 1">
       <Placeholder :name="`column-1-${params?.DynamicPlaceholderId}`" :rendering="rendering" />
     </div>

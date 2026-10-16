@@ -11,5 +11,7 @@ const props = defineProps<{
 </script>
 
 <template>
-  <SitecoreRichText :field="props.fields?.Text" />
+  <div class="content-richtext">
+    <SitecoreRichText :field="props.fields?.Text" />
+  </div>
 </template>

@@ -16,5 +16,7 @@ const { renderState, errorComponent } = useDatasourceCheck(toRef(props, 'renderi
 
 <template>
   <component :is="errorComponent" v-if="renderState === 'error'" />
-  <SitecoreText v-else-if="renderState === 'component'" :field="props.fields?.Text" />
+  <div v-else-if="renderState === 'component'" class="content-text">
+    <SitecoreText :field="props.fields?.Text" />
+  </div>
 </template>

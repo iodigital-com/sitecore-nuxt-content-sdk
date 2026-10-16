@@ -11,5 +11,7 @@ const props = defineProps<{
 </script>
 
 <template>
-  <SitecoreImage :field="props.fields?.Image" />
+  <figure class="content-image">
+    <SitecoreImage :field="props.fields?.Image" />
+  </figure>
 </template>
