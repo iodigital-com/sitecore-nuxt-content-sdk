@@ -17,6 +17,7 @@
     "@sitecore-content-sdk/nuxt": "file:./vendor/sitecore-content-sdk-nuxt-2.1.0.tgz",
     "@types/node": "^24.10.4",
     "nuxt": "^4.4.2",
+    "regex-parser": "^2.3.1",
     "unstorage": "^1.17.5",
     "vue": "^3.5.32",
     "vue-router": "^5.0.4"

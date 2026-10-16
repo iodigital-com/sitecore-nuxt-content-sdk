@@ -85,6 +85,9 @@ export default defineNuxtConfig({
       editingSecret: process.env.SITECORE_EDITING_SECRET,
     },
   },
+  build: {
+    transpile: ['@sitecore-content-sdk/nuxt', '@sitecore-content-sdk/vue'],
+  },
   typescript: {
     tsConfig: {
       compilerOptions: {
@@ -94,11 +97,6 @@ export default defineNuxtConfig({
           ],
         },
       },
-    },
-  },
-  nitro: {
-    rollupConfig: {
-      external: ['/^@sitecore-content-sdk/.*/'],
     },
   },
 });
