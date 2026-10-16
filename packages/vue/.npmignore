@@ -1,0 +1,9 @@
+# Include dist and types in the packed package. The repo .gitignore
+# excludes both, and npm would otherwise omit them from the tarball.
+src
+**/*.test.ts
+**/*.spec.ts
+tsconfig*.json
+vitest.config.*
+eslint.config.*
+vite.config.*

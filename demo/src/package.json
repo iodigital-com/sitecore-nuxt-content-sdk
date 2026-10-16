@@ -14,7 +14,7 @@
   "dependencies": {
     "@sitecore-content-sdk/analytics-core": "^2.1.2",
     "@sitecore-content-sdk/events": "^2.1.2",
-    "@sitecore-content-sdk/nuxt": "file:./../../packages/nuxt",
+    "@sitecore-content-sdk/nuxt": "file:./vendor/sitecore-content-sdk-nuxt-2.1.0.tgz",
     "@types/node": "^24.10.4",
     "nuxt": "^4.4.2",
     "unstorage": "^1.17.5",
@@ -23,5 +23,8 @@
   },
   "devDependencies": {
     "@sitecore-content-sdk/cli": "^2.3.0"
+  },
+  "overrides": {
+    "@sitecore-content-sdk/vue": "file:./vendor/sitecore-content-sdk-vue-2.1.0.tgz"
   }
 }
