@@ -1,13 +1,13 @@
 {
   "packages": {
     "@sitecore-content-sdk/nuxt": "2.1.0",
-    "@sitecore-content-sdk/analytics-core": "2.1.0",
-    "@sitecore-content-sdk/content": "2.1.1",
-    "@sitecore-content-sdk/core": "2.1.0",
-    "@sitecore-content-sdk/events": "2.1.0",
+    "@sitecore-content-sdk/analytics-core": "2.1.2",
+    "@sitecore-content-sdk/content": "2.3.1",
+    "@sitecore-content-sdk/core": "2.1.4",
+    "@sitecore-content-sdk/events": "2.1.2",
     "@sitecore-content-sdk/personalize": "2.1.0",
     "@sitecore-content-sdk/vue": "2.1.0",
-    "@sitecore-content-sdk/search": "0.3.0",
-    "@sitecore-content-sdk/cli": "2.1.0"
+    "@sitecore-content-sdk/search": "0.5.0",
+    "@sitecore-content-sdk/cli": "2.3.0"
   }
 }
