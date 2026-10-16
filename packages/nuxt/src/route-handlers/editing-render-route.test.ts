@@ -12,7 +12,13 @@ import {
 import { SITE_KEY } from '@sitecore-content-sdk/content/site';
 
 vi.mock('../utils/utils', () => ({ getEditingSecret: vi.fn() }));
-vi.mock('@sitecore-content-sdk/core/tools', () => ({ getEnforcedCorsHeaders: vi.fn() }));
+vi.mock('@sitecore-content-sdk/core/tools', async (importOriginal) => {
+  const actual = await importOriginal<typeof import('@sitecore-content-sdk/core/tools')>();
+  return {
+    ...actual,
+    getEnforcedCorsHeaders: vi.fn(),
+  };
+});
 vi.mock('../utils/editing-utils', () => ({
   getEditingRequestHtml: vi.fn(),
   getHeadersForPropagation: vi.fn(),

@@ -18,7 +18,7 @@
   },
   "license": "Apache-2.0",
   "devDependencies": {
-    "@sitecore-content-sdk/analytics-core": "^2.1.0",
+    "@sitecore-content-sdk/analytics-core": "^2.1.2",
     "@sitecore-content-sdk/personalize": "^2.1.0",
     "@types/node": "^24.10.4",
     "@typescript-eslint/eslint-plugin": "8.39.0",
@@ -41,7 +41,7 @@
     "vue-eslint-parser": "^10.4.0"
   },
   "peerDependencies": {
-    "@sitecore-content-sdk/analytics-core": "^2.1.0",
+    "@sitecore-content-sdk/analytics-core": "^2.1.2",
     "@sitecore-content-sdk/personalize": "^2.1.0",
     "nuxt": "^4.0.0",
     "typescript": "^5.4.0"
@@ -52,8 +52,8 @@
     }
   },
   "dependencies": {
-    "@sitecore-content-sdk/content": "^2.1.0",
-    "@sitecore-content-sdk/core": "^2.1.0",
+    "@sitecore-content-sdk/content": "^2.3.1",
+    "@sitecore-content-sdk/core": "^2.1.4",
     "@sitecore-content-sdk/vue": "^2.1.0",
     "std-env": "^4.0.0"
   },

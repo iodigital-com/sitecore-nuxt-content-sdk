@@ -4596,54 +4596,53 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@sitecore-content-sdk/analytics-core@npm:^2.1.0":
-  version: 2.1.0
-  resolution: "@sitecore-content-sdk/analytics-core@npm:2.1.0"
+"@sitecore-content-sdk/analytics-core@npm:2.1.2":
+  version: 2.1.2
+  resolution: "@sitecore-content-sdk/analytics-core@npm:2.1.2"
   dependencies:
-    "@sitecore-content-sdk/core": "npm:^2.1.0"
+    "@sitecore-content-sdk/core": "npm:^2.1.3"
     debug: "npm:^4.4.3"
     isbot: "npm:^5.1.39"
-  checksum: 10/7470251836399e1205477719f493bf238c6267686dd7131334376356377f55d0c7c67fe231c32e8067fc89df67150be063dc020069a2f2af9709d020cbd402d0
+  checksum: 10/a756e54d422cc70e1b35a1063c9745b3df6bba3febeba2006c0bca37ebd9df9ae8cea12b45093de272b0822b43a3bb09323f6ca94ecd8e28050b7ec730c14e0a
   languageName: node
   linkType: hard
 
-"@sitecore-content-sdk/content@npm:^2.1.0":
-  version: 2.1.1
-  resolution: "@sitecore-content-sdk/content@npm:2.1.1"
+"@sitecore-content-sdk/content@npm:^2.3.1":
+  version: 2.3.1
+  resolution: "@sitecore-content-sdk/content@npm:2.3.1"
   dependencies:
-    "@sitecore-content-sdk/core": "npm:^2.1.0"
+    "@sitecore-content-sdk/core": "npm:^2.1.4"
     chalk: "npm:^4.1.2"
     debug: "npm:^4.4.0"
-    glob: "npm:^11.0.2"
+    glob: "npm:^13.0.0"
     graphql: "npm:^16.11.0"
     url-parse: "npm:^1.5.10"
   peerDependencies:
-    "@sitecore-content-sdk/events": ^2.1.0
-  checksum: 10/87e20ac725c389ad81f923db84212789ebb5031a190c4e55230604010397198dd59eff8595467c3a456ba19e9c1cc3b57e80e79819969298ba287e474b491257
+    "@sitecore-content-sdk/events": ^2.1.2
+  checksum: 10/fc4f52ed8ed6664045d580bd93932b3ae959c5413747cc4f2404175aabeb92388250c43cc10b61f303178c32b6fab7264acdbd4066e2898720621effa139b9d8
   languageName: node
   linkType: hard
 
-"@sitecore-content-sdk/core@npm:^2.1.0":
-  version: 2.1.0
-  resolution: "@sitecore-content-sdk/core@npm:2.1.0"
+"@sitecore-content-sdk/core@npm:2.1.4":
+  version: 2.1.4
+  resolution: "@sitecore-content-sdk/core@npm:2.1.4"
   dependencies:
     debug: "npm:^4.4.0"
     graphql: "npm:^16.11.0"
     graphql-request: "npm:^6.1.0"
     memory-cache: "npm:^0.2.0"
-    url-parse: "npm:^1.5.10"
-  checksum: 10/943e3bef8e2ea13783e7148252746ecfb453c51c1daa74fcde1b17aaed541a1c4272a35bdd065aa4712e656f649795ee59b43dba573b4721517b67ccae84e7d2
+  checksum: 10/4507ad4dbd7d93a0e3bee1681bb8dc5ac78134991c14d51b0e75820f3a126d435fa2275391a8b67e664849c9fd0f5a730a9a4c8ead2eb4d8bafc7378a9f13cac
   languageName: node
   linkType: hard
 
-"@sitecore-content-sdk/events@npm:^2.1.0":
-  version: 2.1.0
-  resolution: "@sitecore-content-sdk/events@npm:2.1.0"
+"@sitecore-content-sdk/events@npm:2.1.2":
+  version: 2.1.2
+  resolution: "@sitecore-content-sdk/events@npm:2.1.2"
   dependencies:
-    "@sitecore-content-sdk/analytics-core": "npm:^2.1.0"
-    "@sitecore-content-sdk/core": "npm:^2.1.0"
+    "@sitecore-content-sdk/analytics-core": "npm:^2.1.2"
+    "@sitecore-content-sdk/core": "npm:^2.1.3"
     debug: "npm:^4.4.3"
-  checksum: 10/16bc271c8409d638e4f12145ff5c56b5e5f0225e831b9b640d45aa3b51c0cd88ca3b6e5f8c27f0917d3b3efb0bc981e8772ac46d518d17b1a730efcb67c620ff
+  checksum: 10/db655d79b052e5c019f518adcf376ff9dcb88972d5121236360138db460921b2da3f7200dbb8f8b647bc9ca4ab147e5980cbd6c888d090799abc3a9381d5964c
   languageName: node
   linkType: hard
 
@@ -4651,9 +4650,9 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@sitecore-content-sdk/nuxt@workspace:packages/nuxt"
   dependencies:
-    "@sitecore-content-sdk/analytics-core": "npm:^2.1.0"
-    "@sitecore-content-sdk/content": "npm:^2.1.0"
-    "@sitecore-content-sdk/core": "npm:^2.1.0"
+    "@sitecore-content-sdk/analytics-core": "npm:^2.1.2"
+    "@sitecore-content-sdk/content": "npm:^2.3.1"
+    "@sitecore-content-sdk/core": "npm:^2.1.4"
     "@sitecore-content-sdk/personalize": "npm:^2.1.0"
     "@sitecore-content-sdk/vue": "npm:^2.1.0"
     "@types/node": "npm:^24.10.4"
@@ -4677,7 +4676,7 @@ __metadata:
     vitest: "npm:^2.0.0"
     vue-eslint-parser: "npm:^10.4.0"
   peerDependencies:
-    "@sitecore-content-sdk/analytics-core": ^2.1.0
+    "@sitecore-content-sdk/analytics-core": ^2.1.2
     "@sitecore-content-sdk/personalize": ^2.1.0
     nuxt: ^4.0.0
     typescript: ^5.4.0
@@ -4699,13 +4698,13 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@sitecore-content-sdk/search@npm:^0.3.0":
-  version: 0.3.0
-  resolution: "@sitecore-content-sdk/search@npm:0.3.0"
+"@sitecore-content-sdk/search@npm:^0.5.0":
+  version: 0.5.0
+  resolution: "@sitecore-content-sdk/search@npm:0.5.0"
   dependencies:
-    "@sitecore-content-sdk/analytics-core": "npm:^2.1.0"
-    "@sitecore-content-sdk/core": "npm:^2.1.0"
-  checksum: 10/a5591861101eadd66c7de666ba17121e2bdde3ea8408df95d6d7f3a1d13144a4dbc5dc0f3654a077fd386f0e27eafbb044eb70af34711c522ee710ee0bc11146
+    "@sitecore-content-sdk/analytics-core": "npm:^2.1.2"
+    "@sitecore-content-sdk/core": "npm:^2.1.4"
+  checksum: 10/af55b7e178511958f2c32c1c961f5c9a33d005cd581f9fdfd4cc6fc23582c7d9d4626000aafbf1e6b85f030f0c30ebce86d5fea6fd8c0dace0728211efb5d6ab
   languageName: node
   linkType: hard
 
@@ -4713,10 +4712,10 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@sitecore-content-sdk/vue@workspace:packages/vue"
   dependencies:
-    "@sitecore-content-sdk/content": "npm:^2.1.0"
-    "@sitecore-content-sdk/core": "npm:^2.1.0"
-    "@sitecore-content-sdk/events": "npm:^2.1.0"
-    "@sitecore-content-sdk/search": "npm:^0.3.0"
+    "@sitecore-content-sdk/content": "npm:^2.3.1"
+    "@sitecore-content-sdk/core": "npm:^2.1.4"
+    "@sitecore-content-sdk/events": "npm:^2.1.2"
+    "@sitecore-content-sdk/search": "npm:^0.5.0"
     "@testing-library/vue": "npm:^8.1.0"
     "@types/jsdom": "npm:^28.0.1"
     "@types/node": "npm:^24.10.4"

@@ -6,7 +6,13 @@ import { NuxtContentSdkComponent } from '../sharedTypes/component-props';
 import { ComponentMap } from '@sitecore-content-sdk/vue';
 
 vi.mock('../utils/utils', () => ({ getEditingSecret: vi.fn() }));
-vi.mock('@sitecore-content-sdk/core/tools', () => ({ getEnforcedCorsHeaders: vi.fn() }));
+vi.mock('@sitecore-content-sdk/core/tools', async (importOriginal) => {
+  const actual = await importOriginal<typeof import('@sitecore-content-sdk/core/tools')>();
+  return {
+    ...actual,
+    getEnforcedCorsHeaders: vi.fn(),
+  };
+});
 
 import { getEditingSecret } from '../utils/utils';
 import { getEnforcedCorsHeaders } from '@sitecore-content-sdk/core/tools';

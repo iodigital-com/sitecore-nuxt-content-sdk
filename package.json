@@ -51,7 +51,10 @@
   ],
   "resolutions": {
     "eslint-plugin-react-hooks": "^5.2.0",
-    "@rushstack/eslint-patch": "1.12.0"
+    "@rushstack/eslint-patch": "1.12.0",
+    "@sitecore-content-sdk/analytics-core": "2.1.2",
+    "@sitecore-content-sdk/core": "2.1.4",
+    "@sitecore-content-sdk/events": "2.1.2"
   },
   "packageManager": "yarn@4.12.0"
 }
