@@ -97,7 +97,6 @@ export default defineNuxtConfig({
     },
   },
   nitro: {
-    preset: 'vercel',
     rollupConfig: {
       external: ['/^@sitecore-content-sdk/.*/'],
     },
