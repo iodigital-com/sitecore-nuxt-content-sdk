@@ -1,6 +1,16 @@
 {
-  "name": "@sitecore-content-sdk/vue",
+  "name": "@iodigital-com/sitecore-content-sdk-vue",
   "version": "2.1.0",
+  "description": "Vue components for the Sitecore Content SDK.",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/iodigital-com/sitecore-nuxt-content-sdk.git",
+    "directory": "packages/vue"
+  },
+  "homepage": "https://github.com/iodigital-com/sitecore-nuxt-content-sdk",
+  "publishConfig": {
+    "access": "public"
+  },
   "main": "dist/cjs/index.js",
   "sideEffects": false,
   "scripts": {

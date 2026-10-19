@@ -1,5 +1,5 @@
 import { defineEventHandler } from 'h3';
-import { createEditingRenderRoute } from '@sitecore-content-sdk/nuxt/routes';
+import { createEditingRenderRoute } from '@iodigital-com/sitecore-content-sdk-nuxt/routes';
 
 const { handleGet } = createEditingRenderRoute();
 

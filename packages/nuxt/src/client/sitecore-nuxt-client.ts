@@ -28,7 +28,7 @@ export type SitecoreNuxtClientInit = SitecoreClientInit & Pick<SitecoreConfig, '
  * passing the path to Sitecore.
  * @example
  * // sitecore-client.ts
- * import { SitecoreNuxtClient } from '@sitecore-content-sdk/nuxt';
+ * import { SitecoreNuxtClient } from '@iodigital-com/sitecore-content-sdk-nuxt';
  * import scConfig from './sitecore.config';
  *
  * const client = new SitecoreNuxtClient(scConfig);

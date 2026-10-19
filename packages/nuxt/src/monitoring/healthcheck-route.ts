@@ -7,7 +7,7 @@ import { H3Event, setResponseStatus, send } from 'h3';
  * @public
  * @example
  * // server/routes/healthcheck.ts
- * import { createHealthcheckRoute } from '@sitecore-content-sdk/nuxt/routes';
+ * import { createHealthcheckRoute } from '@iodigital-com/sitecore-content-sdk-nuxt/routes';
  *
  * const { handle } = createHealthcheckRoute();
  *

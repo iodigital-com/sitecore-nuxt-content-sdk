@@ -1,8 +1,8 @@
-[**@sitecore-content-sdk/nuxt**](../README.md)
+[**@iodigital-com/sitecore-content-sdk-nuxt**](../README.md)
 
 ***
 
-[@sitecore-content-sdk/nuxt](../README.md) / BotTrackingMiddleware
+[@iodigital-com/sitecore-content-sdk-nuxt](../README.md) / BotTrackingMiddleware
 
 # Class: BotTrackingMiddleware
 
@@ -17,7 +17,7 @@ before other middlewares execute.
 
 ```ts
 // server/middleware/bot-tracking.ts
-import { BotTrackingMiddleware } from '@sitecore-content-sdk/nuxt/middleware';
+import { BotTrackingMiddleware } from '@iodigital-com/sitecore-content-sdk-nuxt/middleware';
 
 const middleware = new BotTrackingMiddleware({
   contextId: process.env.SITECORE_EDGE_CONTEXT_ID,

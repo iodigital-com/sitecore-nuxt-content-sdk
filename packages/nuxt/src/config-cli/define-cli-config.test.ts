@@ -19,7 +19,7 @@ describe('defineCliConfig', () => {
     expect(result.scaffold.templates[0].name).toBe(ComponentTemplateType.DEFAULT);
 
     const template = result.scaffold.templates[0].generateTemplate('ComponentName');
-    expect(template).toContain(`@sitecore-content-sdk/vue`);
+    expect(template).toContain(`@iodigital-com/sitecore-content-sdk-vue`);
     expect(template).toContain('ComponentName');
     expect(template).toContain('<script setup lang="ts">');
 

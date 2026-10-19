@@ -46,7 +46,7 @@ export type MultisiteMiddlewareConfig = MiddlewareBaseConfig & SitecoreConfig['m
  * the `sc_site` cookie for downstream middleware.
  * @example
  * // server/middleware/multisite.ts
- * import { MultisiteMiddleware } from '@sitecore-content-sdk/nuxt/middleware';
+ * import { MultisiteMiddleware } from '@iodigital-com/sitecore-content-sdk-nuxt/middleware';
  *
  * const middleware = new MultisiteMiddleware({
  *   useCookieResolution: () => true,

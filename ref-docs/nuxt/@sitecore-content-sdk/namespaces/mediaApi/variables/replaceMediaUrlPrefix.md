@@ -1,8 +1,8 @@
-[**@sitecore-content-sdk/nuxt**](../../../../README.md)
+[**@iodigital-com/sitecore-content-sdk-nuxt**](../../../../README.md)
 
 ***
 
-[@sitecore-content-sdk/nuxt](../../../../README.md) / [mediaApi](../README.md) / replaceMediaUrlPrefix
+[@iodigital-com/sitecore-content-sdk-nuxt](../../../../README.md) / [mediaApi](../README.md) / replaceMediaUrlPrefix
 
 # Variable: replaceMediaUrlPrefix()
 

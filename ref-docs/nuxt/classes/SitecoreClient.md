@@ -1,8 +1,8 @@
-[**@sitecore-content-sdk/nuxt**](../README.md)
+[**@iodigital-com/sitecore-content-sdk-nuxt**](../README.md)
 
 ***
 
-[@sitecore-content-sdk/nuxt](../README.md) / SitecoreClient
+[@iodigital-com/sitecore-content-sdk-nuxt](../README.md) / SitecoreClient
 
 # Class: SitecoreClient
 
@@ -20,7 +20,7 @@ passing the path to Sitecore.
 
 ```ts
 // sitecore-client.ts
-import { SitecoreNuxtClient } from '@sitecore-content-sdk/nuxt';
+import { SitecoreNuxtClient } from '@iodigital-com/sitecore-content-sdk-nuxt';
 import scConfig from './sitecore.config';
 
 const client = new SitecoreNuxtClient(scConfig);

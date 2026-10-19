@@ -140,7 +140,7 @@ const buildMapContent = (
     }
   });
 
-  return `import type { ComponentMap } from '@sitecore-content-sdk/vue';
+  return `import type { ComponentMap } from '@iodigital-com/sitecore-content-sdk-vue';
 ${importsSection}
 
 const componentMap: ComponentMap = new Map([

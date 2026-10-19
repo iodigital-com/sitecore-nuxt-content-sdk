@@ -1,8 +1,8 @@
-[**@sitecore-content-sdk/nuxt**](../README.md)
+[**@iodigital-com/sitecore-content-sdk-nuxt**](../README.md)
 
 ***
 
-[@sitecore-content-sdk/nuxt](../README.md) / ComponentPropsFetchFunction
+[@iodigital-com/sitecore-content-sdk-nuxt](../README.md) / ComponentPropsFetchFunction
 
 # Type Alias: ComponentPropsFetchFunction()\<FetchedProps\>
 

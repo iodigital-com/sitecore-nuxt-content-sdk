@@ -6,7 +6,7 @@ import type { ComponentRendering } from '@sitecore-content-sdk/content/layout';
 
 let capturedOnServerComponentUpdate: ((rendering: ComponentRendering) => Promise<void>) | undefined;
 
-vi.mock('@sitecore-content-sdk/vue', () => ({
+vi.mock('@iodigital-com/sitecore-content-sdk-vue', () => ({
   DesignLibrary: defineComponent({
     name: 'DesignLibrary',
     props: {

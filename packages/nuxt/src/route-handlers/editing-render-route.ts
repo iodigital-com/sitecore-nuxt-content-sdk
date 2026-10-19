@@ -55,7 +55,7 @@ export type EditingRenderRouteConfig = {
  * @returns The route handler object with handleGet and handlePost methods.
  * @example
  * // server/api/editing/render.get.ts
- * import { createEditingRenderRoute } from '@sitecore-content-sdk/nuxt/routes';
+ * import { createEditingRenderRoute } from '@iodigital-com/sitecore-content-sdk-nuxt/routes';
  * import componentMap from '~/components/component-map';
  *
  * const { handleGet } = createEditingRenderRoute();
@@ -63,14 +63,14 @@ export type EditingRenderRouteConfig = {
  * export default defineEventHandler(handleGet);
  * @example
  * // server/api/editing/render.post.ts
- * import { createEditingRenderRoute } from '@sitecore-content-sdk/nuxt/routes';
+ * import { createEditingRenderRoute } from '@iodigital-com/sitecore-content-sdk-nuxt/routes';
  *
  * const { handlePost } = createEditingRenderRoute();
  *
  * export default defineEventHandler(handlePost);
  * @example
  * // server/api/editing/render.options.ts
- * import { createEditingRenderRoute } from '@sitecore-content-sdk/nuxt/routes';
+ * import { createEditingRenderRoute } from '@iodigital-com/sitecore-content-sdk-nuxt/routes';
  *
  * const { handleOptions } = createEditingRenderRoute();
  *

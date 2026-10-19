@@ -1,6 +1,6 @@
 // src/sharedTypes/component-props.ts
 import { ComponentRendering, LayoutServiceData } from '@sitecore-content-sdk/content/layout';
-import { VueContentSdkComponent } from '@sitecore-content-sdk/vue';
+import { VueContentSdkComponent } from '@iodigital-com/sitecore-content-sdk-vue';
 
 /**
  * The interface for the component props error.

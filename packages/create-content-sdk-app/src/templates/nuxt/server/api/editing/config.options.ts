@@ -1,5 +1,5 @@
 import { defineEventHandler } from 'h3';
-import { createEditingConfigRoute } from '@sitecore-content-sdk/nuxt/routes';
+import { createEditingConfigRoute } from '@iodigital-com/sitecore-content-sdk-nuxt/routes';
 import { componentNames } from '../../../app/components/componentNames';
 import metadata from './../../../.sitecore/metadata.json';
 

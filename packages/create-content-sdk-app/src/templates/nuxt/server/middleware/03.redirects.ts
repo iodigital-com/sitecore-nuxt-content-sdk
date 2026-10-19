@@ -1,5 +1,5 @@
 import { defineEventHandler } from 'h3';
-import { RedirectsMiddleware } from '@sitecore-content-sdk/nuxt/middleware';
+import { RedirectsMiddleware } from '@iodigital-com/sitecore-content-sdk-nuxt/middleware';
 import scConfig from '../../sitecore.config';
 import sites from '../../.sitecore/sites.json';
 

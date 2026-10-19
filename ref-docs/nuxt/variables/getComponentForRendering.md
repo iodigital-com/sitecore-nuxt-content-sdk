@@ -1,14 +1,14 @@
-[**@sitecore-content-sdk/nuxt**](../README.md)
+[**@iodigital-com/sitecore-content-sdk-nuxt**](../README.md)
 
 ***
 
-[@sitecore-content-sdk/nuxt](../README.md) / getComponentForRendering
+[@iodigital-com/sitecore-content-sdk-nuxt](../README.md) / getComponentForRendering
 
 # Variable: getComponentForRendering()
 
 > `const` **getComponentForRendering**: (`renderingDefinition`, `placeholderName`, `componentMap?`, `hiddenRenderingComponent?`, `missingComponentComponent?`) => `ComponentForRendering`
 
-Defined in: @sitecore-content-sdk/vue/types/components/Placeholder/placeholder-utils.d.ts:44
+Defined in: @iodigital-com/sitecore-content-sdk-vue/types/components/Placeholder/placeholder-utils.d.ts:44
 
 Get component implementation from the component map based on the rendering definition.
 

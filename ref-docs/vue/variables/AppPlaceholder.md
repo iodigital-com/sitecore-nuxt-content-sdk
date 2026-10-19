@@ -1,8 +1,8 @@
-[**@sitecore-content-sdk/vue**](../README.md)
+[**@iodigital-com/sitecore-content-sdk-vue**](../README.md)
 
 ***
 
-[@sitecore-content-sdk/vue](../README.md) / AppPlaceholder
+[@iodigital-com/sitecore-content-sdk-vue](../README.md) / AppPlaceholder
 
 # Variable: AppPlaceholder
 

@@ -1445,6 +1445,84 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@iodigital-com/sitecore-content-sdk-nuxt@workspace:packages/nuxt":
+  version: 0.0.0-use.local
+  resolution: "@iodigital-com/sitecore-content-sdk-nuxt@workspace:packages/nuxt"
+  dependencies:
+    "@iodigital-com/sitecore-content-sdk-vue": "npm:^2.1.0"
+    "@sitecore-content-sdk/analytics-core": "npm:^2.1.2"
+    "@sitecore-content-sdk/content": "npm:^2.3.1"
+    "@sitecore-content-sdk/core": "npm:^2.1.4"
+    "@sitecore-content-sdk/personalize": "npm:^2.1.0"
+    "@types/node": "npm:^24.10.4"
+    "@typescript-eslint/eslint-plugin": "npm:8.39.0"
+    "@typescript-eslint/parser": "npm:8.39.0"
+    "@vitest/coverage-v8": "npm:2.1.9"
+    "@vue/test-utils": "npm:^2.4.0"
+    cross-env: "npm:^10.1.0"
+    del-cli: "npm:^6.0.0"
+    eslint: "npm:^10.5.0"
+    eslint-plugin-vue: "npm:^10.9.1"
+    jsdom: "npm:^29.1.1"
+    nuxt: "npm:^4.4.2"
+    regex-parser: "npm:^2.3.1"
+    std-env: "npm:^4.0.0"
+    tsx: "npm:^4.21.0"
+    typedoc: "npm:^0.27.0"
+    typedoc-plugin-markdown: "npm:^4.0.0"
+    typescript: "npm:~5.8.3"
+    vite: "npm:^5.0.0"
+    vitest: "npm:^2.0.0"
+    vue-eslint-parser: "npm:^10.4.0"
+  peerDependencies:
+    "@sitecore-content-sdk/analytics-core": ^2.1.2
+    "@sitecore-content-sdk/personalize": ^2.1.0
+    nuxt: ^4.0.0
+    typescript: ^5.4.0
+  peerDependenciesMeta:
+    typescript:
+      optional: true
+  languageName: unknown
+  linkType: soft
+
+"@iodigital-com/sitecore-content-sdk-vue@npm:^2.1.0, @iodigital-com/sitecore-content-sdk-vue@workspace:packages/vue":
+  version: 0.0.0-use.local
+  resolution: "@iodigital-com/sitecore-content-sdk-vue@workspace:packages/vue"
+  dependencies:
+    "@sitecore-content-sdk/content": "npm:^2.3.1"
+    "@sitecore-content-sdk/core": "npm:^2.1.4"
+    "@sitecore-content-sdk/events": "npm:^2.1.2"
+    "@sitecore-content-sdk/search": "npm:^0.5.0"
+    "@testing-library/vue": "npm:^8.1.0"
+    "@types/jsdom": "npm:^28.0.1"
+    "@types/node": "npm:^24.10.4"
+    "@typescript-eslint/eslint-plugin": "npm:8.39.0"
+    "@typescript-eslint/parser": "npm:8.39.0"
+    "@vitejs/plugin-vue": "npm:^5.0.0"
+    "@vitest/coverage-v8": "npm:2.1.9"
+    "@vue/compiler-sfc": "npm:^3.5.31"
+    "@vue/test-utils": "npm:^2.4.0"
+    del-cli: "npm:^6.0.0"
+    eslint: "npm:^10.5.0"
+    eslint-plugin-vue: "npm:^10.9.1"
+    jsdom: "npm:^29.0.1"
+    nyc: "npm:^17.1.0"
+    typedoc: "npm:^0.27.0"
+    typedoc-plugin-markdown: "npm:^4.0.0"
+    typescript: "npm:~5.8.3"
+    vite: "npm:^5.0.0"
+    vitest: "npm:^2.0.0"
+    vue: "npm:^3.5.31"
+    vue-eslint-parser: "npm:^10.4.0"
+  peerDependencies:
+    typescript: ^5.4.0
+    vue: ^3.5.31
+  peerDependenciesMeta:
+    typescript:
+      optional: true
+  languageName: unknown
+  linkType: soft
+
 "@ioredis/commands@npm:1.5.1":
   version: 1.5.1
   resolution: "@ioredis/commands@npm:1.5.1"
@@ -4646,46 +4724,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@sitecore-content-sdk/nuxt@workspace:packages/nuxt":
-  version: 0.0.0-use.local
-  resolution: "@sitecore-content-sdk/nuxt@workspace:packages/nuxt"
-  dependencies:
-    "@sitecore-content-sdk/analytics-core": "npm:^2.1.2"
-    "@sitecore-content-sdk/content": "npm:^2.3.1"
-    "@sitecore-content-sdk/core": "npm:^2.1.4"
-    "@sitecore-content-sdk/personalize": "npm:^2.1.0"
-    "@sitecore-content-sdk/vue": "npm:^2.1.0"
-    "@types/node": "npm:^24.10.4"
-    "@typescript-eslint/eslint-plugin": "npm:8.39.0"
-    "@typescript-eslint/parser": "npm:8.39.0"
-    "@vitest/coverage-v8": "npm:2.1.9"
-    "@vue/test-utils": "npm:^2.4.0"
-    cross-env: "npm:^10.1.0"
-    del-cli: "npm:^6.0.0"
-    eslint: "npm:^10.5.0"
-    eslint-plugin-vue: "npm:^10.9.1"
-    jsdom: "npm:^29.1.1"
-    nuxt: "npm:^4.4.2"
-    regex-parser: "npm:^2.3.1"
-    std-env: "npm:^4.0.0"
-    tsx: "npm:^4.21.0"
-    typedoc: "npm:^0.27.0"
-    typedoc-plugin-markdown: "npm:^4.0.0"
-    typescript: "npm:~5.8.3"
-    vite: "npm:^5.0.0"
-    vitest: "npm:^2.0.0"
-    vue-eslint-parser: "npm:^10.4.0"
-  peerDependencies:
-    "@sitecore-content-sdk/analytics-core": ^2.1.2
-    "@sitecore-content-sdk/personalize": ^2.1.0
-    nuxt: ^4.0.0
-    typescript: ^5.4.0
-  peerDependenciesMeta:
-    typescript:
-      optional: true
-  languageName: unknown
-  linkType: soft
-
 "@sitecore-content-sdk/personalize@npm:^2.1.0":
   version: 2.1.0
   resolution: "@sitecore-content-sdk/personalize@npm:2.1.0"
@@ -4707,44 +4745,6 @@ __metadata:
   checksum: 10/af55b7e178511958f2c32c1c961f5c9a33d005cd581f9fdfd4cc6fc23582c7d9d4626000aafbf1e6b85f030f0c30ebce86d5fea6fd8c0dace0728211efb5d6ab
   languageName: node
   linkType: hard
-
-"@sitecore-content-sdk/vue@npm:^2.1.0, @sitecore-content-sdk/vue@workspace:packages/vue":
-  version: 0.0.0-use.local
-  resolution: "@sitecore-content-sdk/vue@workspace:packages/vue"
-  dependencies:
-    "@sitecore-content-sdk/content": "npm:^2.3.1"
-    "@sitecore-content-sdk/core": "npm:^2.1.4"
-    "@sitecore-content-sdk/events": "npm:^2.1.2"
-    "@sitecore-content-sdk/search": "npm:^0.5.0"
-    "@testing-library/vue": "npm:^8.1.0"
-    "@types/jsdom": "npm:^28.0.1"
-    "@types/node": "npm:^24.10.4"
-    "@typescript-eslint/eslint-plugin": "npm:8.39.0"
-    "@typescript-eslint/parser": "npm:8.39.0"
-    "@vitejs/plugin-vue": "npm:^5.0.0"
-    "@vitest/coverage-v8": "npm:2.1.9"
-    "@vue/compiler-sfc": "npm:^3.5.31"
-    "@vue/test-utils": "npm:^2.4.0"
-    del-cli: "npm:^6.0.0"
-    eslint: "npm:^10.5.0"
-    eslint-plugin-vue: "npm:^10.9.1"
-    jsdom: "npm:^29.0.1"
-    nyc: "npm:^17.1.0"
-    typedoc: "npm:^0.27.0"
-    typedoc-plugin-markdown: "npm:^4.0.0"
-    typescript: "npm:~5.8.3"
-    vite: "npm:^5.0.0"
-    vitest: "npm:^2.0.0"
-    vue: "npm:^3.5.31"
-    vue-eslint-parser: "npm:^10.4.0"
-  peerDependencies:
-    typescript: ^5.4.0
-    vue: ^3.5.31
-  peerDependenciesMeta:
-    typescript:
-      optional: true
-  languageName: unknown
-  linkType: soft
 
 "@speed-highlight/core@npm:^1.2.14":
   version: 1.2.15

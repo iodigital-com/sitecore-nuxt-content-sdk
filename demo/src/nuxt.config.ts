@@ -86,7 +86,7 @@ export default defineNuxtConfig({
     },
   },
   build: {
-    transpile: ['@sitecore-content-sdk/nuxt', '@sitecore-content-sdk/vue'],
+    transpile: ['@iodigital-com/sitecore-content-sdk-nuxt', '@iodigital-com/sitecore-content-sdk-vue'],
   },
   nitro: {
     // Sitecore drops dot-prefixed directories when it deploys the editing host.
@@ -100,8 +100,8 @@ export default defineNuxtConfig({
     tsConfig: {
       compilerOptions: {
         paths: {
-          '@sitecore-content-sdk/nuxt': [
-            '../node_modules/@sitecore-content-sdk/nuxt/types/index.d.ts',
+          '@iodigital-com/sitecore-content-sdk-nuxt': [
+            '../node_modules/@iodigital-com/sitecore-content-sdk-nuxt/types/index.d.ts',
           ],
         },
       },

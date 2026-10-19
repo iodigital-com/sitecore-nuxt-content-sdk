@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { Form as SitecoreForm } from '@sitecore-content-sdk/nuxt';
+import { Form as SitecoreForm } from '@iodigital-com/sitecore-content-sdk-nuxt';
 
 defineOptions({ inheritAttrs: false });
 

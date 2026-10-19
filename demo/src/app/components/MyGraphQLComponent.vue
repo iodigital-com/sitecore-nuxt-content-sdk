@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { useAsyncData, useNuxtApp } from 'nuxt/app';
-import type { ComponentRendering } from '@sitecore-content-sdk/nuxt';
-import type { SitecoreNuxtClient } from '@sitecore-content-sdk/nuxt/client';
+import type { ComponentRendering } from '@iodigital-com/sitecore-content-sdk-nuxt';
+import type { SitecoreNuxtClient } from '@iodigital-com/sitecore-content-sdk-nuxt/client';
 
 defineOptions({ name: 'MyGraphQLComponent' });
 

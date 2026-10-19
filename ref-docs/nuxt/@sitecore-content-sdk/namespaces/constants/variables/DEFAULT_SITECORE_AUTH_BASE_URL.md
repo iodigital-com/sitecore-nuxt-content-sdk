@@ -1,8 +1,8 @@
-[**@sitecore-content-sdk/nuxt**](../../../../README.md)
+[**@iodigital-com/sitecore-content-sdk-nuxt**](../../../../README.md)
 
 ***
 
-[@sitecore-content-sdk/nuxt](../../../../README.md) / [constants](../README.md) / DEFAULT\_SITECORE\_AUTH\_BASE\_URL
+[@iodigital-com/sitecore-content-sdk-nuxt](../../../../README.md) / [constants](../README.md) / DEFAULT\_SITECORE\_AUTH\_BASE\_URL
 
 # Variable: DEFAULT\_SITECORE\_AUTH\_BASE\_URL
 

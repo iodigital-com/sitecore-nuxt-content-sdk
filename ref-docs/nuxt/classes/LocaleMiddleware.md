@@ -1,8 +1,8 @@
-[**@sitecore-content-sdk/nuxt**](../README.md)
+[**@iodigital-com/sitecore-content-sdk-nuxt**](../README.md)
 
 ***
 
-[@sitecore-content-sdk/nuxt](../README.md) / LocaleMiddleware
+[@iodigital-com/sitecore-content-sdk-nuxt](../README.md) / LocaleMiddleware
 
 # Class: LocaleMiddleware
 
@@ -19,7 +19,7 @@ such as PersonalizeMiddleware, which reads the header via `getLanguage()`.
 
 ```ts
 // server/middleware/locale.ts
-import { LocaleMiddleware } from '@sitecore-content-sdk/nuxt/middleware';
+import { LocaleMiddleware } from '@iodigital-com/sitecore-content-sdk-nuxt/middleware';
 
 const middleware = new LocaleMiddleware({
   locales: ['en', 'nl', 'de'],

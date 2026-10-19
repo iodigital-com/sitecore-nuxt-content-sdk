@@ -1,5 +1,5 @@
 import { H3Event, setResponseHeader, setResponseStatus, send, getHeaders } from 'h3';
-import { ComponentMap } from '@sitecore-content-sdk/vue';
+import { ComponentMap } from '@iodigital-com/sitecore-content-sdk-vue';
 import { Metadata } from '@sitecore-content-sdk/core/node-tools';
 import { NuxtContentSdkComponent } from '../sharedTypes/component-props';
 import {
@@ -39,7 +39,7 @@ export type EditingConfigRouteConfig = {
  * @returns The route handler object with handle and handleOptions methods.
  * @example
  * // server/api/editing/config.get.ts
- * import { createEditingConfigRoute } from '@sitecore-content-sdk/nuxt/editing';
+ * import { createEditingConfigRoute } from '@iodigital-com/sitecore-content-sdk-nuxt/editing';
  * import componentMap from '~/components/component-map';
  * import metadata from '~/package.json';
  *
@@ -48,7 +48,7 @@ export type EditingConfigRouteConfig = {
  * export default defineEventHandler(handle);
  * @example
  * // server/api/editing/config.options.ts
- * import { createEditingConfigRoute } from '@sitecore-content-sdk/nuxt/editing';
+ * import { createEditingConfigRoute } from '@iodigital-com/sitecore-content-sdk-nuxt/editing';
  * import componentMap from '~/components/component-map';
  * import metadata from '~/package.json';
  *

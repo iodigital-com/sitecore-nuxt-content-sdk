@@ -1,6 +1,16 @@
 {
-  "name": "@sitecore-content-sdk/nuxt",
+  "name": "@iodigital-com/sitecore-content-sdk-nuxt",
   "version": "2.1.0",
+  "description": "Nuxt integration for the Sitecore Content SDK.",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/iodigital-com/sitecore-nuxt-content-sdk.git",
+    "directory": "packages/nuxt"
+  },
+  "homepage": "https://github.com/iodigital-com/sitecore-nuxt-content-sdk",
+  "publishConfig": {
+    "access": "public"
+  },
   "main": "dist/index.js",
   "module": "dist/index.js",
   "sideEffects": false,
@@ -52,9 +62,9 @@
     }
   },
   "dependencies": {
+    "@iodigital-com/sitecore-content-sdk-vue": "^2.1.0",
     "@sitecore-content-sdk/content": "^2.3.1",
     "@sitecore-content-sdk/core": "^2.1.4",
-    "@sitecore-content-sdk/vue": "^2.1.0",
     "std-env": "^4.0.0"
   },
   "exports": {

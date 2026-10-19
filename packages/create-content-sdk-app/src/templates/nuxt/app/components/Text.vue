@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { toRef } from 'vue';
-import { Text as SitecoreText } from '@sitecore-content-sdk/nuxt';
+import { Text as SitecoreText } from '@iodigital-com/sitecore-content-sdk-nuxt';
 
 defineOptions({ inheritAttrs: false });
 

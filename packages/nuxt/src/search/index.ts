@@ -1,1 +1,1 @@
-export * from '@sitecore-content-sdk/vue/search';
+export * from '@iodigital-com/sitecore-content-sdk-vue/search';

@@ -1,14 +1,14 @@
-[**@sitecore-content-sdk/nuxt**](../README.md)
+[**@iodigital-com/sitecore-content-sdk-nuxt**](../README.md)
 
 ***
 
-[@sitecore-content-sdk/nuxt](../README.md) / VueModule
+[@iodigital-com/sitecore-content-sdk-nuxt](../README.md) / VueModule
 
 # Type Alias: VueModule
 
 > **VueModule** = `object`
 
-Defined in: @sitecore-content-sdk/vue/types/sharedTypes/components.d.ts:10
+Defined in: @iodigital-com/sitecore-content-sdk-vue/types/sharedTypes/components.d.ts:10
 
 Vue component import with account for custom exports
 
@@ -22,7 +22,7 @@ Vue component import with account for custom exports
 
 > `optional` **default**: `Component`
 
-Defined in: @sitecore-content-sdk/vue/types/sharedTypes/components.d.ts:12
+Defined in: @iodigital-com/sitecore-content-sdk-vue/types/sharedTypes/components.d.ts:12
 
 ***
 
@@ -30,4 +30,4 @@ Defined in: @sitecore-content-sdk/vue/types/sharedTypes/components.d.ts:12
 
 > `optional` **Default**: `Component`
 
-Defined in: @sitecore-content-sdk/vue/types/sharedTypes/components.d.ts:13
+Defined in: @iodigital-com/sitecore-content-sdk-vue/types/sharedTypes/components.d.ts:13

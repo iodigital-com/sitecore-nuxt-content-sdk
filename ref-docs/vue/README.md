@@ -1,8 +1,8 @@
-**@sitecore-content-sdk/vue**
+**@iodigital-com/sitecore-content-sdk-vue**
 
 ***
 
-# @sitecore-content-sdk/vue
+# @iodigital-com/sitecore-content-sdk-vue
 
 ## Interfaces
 

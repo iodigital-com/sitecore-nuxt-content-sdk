@@ -3,7 +3,7 @@ import { createEvent, H3Event } from 'h3';
 import { IncomingMessage, ServerResponse } from 'http';
 import { QUERY_PARAM_EDITING_SECRET } from '@sitecore-content-sdk/content/editing';
 import { NuxtContentSdkComponent } from '../sharedTypes/component-props';
-import { ComponentMap } from '@sitecore-content-sdk/vue';
+import { ComponentMap } from '@iodigital-com/sitecore-content-sdk-vue';
 
 vi.mock('../utils/utils', () => ({ getEditingSecret: vi.fn() }));
 vi.mock('@sitecore-content-sdk/core/tools', async (importOriginal) => {

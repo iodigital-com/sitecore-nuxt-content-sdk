@@ -59,7 +59,7 @@ export type RedirectsMiddlewareConfig = Omit<RedirectsServiceConfig, 'fetch' | '
  * locally without a connected Sitecore environment.
  * @example
  * // server/middleware/redirects.ts
- * import { RedirectsMiddleware } from '@sitecore-content-sdk/nuxt/middleware';
+ * import { RedirectsMiddleware } from '@iodigital-com/sitecore-content-sdk-nuxt/middleware';
  *
  * const middleware = new RedirectsMiddleware({
  *   enabled: true,

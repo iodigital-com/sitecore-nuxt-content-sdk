@@ -1,4 +1,4 @@
-import { defineConfig } from '@sitecore-content-sdk/nuxt/config';
+import { defineConfig } from '@iodigital-com/sitecore-content-sdk-nuxt/config';
 
 export default defineConfig({
   api: {

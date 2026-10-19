@@ -94,4 +94,4 @@ export {
   ComponentPropsFetchFunction,
 } from './sharedTypes/component-props';
 
-export * from '@sitecore-content-sdk/vue';
+export * from '@iodigital-com/sitecore-content-sdk-vue';

@@ -1,14 +1,14 @@
-[**@sitecore-content-sdk/nuxt**](../README.md)
+[**@iodigital-com/sitecore-content-sdk-nuxt**](../README.md)
 
 ***
 
-[@sitecore-content-sdk/nuxt](../README.md) / defineSitecoreComponent
+[@iodigital-com/sitecore-content-sdk-nuxt](../README.md) / defineSitecoreComponent
 
 # Function: defineSitecoreComponent()
 
 > **defineSitecoreComponent**(`loader`, `componentType?`): [`VueContentSdkComponent`](../type-aliases/VueContentSdkComponent.md)
 
-Defined in: @sitecore-content-sdk/vue/types/sharedTypes/components.d.ts:39
+Defined in: @iodigital-com/sitecore-content-sdk-vue/types/sharedTypes/components.d.ts:39
 
 Define an async Vue component for use in the Sitecore component map. Enables Vue's async component loading and allows for more optimized builds by supporting tree-shaking of components that are not used on the server or client.
 

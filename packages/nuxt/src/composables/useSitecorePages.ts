@@ -52,7 +52,7 @@ export type UseSitecorePageResult = {
  * @example
  * // pages/[...slug].vue
  * <script setup>
- * import { useSitecorePage } from '@sitecore-content-sdk/nuxt';
+ * import { useSitecorePage } from '@iodigital-com/sitecore-content-sdk-nuxt';
  *
  * const { page, error } = await useSitecorePage();
  *

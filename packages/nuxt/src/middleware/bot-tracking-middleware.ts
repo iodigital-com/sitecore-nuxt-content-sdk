@@ -22,7 +22,7 @@ export type BotTrackingMiddlewareConfig = SitecoreConfig['api']['edge'] & Middle
  * @public
  * @example
  * // server/middleware/bot-tracking.ts
- * import { BotTrackingMiddleware } from '@sitecore-content-sdk/nuxt/middleware';
+ * import { BotTrackingMiddleware } from '@iodigital-com/sitecore-content-sdk-nuxt/middleware';
  *
  * const middleware = new BotTrackingMiddleware({
  *   contextId: process.env.SITECORE_EDGE_CONTEXT_ID,

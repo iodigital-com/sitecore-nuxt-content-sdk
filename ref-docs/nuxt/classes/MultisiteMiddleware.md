@@ -1,8 +1,8 @@
-[**@sitecore-content-sdk/nuxt**](../README.md)
+[**@iodigital-com/sitecore-content-sdk-nuxt**](../README.md)
 
 ***
 
-[@sitecore-content-sdk/nuxt](../README.md) / MultisiteMiddleware
+[@iodigital-com/sitecore-content-sdk-nuxt](../README.md) / MultisiteMiddleware
 
 # Class: MultisiteMiddleware
 
@@ -32,7 +32,7 @@ the `sc_site` cookie for downstream middleware.
 
 ```ts
 // server/middleware/multisite.ts
-import { MultisiteMiddleware } from '@sitecore-content-sdk/nuxt/middleware';
+import { MultisiteMiddleware } from '@iodigital-com/sitecore-content-sdk-nuxt/middleware';
 
 const middleware = new MultisiteMiddleware({
   useCookieResolution: () => true,

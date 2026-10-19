@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { RichText as SitecoreRichText } from '@sitecore-content-sdk/nuxt';
+import { RichText as SitecoreRichText } from '@iodigital-com/sitecore-content-sdk-nuxt';
 
 defineOptions({ inheritAttrs: false });
 

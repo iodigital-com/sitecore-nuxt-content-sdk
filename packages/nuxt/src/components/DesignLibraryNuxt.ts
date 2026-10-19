@@ -1,5 +1,5 @@
 import { defineComponent, h } from 'vue';
-import { DesignLibrary } from '@sitecore-content-sdk/vue';
+import { DesignLibrary } from '@iodigital-com/sitecore-content-sdk-vue';
 import { useDesignLibraryActions } from '../composables/useDesignLibraryActions';
 import type { ComponentRendering } from '@sitecore-content-sdk/content/layout';
 

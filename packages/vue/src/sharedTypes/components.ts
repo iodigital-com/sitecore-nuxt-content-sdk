@@ -1,4 +1,4 @@
-// @sitecore-content-sdk/vue/src/sharedTypes/component-props.ts
+// @iodigital-com/sitecore-content-sdk-vue/src/sharedTypes/component-props.ts
 import { defineAsyncComponent, type Component } from 'vue';
 
 /**

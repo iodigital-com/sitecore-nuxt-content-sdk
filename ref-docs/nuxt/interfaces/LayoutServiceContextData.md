@@ -1,8 +1,8 @@
-[**@sitecore-content-sdk/nuxt**](../README.md)
+[**@iodigital-com/sitecore-content-sdk-nuxt**](../README.md)
 
 ***
 
-[@sitecore-content-sdk/nuxt](../README.md) / LayoutServiceContextData
+[@iodigital-com/sitecore-content-sdk-nuxt](../README.md) / LayoutServiceContextData
 
 # Interface: LayoutServiceContextData
 

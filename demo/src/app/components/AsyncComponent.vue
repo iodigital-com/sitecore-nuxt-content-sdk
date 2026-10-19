@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { ref, onMounted, onBeforeUnmount } from 'vue';
-import { useEditorChromes } from '@sitecore-content-sdk/nuxt';
+import { useEditorChromes } from '@iodigital-com/sitecore-content-sdk-nuxt';
 
 const props = defineProps<{
   fields?: Record<string, any>;

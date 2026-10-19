@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { Link as SitecoreLink } from '@sitecore-content-sdk/nuxt';
+import { Link as SitecoreLink } from '@iodigital-com/sitecore-content-sdk-nuxt';
 
 defineOptions({ inheritAttrs: false });
 

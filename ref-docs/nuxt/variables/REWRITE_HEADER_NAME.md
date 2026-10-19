@@ -1,8 +1,8 @@
-[**@sitecore-content-sdk/nuxt**](../README.md)
+[**@iodigital-com/sitecore-content-sdk-nuxt**](../README.md)
 
 ***
 
-[@sitecore-content-sdk/nuxt](../README.md) / REWRITE\_HEADER\_NAME
+[@iodigital-com/sitecore-content-sdk-nuxt](../README.md) / REWRITE\_HEADER\_NAME
 
 # Variable: REWRITE\_HEADER\_NAME
 

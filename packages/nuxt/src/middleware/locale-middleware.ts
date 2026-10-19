@@ -23,7 +23,7 @@ export type LocaleMiddlewareConfig = MiddlewareBaseConfig & {
  * such as PersonalizeMiddleware, which reads the header via `getLanguage()`.
  * @example
  * // server/middleware/locale.ts
- * import { LocaleMiddleware } from '@sitecore-content-sdk/nuxt/middleware';
+ * import { LocaleMiddleware } from '@iodigital-com/sitecore-content-sdk-nuxt/middleware';
  *
  * const middleware = new LocaleMiddleware({
  *   locales: ['en', 'nl', 'de'],

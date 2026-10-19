@@ -1,8 +1,8 @@
-[**@sitecore-content-sdk/nuxt**](../README.md)
+[**@iodigital-com/sitecore-content-sdk-nuxt**](../README.md)
 
 ***
 
-[@sitecore-content-sdk/nuxt](../README.md) / REDIRECT\_TYPE\_302
+[@iodigital-com/sitecore-content-sdk-nuxt](../README.md) / REDIRECT\_TYPE\_302
 
 # Variable: REDIRECT\_TYPE\_302
 

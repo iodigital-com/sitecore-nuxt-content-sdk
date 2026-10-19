@@ -22,7 +22,7 @@ function normalizeLocation(location) {
 
   const vueTypes = plain.match(/(?:^|.*\/)vue\/types\/(\S+)/);
   if (vueTypes) {
-    return escapeUnderscores(`@sitecore-content-sdk/vue/types/${vueTypes[1]}`);
+    return escapeUnderscores(`@iodigital-com/sitecore-content-sdk-vue/types/${vueTypes[1]}`);
   }
 
   return undefined;

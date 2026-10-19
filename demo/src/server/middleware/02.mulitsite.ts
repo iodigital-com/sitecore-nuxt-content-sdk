@@ -1,5 +1,5 @@
 import { defineEventHandler } from 'h3';
-import { MultisiteMiddleware } from '@sitecore-content-sdk/nuxt/middleware';
+import { MultisiteMiddleware } from '@iodigital-com/sitecore-content-sdk-nuxt/middleware';
 import scConfig from '../../sitecore.config';
 import sites from '../../.sitecore/sites.json';
 

@@ -16,7 +16,7 @@ export type PreviewMiddlewareConfig = MiddlewareBaseConfig;
  * @public
  * @example
  * // server/middleware/05.preview.ts
- * import { PreviewMiddleware } from '@sitecore-content-sdk/nuxt/middleware';
+ * import { PreviewMiddleware } from '@iodigital-com/sitecore-content-sdk-nuxt/middleware';
  * import sites from '../../.sitecore/sites.json';
  *
  * const middleware = new PreviewMiddleware({ sites });

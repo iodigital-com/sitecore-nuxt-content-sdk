@@ -1,8 +1,8 @@
-[**@sitecore-content-sdk/vue**](../README.md)
+[**@iodigital-com/sitecore-content-sdk-vue**](../README.md)
 
 ***
 
-[@sitecore-content-sdk/vue](../README.md) / File
+[@iodigital-com/sitecore-content-sdk-vue](../README.md) / File
 
 # Variable: File
 

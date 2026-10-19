@@ -9,7 +9,7 @@ describe('default-component', () => {
       const template = defaultTemplate.generateTemplate(componentName);
       expect(template).toContain(`<p>${componentName} Component</p>`);
       expect(template).toContain(`interface Props`);
-      expect(template).toContain(`@sitecore-content-sdk/vue`);
+      expect(template).toContain(`@iodigital-com/sitecore-content-sdk-vue`);
     });
   });
 

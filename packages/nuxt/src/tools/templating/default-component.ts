@@ -9,7 +9,7 @@ import { COMPONENT_FILE_EXTENSION } from './constants';
  */
 const generateTemplate = (componentName: string): string => {
   return `<script setup lang="ts">
-import type { ComponentParams, ComponentRendering } from '@sitecore-content-sdk/vue';
+import type { ComponentParams, ComponentRendering } from '@iodigital-com/sitecore-content-sdk-vue';
 
 interface Props {
   rendering: ComponentRendering & { params: ComponentParams };

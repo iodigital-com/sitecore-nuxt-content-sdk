@@ -1,8 +1,8 @@
-[**@sitecore-content-sdk/nuxt**](../README.md)
+[**@iodigital-com/sitecore-content-sdk-nuxt**](../README.md)
 
 ***
 
-[@sitecore-content-sdk/nuxt](../README.md) / createHealthcheckRoute
+[@iodigital-com/sitecore-content-sdk-nuxt](../README.md) / createHealthcheckRoute
 
 # Function: createHealthcheckRoute()
 
@@ -37,7 +37,7 @@ Handles an incoming healthcheck request.
 
 ```ts
 // server/routes/healthcheck.ts
-import { createHealthcheckRoute } from '@sitecore-content-sdk/nuxt/routes';
+import { createHealthcheckRoute } from '@iodigital-com/sitecore-content-sdk-nuxt/routes';
 
 const { handle } = createHealthcheckRoute();
 

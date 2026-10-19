@@ -1,5 +1,5 @@
 import { defineEventHandler } from 'h3';
-import { createHealthcheckRoute } from '@sitecore-content-sdk/nuxt/monitoring';
+import { createHealthcheckRoute } from '@iodigital-com/sitecore-content-sdk-nuxt/monitoring';
 
 const { handle } = createHealthcheckRoute();
 

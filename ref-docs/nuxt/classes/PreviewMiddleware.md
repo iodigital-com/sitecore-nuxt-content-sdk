@@ -1,8 +1,8 @@
-[**@sitecore-content-sdk/nuxt**](../README.md)
+[**@iodigital-com/sitecore-content-sdk-nuxt**](../README.md)
 
 ***
 
-[@sitecore-content-sdk/nuxt](../README.md) / PreviewMiddleware
+[@iodigital-com/sitecore-content-sdk-nuxt](../README.md) / PreviewMiddleware
 
 # Class: PreviewMiddleware
 
@@ -18,7 +18,7 @@ and can run at any position in the middleware chain.
 
 ```ts
 // server/middleware/05.preview.ts
-import { PreviewMiddleware } from '@sitecore-content-sdk/nuxt/middleware';
+import { PreviewMiddleware } from '@iodigital-com/sitecore-content-sdk-nuxt/middleware';
 import sites from '../../.sitecore/sites.json';
 
 const middleware = new PreviewMiddleware({ sites });

@@ -12,7 +12,7 @@ import { resetEditorChromes } from '@sitecore-content-sdk/content/editing';
  * @example
  * ```vue
  * <script setup lang="ts">
- * import { useEditorChromes } from '@sitecore-content-sdk/vue';
+ * import { useEditorChromes } from '@iodigital-com/sitecore-content-sdk-vue';
  *
  * useEditorChromes();
  * </script>

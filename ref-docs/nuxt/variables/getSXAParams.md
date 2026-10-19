@@ -1,14 +1,14 @@
-[**@sitecore-content-sdk/nuxt**](../README.md)
+[**@iodigital-com/sitecore-content-sdk-nuxt**](../README.md)
 
 ***
 
-[@sitecore-content-sdk/nuxt](../README.md) / getSXAParams
+[@iodigital-com/sitecore-content-sdk-nuxt](../README.md) / getSXAParams
 
 # Variable: getSXAParams()
 
 > `const` **getSXAParams**: (`rendering`) => `""` \| \{ `styles`: `string`; \}
 
-Defined in: @sitecore-content-sdk/vue/types/components/Placeholder/placeholder-utils.d.ts:18
+Defined in: @iodigital-com/sitecore-content-sdk-vue/types/components/Placeholder/placeholder-utils.d.ts:18
 
 Get SXA specific params from Sitecore rendering params.
 

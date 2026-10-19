@@ -1,8 +1,8 @@
-**@sitecore-content-sdk/nuxt**
+**@iodigital-com/sitecore-content-sdk-nuxt**
 
 ***
 
-# @sitecore-content-sdk/nuxt
+# @iodigital-com/sitecore-content-sdk-nuxt
 
 ## Namespaces
 

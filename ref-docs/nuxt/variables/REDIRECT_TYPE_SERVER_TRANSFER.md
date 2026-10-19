@@ -1,8 +1,8 @@
-[**@sitecore-content-sdk/nuxt**](../README.md)
+[**@iodigital-com/sitecore-content-sdk-nuxt**](../README.md)
 
 ***
 
-[@sitecore-content-sdk/nuxt](../README.md) / REDIRECT\_TYPE\_SERVER\_TRANSFER
+[@iodigital-com/sitecore-content-sdk-nuxt](../README.md) / REDIRECT\_TYPE\_SERVER\_TRANSFER
 
 # Variable: REDIRECT\_TYPE\_SERVER\_TRANSFER
 

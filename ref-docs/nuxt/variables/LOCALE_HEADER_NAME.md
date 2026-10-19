@@ -1,8 +1,8 @@
-[**@sitecore-content-sdk/nuxt**](../README.md)
+[**@iodigital-com/sitecore-content-sdk-nuxt**](../README.md)
 
 ***
 
-[@sitecore-content-sdk/nuxt](../README.md) / LOCALE\_HEADER\_NAME
+[@iodigital-com/sitecore-content-sdk-nuxt](../README.md) / LOCALE\_HEADER\_NAME
 
 # Variable: LOCALE\_HEADER\_NAME
 

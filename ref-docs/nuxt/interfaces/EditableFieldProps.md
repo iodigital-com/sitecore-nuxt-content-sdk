@@ -1,12 +1,12 @@
-[**@sitecore-content-sdk/nuxt**](../README.md)
+[**@iodigital-com/sitecore-content-sdk-nuxt**](../README.md)
 
 ***
 
-[@sitecore-content-sdk/nuxt](../README.md) / EditableFieldProps
+[@iodigital-com/sitecore-content-sdk-nuxt](../README.md) / EditableFieldProps
 
 # Interface: EditableFieldProps\<EmptyFieldEditingComponentProps\>
 
-Defined in: @sitecore-content-sdk/vue/types/sharedTypes/props.d.ts:5
+Defined in: @iodigital-com/sitecore-content-sdk-vue/types/sharedTypes/props.d.ts:5
 
 Shared editing field props
 
@@ -22,7 +22,7 @@ Shared editing field props
 
 > `optional` **editable**: `boolean`
 
-Defined in: @sitecore-content-sdk/vue/types/sharedTypes/props.d.ts:10
+Defined in: @iodigital-com/sitecore-content-sdk-vue/types/sharedTypes/props.d.ts:10
 
 Can be used to explicitly disable inline editing.
 
@@ -38,6 +38,6 @@ true
 
 > `optional` **emptyFieldEditingComponent**: `Component`\<`EmptyFieldEditingComponentProps`\>
 
-Defined in: @sitecore-content-sdk/vue/types/sharedTypes/props.d.ts:14
+Defined in: @iodigital-com/sitecore-content-sdk-vue/types/sharedTypes/props.d.ts:14
 
 Custom component to render in Pages in edit mode if field value is empty

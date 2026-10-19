@@ -1,14 +1,14 @@
-[**@sitecore-content-sdk/nuxt**](../README.md)
+[**@iodigital-com/sitecore-content-sdk-nuxt**](../README.md)
 
 ***
 
-[@sitecore-content-sdk/nuxt](../README.md) / getPlaceholderRenderings
+[@iodigital-com/sitecore-content-sdk-nuxt](../README.md) / getPlaceholderRenderings
 
 # Variable: getPlaceholderRenderings()
 
 > `const` **getPlaceholderRenderings**: (`rendering`, `name`, `isEditing`) => [`ComponentRendering`](../interfaces/ComponentRendering.md)\<[`ComponentFields`](../interfaces/ComponentFields.md)\>[]
 
-Defined in: @sitecore-content-sdk/vue/types/components/Placeholder/placeholder-utils.d.ts:12
+Defined in: @iodigital-com/sitecore-content-sdk-vue/types/components/Placeholder/placeholder-utils.d.ts:12
 
 Get the renderings for the specified placeholder from the rendering layout data.
 

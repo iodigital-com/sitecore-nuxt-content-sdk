@@ -1,5 +1,5 @@
 import { defineEventHandler } from 'h3';
-import { PreviewMiddleware } from '@sitecore-content-sdk/nuxt/middleware';
+import { PreviewMiddleware } from '@iodigital-com/sitecore-content-sdk-nuxt/middleware';
 import sites from '../../.sitecore/sites.json';
 
 const middleware = new PreviewMiddleware({ sites });

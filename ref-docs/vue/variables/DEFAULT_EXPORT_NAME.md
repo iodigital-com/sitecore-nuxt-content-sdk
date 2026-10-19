@@ -1,8 +1,8 @@
-[**@sitecore-content-sdk/vue**](../README.md)
+[**@iodigital-com/sitecore-content-sdk-vue**](../README.md)
 
 ***
 
-[@sitecore-content-sdk/vue](../README.md) / DEFAULT\_EXPORT\_NAME
+[@iodigital-com/sitecore-content-sdk-vue](../README.md) / DEFAULT\_EXPORT\_NAME
 
 # Variable: DEFAULT\_EXPORT\_NAME
 

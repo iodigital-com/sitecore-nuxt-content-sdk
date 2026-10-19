@@ -77,8 +77,8 @@ export default defineNuxtConfig({
     tsConfig: {
       compilerOptions: {
         paths: {
-          '@sitecore-content-sdk/nuxt': [
-            '../node_modules/@sitecore-content-sdk/nuxt/types/index.d.ts',
+          '@iodigital-com/sitecore-content-sdk-nuxt': [
+            '../node_modules/@iodigital-com/sitecore-content-sdk-nuxt/types/index.d.ts',
           ],
         },
       },

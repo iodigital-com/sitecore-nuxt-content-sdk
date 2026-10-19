@@ -1,8 +1,8 @@
-[**@sitecore-content-sdk/nuxt**](../README.md)
+[**@iodigital-com/sitecore-content-sdk-nuxt**](../README.md)
 
 ***
 
-[@sitecore-content-sdk/nuxt](../README.md) / PersonalizeMiddleware
+[@iodigital-com/sitecore-content-sdk-nuxt](../README.md) / PersonalizeMiddleware
 
 # Class: PersonalizeMiddleware
 
@@ -22,7 +22,7 @@ running locally without a connected Sitecore environment.
 
 ```ts
 // server/middleware/personalize.ts
-import { PersonalizeMiddleware } from '@sitecore-content-sdk/nuxt/middleware';
+import { PersonalizeMiddleware } from '@iodigital-com/sitecore-content-sdk-nuxt/middleware';
 
 const middleware = new PersonalizeMiddleware({
   enabled: true,

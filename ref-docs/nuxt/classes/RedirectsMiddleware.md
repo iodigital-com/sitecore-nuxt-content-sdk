@@ -1,8 +1,8 @@
-[**@sitecore-content-sdk/nuxt**](../README.md)
+[**@iodigital-com/sitecore-content-sdk-nuxt**](../README.md)
 
 ***
 
-[@sitecore-content-sdk/nuxt](../README.md) / RedirectsMiddleware
+[@iodigital-com/sitecore-content-sdk-nuxt](../README.md) / RedirectsMiddleware
 
 # Class: RedirectsMiddleware
 
@@ -25,7 +25,7 @@ locally without a connected Sitecore environment.
 
 ```ts
 // server/middleware/redirects.ts
-import { RedirectsMiddleware } from '@sitecore-content-sdk/nuxt/middleware';
+import { RedirectsMiddleware } from '@iodigital-com/sitecore-content-sdk-nuxt/middleware';
 
 const middleware = new RedirectsMiddleware({
   enabled: true,

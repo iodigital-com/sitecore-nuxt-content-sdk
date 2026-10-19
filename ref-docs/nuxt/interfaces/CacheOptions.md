@@ -1,8 +1,8 @@
-[**@sitecore-content-sdk/nuxt**](../README.md)
+[**@iodigital-com/sitecore-content-sdk-nuxt**](../README.md)
 
 ***
 
-[@sitecore-content-sdk/nuxt](../README.md) / CacheOptions
+[@iodigital-com/sitecore-content-sdk-nuxt](../README.md) / CacheOptions
 
 # Interface: CacheOptions
 

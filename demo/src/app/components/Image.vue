@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { Image as SitecoreImage } from '@sitecore-content-sdk/nuxt';
+import { Image as SitecoreImage } from '@iodigital-com/sitecore-content-sdk-nuxt';
 
 defineOptions({ inheritAttrs: false });
 

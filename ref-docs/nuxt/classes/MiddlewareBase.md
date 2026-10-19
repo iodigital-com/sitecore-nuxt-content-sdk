@@ -1,8 +1,8 @@
-[**@sitecore-content-sdk/nuxt**](../README.md)
+[**@iodigital-com/sitecore-content-sdk-nuxt**](../README.md)
 
 ***
 
-[@sitecore-content-sdk/nuxt](../README.md) / MiddlewareBase
+[@iodigital-com/sitecore-content-sdk-nuxt](../README.md) / MiddlewareBase
 
 # Abstract Class: MiddlewareBase
 

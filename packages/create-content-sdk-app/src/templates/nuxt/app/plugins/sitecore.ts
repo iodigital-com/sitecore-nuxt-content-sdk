@@ -1,6 +1,6 @@
 import { defineNuxtPlugin, useRuntimeConfig } from 'nuxt/app';
-import { SitecoreClient } from '@sitecore-content-sdk/nuxt';
-import { initContentSdk } from '@sitecore-content-sdk/nuxt';
+import { SitecoreClient } from '@iodigital-com/sitecore-content-sdk-nuxt';
+import { initContentSdk } from '@iodigital-com/sitecore-content-sdk-nuxt';
 import { eventsPlugin } from '@sitecore-content-sdk/events';
 import { analyticsBrowserAdapter, analyticsPlugin } from '@sitecore-content-sdk/analytics-core';
 import scConfig from '../../sitecore.config';

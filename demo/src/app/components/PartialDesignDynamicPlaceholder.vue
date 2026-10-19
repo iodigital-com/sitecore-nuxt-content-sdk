@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import { Placeholder } from '@sitecore-content-sdk/nuxt';
-import type { ComponentRendering } from '@sitecore-content-sdk/nuxt';
+import { Placeholder } from '@iodigital-com/sitecore-content-sdk-nuxt';
+import type { ComponentRendering } from '@iodigital-com/sitecore-content-sdk-nuxt';
 
 defineOptions({ inheritAttrs: false });
 

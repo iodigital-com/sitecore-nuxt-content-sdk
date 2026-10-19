@@ -1,9 +1,9 @@
 <script setup lang="ts">
 import { computed } from 'vue';
 import { createError } from 'nuxt/app';
-import { SitecoreProvider, Placeholder } from '@sitecore-content-sdk/nuxt';
-import { DesignLibraryNuxt } from '@sitecore-content-sdk/nuxt/components';
-import { useSitecorePage } from '@sitecore-content-sdk/nuxt/composables';
+import { SitecoreProvider, Placeholder } from '@iodigital-com/sitecore-content-sdk-nuxt';
+import { DesignLibraryNuxt } from '@iodigital-com/sitecore-content-sdk-nuxt/components';
+import { useSitecorePage } from '@iodigital-com/sitecore-content-sdk-nuxt/composables';
 import componentMap from '../components/componentMap';
 import '../assets/demo.css';
 const { page, error } = await useSitecorePage();

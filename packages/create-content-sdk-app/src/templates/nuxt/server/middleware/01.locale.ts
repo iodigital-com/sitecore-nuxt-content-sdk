@@ -1,5 +1,5 @@
 import { defineEventHandler } from 'h3';
-import { LocaleMiddleware } from '@sitecore-content-sdk/nuxt/middleware';
+import { LocaleMiddleware } from '@iodigital-com/sitecore-content-sdk-nuxt/middleware';
 import scConfig from '../../sitecore.config';
 import sites from '../../.sitecore/sites.json';
 

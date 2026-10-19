@@ -32,8 +32,8 @@ export type RobotsRouteOptions = {
  * @returns The route handler object with handle method.
  * @example
  * // server/routes/robots.txt.ts
- * import { createRobotsRoute } from '@sitecore-content-sdk/nuxt/routes';
- * import { useSitecoreClient } from '@sitecore-content-sdk/nuxt';
+ * import { createRobotsRoute } from '@iodigital-com/sitecore-content-sdk-nuxt/routes';
+ * import { useSitecoreClient } from '@iodigital-com/sitecore-content-sdk-nuxt';
  * import sites from '../../.sitecore/sites.json';
  *
  * const { handle } = createRobotsRoute({ client: useSitecoreClient(), sites });

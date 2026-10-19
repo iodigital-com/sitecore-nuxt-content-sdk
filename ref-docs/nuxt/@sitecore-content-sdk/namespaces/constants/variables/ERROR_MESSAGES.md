@@ -1,8 +1,8 @@
-[**@sitecore-content-sdk/nuxt**](../../../../README.md)
+[**@iodigital-com/sitecore-content-sdk-nuxt**](../../../../README.md)
 
 ***
 
-[@sitecore-content-sdk/nuxt](../../../../README.md) / [constants](../README.md) / ERROR\_MESSAGES
+[@iodigital-com/sitecore-content-sdk-nuxt](../../../../README.md) / [constants](../README.md) / ERROR\_MESSAGES
 
 # Variable: ERROR\_MESSAGES
 

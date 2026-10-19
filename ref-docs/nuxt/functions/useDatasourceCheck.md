@@ -1,14 +1,14 @@
-[**@sitecore-content-sdk/nuxt**](../README.md)
+[**@iodigital-com/sitecore-content-sdk-nuxt**](../README.md)
 
 ***
 
-[@sitecore-content-sdk/nuxt](../README.md) / useDatasourceCheck
+[@iodigital-com/sitecore-content-sdk-nuxt](../README.md) / useDatasourceCheck
 
 # Function: useDatasourceCheck()
 
 > **useDatasourceCheck**(`rendering`, `options?`): `object`
 
-Defined in: @sitecore-content-sdk/vue/types/composables/useDatasourceCheck.d.ts:51
+Defined in: @iodigital-com/sitecore-content-sdk-vue/types/composables/useDatasourceCheck.d.ts:51
 
 Composable that checks whether a Sitecore datasource is present and determines
 what to render depending on page mode.

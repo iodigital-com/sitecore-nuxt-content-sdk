@@ -1,14 +1,14 @@
-[**@sitecore-content-sdk/nuxt**](../README.md)
+[**@iodigital-com/sitecore-content-sdk-nuxt**](../README.md)
 
 ***
 
-[@sitecore-content-sdk/nuxt](../README.md) / getChildComponentProps
+[@iodigital-com/sitecore-content-sdk-nuxt](../README.md) / getChildComponentProps
 
 # Function: getChildComponentProps()
 
 > **getChildComponentProps**\<`T`\>(`placeholderProps`, `componentRendering`): `ChildComponentProps`
 
-Defined in: @sitecore-content-sdk/vue/types/components/Placeholder/placeholder-utils.d.ts:34
+Defined in: @iodigital-com/sitecore-content-sdk-vue/types/components/Placeholder/placeholder-utils.d.ts:34
 
 Merge specific placeholder props with component field and params content props.
 
