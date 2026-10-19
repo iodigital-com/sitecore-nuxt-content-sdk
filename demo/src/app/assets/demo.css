@@ -42,11 +42,16 @@ body {
 }
 
 .demo-mark {
+  display: inline-flex;
   color: var(--io-ink);
-  font-size: 1.5rem;
-  font-weight: 700;
-  letter-spacing: -0.04em;
+  line-height: 0;
   text-decoration: none;
+}
+
+.demo-mark svg {
+  display: block;
+  width: 52px;
+  height: auto;
 }
 
 .demo-kicker {
