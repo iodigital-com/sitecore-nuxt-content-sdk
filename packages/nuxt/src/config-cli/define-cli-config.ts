@@ -39,7 +39,7 @@ function addDefaultScaffoldTemplates(cliConfig: SitecoreCliConfigInput) {
 function addDefaultComponentMapGenerator(cliConfig: SitecoreCliConfigInput) {
   cliConfig.componentMap = {
     generator: generateMap,
-    paths: ['app/components'],
+    paths: ['components'],
     ...cliConfig.componentMap,
   };
 }

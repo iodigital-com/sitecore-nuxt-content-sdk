@@ -66,9 +66,9 @@ describe('defineCliConfig', () => {
     validateDefaultTemplate(result);
   });
 
-  it('should set default componentMap paths to app/components/', () => {
+  it('should set default componentMap paths to components/', () => {
     const result = defineCliConfig({ ...mockConfig });
-    expect(result.componentMap?.paths).toEqual(['app/components']);
+    expect(result.componentMap?.paths).toEqual(['components']);
   });
 
   it('should allow overriding componentMap paths', () => {
