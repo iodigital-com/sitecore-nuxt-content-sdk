@@ -1,3 +1,6 @@
+# Generated during sitecore-tools project build and consumed by code extraction
+.sitecore/component-map.ts
+
 # Nuxt dev/build outputs
 .output
 output
