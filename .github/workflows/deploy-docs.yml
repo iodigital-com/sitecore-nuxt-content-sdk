@@ -2,7 +2,7 @@ name: Deploy Docs to GitHub Pages
 
 on:
   push:
-    branches: [dev]
+    branches: [main, dev]
     paths:
       - 'sdk-docs/**'
   workflow_dispatch:

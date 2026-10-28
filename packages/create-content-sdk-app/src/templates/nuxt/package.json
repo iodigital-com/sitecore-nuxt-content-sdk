@@ -14,7 +14,7 @@
   "dependencies": {
     "@sitecore-content-sdk/analytics-core": "<%- version %>",
     "@sitecore-content-sdk/events": "<%- version %>",
-    "@iodigital-com/sitecore-content-sdk-nuxt": "<%- version %>",
+    "@iodigital-com/sitecore-content-sdk-nuxt": "^2.1.0",
     "@types/node": "^24.10.4",
     "nuxt": "^4.4.2",
     "unstorage": "^1.17.5",
