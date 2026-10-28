@@ -6,6 +6,7 @@ import { Data, renderFile } from 'ejs';
 import { writeFileToPath, isDevEnvironment } from '../utils/helpers';
 import { BaseAppArgs } from '../base/args';
 const { version } = require('../../../package.json');
+const { version: nuxtSdkVersion } = require('../../../../nuxt/package.json');
 
 const FILE_FOR_COPY_REGEXP =
   /(index\.html)$|\.(gif|jpg|jpeg|tiff|png|svg|ashx|ico|pdf|jar|eot|woff|ttf|woff2)$/;
@@ -24,6 +25,7 @@ export const populateEjsData = (args: BaseAppArgs, destination?: string) => {
   const ejsData: Data = {
     ...args,
     version: contentSdkVersion,
+    nuxtSdkVersion,
     helper: {
       isDev: isDevEnvironment(destination || args.destination),
     },
