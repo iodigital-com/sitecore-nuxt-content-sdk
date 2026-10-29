@@ -17,8 +17,8 @@ server/middleware/
 ├── 00.bot-tracking.ts
 ├── 01.locale.ts
 ├── 02.multisite.ts
-├── 03.personalize.ts
-├── 04.redirects.ts
+├── 03.redirects.ts
+├── 04.personalize.ts
 └── 05.preview.ts
 ```
 
@@ -38,7 +38,7 @@ Detects bots (search engines, crawlers, AI agents) via their user-agent and trac
 
 ```ts title="server/middleware/00.bot-tracking.ts"
 import { defineEventHandler } from 'h3';
-import { BotTrackingMiddleware } from '@sitecore-content-sdk/nuxt';
+import { BotTrackingMiddleware } from '@iodigital-com/sitecore-content-sdk-nuxt/middleware';
 import config from '../../sitecore.config';
 
 const middleware = new BotTrackingMiddleware({
@@ -95,7 +95,7 @@ Resolves the active locale from the request path and shares it with downstream m
 
 ```ts title="server/middleware/01.locale.ts"
 import { defineEventHandler } from 'h3';
-import { LocaleMiddleware } from '@sitecore-content-sdk/nuxt';
+import { LocaleMiddleware } from '@iodigital-com/sitecore-content-sdk-nuxt/middleware';
 import config from '../../sitecore.config';
 
 const middleware = new LocaleMiddleware({
@@ -134,7 +134,7 @@ Resolves the current site based on hostname and rewrites the request path to inc
 
 ```ts title="server/middleware/02.multisite.ts"
 import { defineEventHandler } from 'h3';
-import { MultisiteMiddleware } from '@sitecore-content-sdk/nuxt';
+import { MultisiteMiddleware } from '@iodigital-com/sitecore-content-sdk-nuxt/middleware';
 import config from '../../sitecore.config';
 
 const middleware = new MultisiteMiddleware({
@@ -167,9 +167,9 @@ Integrates Sitecore Personalize (CDP) into the request pipeline. Identifies pers
 
 ### Setup
 
-```ts title="server/middleware/03.personalize.ts"
+```ts title="server/middleware/04.personalize.ts"
 import { defineEventHandler } from 'h3';
-import { PersonalizeMiddleware } from '@sitecore-content-sdk/nuxt';
+import { PersonalizeMiddleware } from '@iodigital-com/sitecore-content-sdk-nuxt/middleware';
 import config from '../../sitecore.config';
 
 const middleware = new PersonalizeMiddleware({
@@ -225,9 +225,9 @@ Fetches redirect rules from Sitecore and applies matching redirects (301, 302, o
 
 ### Setup
 
-```ts title="server/middleware/04.redirects.ts"
+```ts title="server/middleware/03.redirects.ts"
 import { defineEventHandler } from 'h3';
-import { RedirectsMiddleware } from '@sitecore-content-sdk/nuxt';
+import { RedirectsMiddleware } from '@iodigital-com/sitecore-content-sdk-nuxt/middleware';
 import config from '../../sitecore.config';
 
 const middleware = new RedirectsMiddleware({
@@ -275,7 +275,7 @@ Manages Sitecore preview mode using cookie-based state. Replaces Next.js `draftM
 
 ```ts title="server/middleware/05.preview.ts"
 import { defineEventHandler } from 'h3';
-import { PreviewMiddleware } from '@sitecore-content-sdk/nuxt';
+import { PreviewMiddleware } from '@iodigital-com/sitecore-content-sdk-nuxt/middleware';
 import config from '../../sitecore.config';
 
 const middleware = new PreviewMiddleware({
@@ -313,7 +313,7 @@ You can extend `MiddlewareBase` for custom middleware:
 
 ```ts title="server/middleware/custom.ts"
 import { H3Event } from 'h3';
-import { MiddlewareBase, MiddlewareBaseConfig } from '@sitecore-content-sdk/nuxt';
+import { MiddlewareBase, MiddlewareBaseConfig } from '@iodigital-com/sitecore-content-sdk-nuxt/middleware';
 
 class CustomMiddleware extends MiddlewareBase {
   constructor(config: MiddlewareBaseConfig) {
