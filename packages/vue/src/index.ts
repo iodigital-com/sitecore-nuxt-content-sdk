@@ -24,8 +24,8 @@ export {
 } from '@sitecore-content-sdk/content/client';
 export { mediaApi } from '@sitecore-content-sdk/content/media';
 export { SitePathService } from '@sitecore-content-sdk/content/site';
+export { useSitecoreContext } from './composables/useSitecoreContext';
 export type {
-  useSitecoreContext,
   SitecoreProviderState,
   UseSitecoreContextOptions,
 } from './composables/useSitecoreContext';
@@ -59,6 +59,8 @@ export type {
 
 export { default as Text } from './components/Text.vue';
 export type { TextField, TextProps } from './components/Text';
+export { default as DateField } from './components/DateField.vue';
+export type { DateFieldProps } from './components/DateField';
 
 export { default as Form } from './components/Form.vue';
 export type { FormProps } from './components/Form';
