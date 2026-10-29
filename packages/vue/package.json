@@ -1,6 +1,6 @@
 {
   "name": "@iodigital-com/sitecore-content-sdk-vue",
-  "version": "2.1.0",
+  "version": "2.1.1",
   "description": "Vue components for the Sitecore Content SDK.",
   "repository": {
     "type": "git",
