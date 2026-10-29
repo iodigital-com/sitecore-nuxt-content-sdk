@@ -10,7 +10,7 @@ The Nuxt SDK provides server middleware classes for handling multi-site resoluti
 
 Middleware in the Nuxt SDK runs on the server side via Nitro's `server/middleware/` directory. Each middleware class extends `MiddlewareBase` and implements a `handle(event: H3Event)` method.
 
-**Execution order** is determined by filename (alphabetical). Name your files to control the order:
+**Execution order** is determined by filename (alphabetical). Name your files to control the order. Pass `sites` from `.sitecore/sites.json`. `sitecore-tools project build` writes that file.
 
 ```
 server/middleware/
@@ -39,12 +39,12 @@ Detects bots (search engines, crawlers, AI agents) via their user-agent and trac
 ```ts title="server/middleware/00.bot-tracking.ts"
 import { defineEventHandler } from 'h3';
 import { BotTrackingMiddleware } from '@iodigital-com/sitecore-content-sdk-nuxt/middleware';
-import config from '../../sitecore.config';
+import sites from '../../.sitecore/sites.json';
 
 const middleware = new BotTrackingMiddleware({
   contextId: process.env.SITECORE_EDGE_CONTEXT_ID,
   edgeUrl: process.env.SITECORE_EDGE_URL,
-  sites: config.sites,
+  sites,
 });
 
 export default defineEventHandler((event) => middleware.handle(event));
@@ -97,10 +97,11 @@ Resolves the active locale from the request path and shares it with downstream m
 import { defineEventHandler } from 'h3';
 import { LocaleMiddleware } from '@iodigital-com/sitecore-content-sdk-nuxt/middleware';
 import config from '../../sitecore.config';
+import sites from '../../.sitecore/sites.json';
 
 const middleware = new LocaleMiddleware({
   locales: ['en', 'nl', 'de'],
-  sites: config.sites,
+  sites,
   defaultLanguage: config.defaultLanguage,
 });
 
@@ -135,10 +136,10 @@ Resolves the current site based on hostname and rewrites the request path to inc
 ```ts title="server/middleware/02.multisite.ts"
 import { defineEventHandler } from 'h3';
 import { MultisiteMiddleware } from '@iodigital-com/sitecore-content-sdk-nuxt/middleware';
-import config from '../../sitecore.config';
+import sites from '../../.sitecore/sites.json';
 
 const middleware = new MultisiteMiddleware({
-  sites: config.sites,
+  sites,
   defaultHostname: 'localhost',
 });
 
@@ -170,7 +171,7 @@ Integrates Sitecore Personalize (CDP) into the request pipeline. Identifies pers
 ```ts title="server/middleware/04.personalize.ts"
 import { defineEventHandler } from 'h3';
 import { PersonalizeMiddleware } from '@iodigital-com/sitecore-content-sdk-nuxt/middleware';
-import config from '../../sitecore.config';
+import sites from '../../.sitecore/sites.json';
 
 const middleware = new PersonalizeMiddleware({
   enabled: true,
@@ -179,7 +180,7 @@ const middleware = new PersonalizeMiddleware({
   edgeUrl: process.env.SITECORE_EDGE_URL,
   edgeTimeout: 400,
   cdpTimeout: 400,
-  sites: config.sites,
+  sites,
   locales: ['en', 'nl'],
 });
 
@@ -228,14 +229,14 @@ Fetches redirect rules from Sitecore and applies matching redirects (301, 302, o
 ```ts title="server/middleware/03.redirects.ts"
 import { defineEventHandler } from 'h3';
 import { RedirectsMiddleware } from '@iodigital-com/sitecore-content-sdk-nuxt/middleware';
-import config from '../../sitecore.config';
+import sites from '../../.sitecore/sites.json';
 
 const middleware = new RedirectsMiddleware({
   enabled: true,
   contextId: process.env.SITECORE_EDGE_CONTEXT_ID,
   edgeUrl: process.env.SITECORE_EDGE_URL,
   locales: ['en', 'nl'],
-  sites: config.sites,
+  sites,
 });
 
 export default defineEventHandler((event) => middleware.handle(event));
@@ -276,11 +277,9 @@ Manages Sitecore preview mode using cookie-based state. Replaces Next.js `draftM
 ```ts title="server/middleware/05.preview.ts"
 import { defineEventHandler } from 'h3';
 import { PreviewMiddleware } from '@iodigital-com/sitecore-content-sdk-nuxt/middleware';
-import config from '../../sitecore.config';
+import sites from '../../.sitecore/sites.json';
 
-const middleware = new PreviewMiddleware({
-  sites: config.sites,
-});
+const middleware = new PreviewMiddleware({ sites });
 
 export default defineEventHandler((event) => middleware.handle(event));
 ```
@@ -344,8 +343,10 @@ All middleware automatically skips:
 You can also provide a custom `skip` function:
 
 ```ts
+import sites from '../../.sitecore/sites.json';
+
 const middleware = new LocaleMiddleware({
-  sites: config.sites,
+  sites,
   locales: ['en', 'nl'],
   skip: (event) => {
     const url = event.path;
