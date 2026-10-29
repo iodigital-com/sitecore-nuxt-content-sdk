@@ -115,7 +115,7 @@ const dictionaryService = new DictionaryService({
   clientFactory: getClientFactory(),
 });
 
-const phrases = await dictionaryService.fetchDictionaryData('mysite', 'en');
+const phrases = await dictionaryService.fetchDictionaryData('en', 'mysite');
 // { "Read More": "Lees meer", "Submit": "Verzenden" }
 ```
 
