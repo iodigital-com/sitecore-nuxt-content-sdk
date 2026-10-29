@@ -18,7 +18,8 @@ Create the following server route files:
 server/api/editing/
 ├── config.get.ts
 ├── config.options.ts
-└── render.get.ts
+├── render.get.ts
+└── render.options.ts
 ```
 
 ### Config Route
@@ -27,30 +28,22 @@ Returns the editing configuration including available components and metadata.
 
 ```ts title="server/api/editing/config.get.ts"
 import { defineEventHandler } from 'h3';
-import { createEditingConfigRoute } from '@sitecore-content-sdk/nuxt/routes';
-import componentMap from '~/components/componentMap';
-import metadata from '~/.sitecore/metadata.json';
+import { createEditingConfigRoute } from '@iodigital-com/sitecore-content-sdk-nuxt/routes';
+import { componentNames } from '../../../app/components/componentNames';
+import metadata from '../../../.sitecore/metadata.json';
 
-const { handle } = createEditingConfigRoute({
-  components: componentMap,
-  metadata,
-  // Optional: specify client-only components for Page Builder
-  // clientComponents: clientComponentMap,
-});
+const { handle } = createEditingConfigRoute({ components: componentNames, metadata });
 
 export default defineEventHandler(handle);
 ```
 
 ```ts title="server/api/editing/config.options.ts"
 import { defineEventHandler } from 'h3';
-import { createEditingConfigRoute } from '@sitecore-content-sdk/nuxt/routes';
-import componentMap from '~/components/componentMap';
-import metadata from '~/.sitecore/metadata.json';
+import { createEditingConfigRoute } from '@iodigital-com/sitecore-content-sdk-nuxt/routes';
+import { componentNames } from '../../../app/components/componentNames';
+import metadata from '../../../.sitecore/metadata.json';
 
-const { handleOptions } = createEditingConfigRoute({
-  components: componentMap,
-  metadata,
-});
+const { handleOptions } = createEditingConfigRoute({ components: componentNames, metadata });
 
 export default defineEventHandler(handleOptions);
 ```
@@ -69,11 +62,20 @@ Handles page rendering requests from Sitecore Page Builder.
 
 ```ts title="server/api/editing/render.get.ts"
 import { defineEventHandler } from 'h3';
-import { createEditingRenderRoute } from '@sitecore-content-sdk/nuxt/routes';
+import { createEditingRenderRoute } from '@iodigital-com/sitecore-content-sdk-nuxt/routes';
 
 const { handleGet } = createEditingRenderRoute();
 
 export default defineEventHandler(handleGet);
+```
+
+```ts title="server/api/editing/render.options.ts"
+import { defineEventHandler } from 'h3';
+import { createEditingRenderRoute } from '@iodigital-com/sitecore-content-sdk-nuxt/routes';
+
+const { handleOptions } = createEditingRenderRoute();
+
+export default defineEventHandler(handleOptions);
 ```
 
 ### Render Route Options
@@ -143,17 +145,18 @@ Use `DesignLibraryNuxt` in your page template when in design library mode:
 
 ```vue title="app/pages/[...slug].vue"
 <script setup lang="ts">
-import { SitecoreProvider, Placeholder } from '@sitecore-content-sdk/nuxt';
-import { DesignLibraryNuxt } from '@sitecore-content-sdk/nuxt';
-import { useSitecorePage } from '@sitecore-content-sdk/nuxt/composables';
+import { SitecoreProvider, Placeholder } from '@iodigital-com/sitecore-content-sdk-nuxt';
+import { DesignLibraryNuxt } from '@iodigital-com/sitecore-content-sdk-nuxt/components';
+import { useSitecorePage } from '@iodigital-com/sitecore-content-sdk-nuxt/composables';
 import componentMap from '~/components/componentMap';
 
 const { page } = await useSitecorePage();
+const { $sitecoreConfig } = useNuxtApp();
 const route = page.value?.layout?.sitecore?.route;
 </script>
 
 <template>
-  <SitecoreProvider :page="page" :componentMap="componentMap">
+  <SitecoreProvider :page="page" :api="$sitecoreConfig.api" :componentMap="componentMap">
     <template v-if="page?.mode?.isDesignLibrary">
       <DesignLibraryNuxt />
     </template>
@@ -175,7 +178,7 @@ const route = page.value?.layout?.sitecore?.route;
 Generate component metadata for Sitecore registration:
 
 ```bash
-yarn sitecore-tools generate-metadata
+npx sitecore-tools project build
 ```
 
 This creates `.sitecore/metadata.json` which the config route returns to Sitecore.
@@ -186,8 +189,8 @@ To include Sitecore's content styles in editing mode:
 
 ```vue
 <script setup lang="ts">
-import { getContentStylesheetLink } from '@sitecore-content-sdk/nuxt';
-import { useSitecoreContext } from '@sitecore-content-sdk/nuxt/composables';
+import { getContentStylesheetLink } from '@iodigital-com/sitecore-content-sdk-nuxt';
+import { useSitecoreContext } from '@iodigital-com/sitecore-content-sdk-vue';
 
 const { page } = useSitecoreContext();
 

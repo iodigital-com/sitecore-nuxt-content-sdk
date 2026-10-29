@@ -14,16 +14,17 @@ Provides Sitecore context (page data and component map) to all child components 
 
 ```vue
 <script setup lang="ts">
-import { SitecoreProvider, Placeholder } from '@sitecore-content-sdk/nuxt';
-import { useSitecorePage } from '@sitecore-content-sdk/nuxt/composables';
+import { SitecoreProvider, Placeholder } from '@iodigital-com/sitecore-content-sdk-nuxt';
+import { useSitecorePage } from '@iodigital-com/sitecore-content-sdk-nuxt/composables';
 import componentMap from '~/components/componentMap';
 
 const { page } = await useSitecorePage();
+const { $sitecoreConfig } = useNuxtApp();
 const route = page.value?.layout?.sitecore?.route;
 </script>
 
 <template>
-  <SitecoreProvider :page="page" :componentMap="componentMap">
+  <SitecoreProvider :page="page" :api="$sitecoreConfig.api" :componentMap="componentMap">
     <Placeholder name="headless-main" :rendering="route" />
   </SitecoreProvider>
 </template>
@@ -32,6 +33,7 @@ const route = page.value?.layout?.sitecore?.route;
 #### Props
 
 - **`page`** (Page, required) - The Sitecore layout data
+- **`api`** (SitecoreConfig api, required) - Edge and local API settings, usually `$sitecoreConfig.api`
 - **`componentMap`** (ComponentMap, required) - Map of component names to Vue components
 
 ### Placeholder
@@ -57,8 +59,8 @@ Renders components from Sitecore layout data for a given placeholder name.
 
 ```vue
 <script setup lang="ts">
-import { Placeholder } from '@sitecore-content-sdk/nuxt';
-import { useSitecoreContext } from '@sitecore-content-sdk/nuxt/composables';
+import { Placeholder } from '@iodigital-com/sitecore-content-sdk-nuxt';
+import { useSitecoreContext } from '@iodigital-com/sitecore-content-sdk-vue';
 
 const { page } = useSitecoreContext();
 const route = page.value?.layout?.sitecore?.route;
@@ -87,7 +89,7 @@ Renders a simple text field from Sitecore.
 
 ```vue
 <script setup lang="ts">
-import { Text } from '@sitecore-content-sdk/nuxt';
+import { Text } from '@iodigital-com/sitecore-content-sdk-nuxt';
 
 const props = defineProps<{
   fields?: {
@@ -114,7 +116,7 @@ Renders a rich text field with HTML content.
 
 ```vue
 <script setup lang="ts">
-import { RichText } from '@sitecore-content-sdk/nuxt';
+import { RichText } from '@iodigital-com/sitecore-content-sdk-nuxt';
 
 const props = defineProps<{
   fields?: {
@@ -141,7 +143,7 @@ Renders an image field with responsive image support.
 
 ```vue
 <script setup lang="ts">
-import { Image } from '@sitecore-content-sdk/nuxt';
+import { Image } from '@iodigital-com/sitecore-content-sdk-nuxt';
 
 const props = defineProps<{
   fields?: {
@@ -182,7 +184,7 @@ Renders a link field with proper routing.
 
 ```vue
 <script setup lang="ts">
-import { Link } from '@sitecore-content-sdk/nuxt';
+import { Link } from '@iodigital-com/sitecore-content-sdk-nuxt';
 
 const props = defineProps<{
   fields?: {
@@ -208,7 +210,7 @@ Renders a date field with formatting options.
 
 ```vue
 <script setup lang="ts">
-import { DateField } from '@sitecore-content-sdk/nuxt';
+import { DateField } from '@iodigital-com/sitecore-content-sdk-nuxt';
 
 const props = defineProps<{
   fields?: {
@@ -234,7 +236,7 @@ Renders a file/download link.
 
 ```vue
 <script setup lang="ts">
-import { File } from '@sitecore-content-sdk/nuxt';
+import { File } from '@iodigital-com/sitecore-content-sdk-nuxt';
 
 const props = defineProps<{
   fields?: {
@@ -267,7 +269,7 @@ Wraps field content with editing metadata for Experience Editor.
 </template>
 ```
 
-This is typically used internally by field components, but you can use it directly for custom field rendering.
+Text, RichText, Image, Link, DateField, and File apply this wrapper. Use those components for Sitecore fields.
 
 ### HiddenRendering
 
@@ -294,35 +296,19 @@ Default component shown when a component is not found in the component map.
 The component map tells the SDK which Vue component to render for each Sitecore rendering.
 
 ```ts title="app/components/componentMap.ts"
-import type { ComponentMap } from '@sitecore-content-sdk/nuxt';
-import Hero from './Hero.vue';
-import ContentBlock from './ContentBlock.vue';
-import Navigation from './Navigation.vue';
+import type { ComponentMap } from '@iodigital-com/sitecore-content-sdk-nuxt';
+import { defineSitecoreComponent } from '@iodigital-com/sitecore-content-sdk-nuxt';
 
 const componentMap: ComponentMap = new Map([
-  ['Hero', Hero],
-  ['ContentBlock', ContentBlock],
-  ['Navigation', Navigation],
+  ['Hero', defineSitecoreComponent(() => import('./Hero.vue'), 'universal')],
+  ['ContentBlock', defineSitecoreComponent(() => import('./ContentBlock.vue'), 'universal')],
+  ['Navigation', defineSitecoreComponent(() => import('./Navigation.vue'), 'universal')],
 ]);
 
 export default componentMap;
 ```
 
-### Dynamic Imports
-
-For better code splitting, use dynamic imports:
-
-```ts
-import type { ComponentMap } from '@sitecore-content-sdk/nuxt';
-import { defineAsyncComponent } from 'vue';
-
-const componentMap: ComponentMap = new Map([
-  ['Hero', defineAsyncComponent(() => import('./Hero.vue'))],
-  ['ContentBlock', defineAsyncComponent(() => import('./ContentBlock.vue'))],
-]);
-
-export default componentMap;
-```
+`defineSitecoreComponent` loads the Vue file on demand. The second argument is `'server'`, `'client'`, or `'universal'`.
 
 ## Creating Custom Components
 
@@ -330,7 +316,7 @@ export default componentMap;
 
 ```vue title="components/Hero.vue"
 <script setup lang="ts">
-import { Text, RichText, Image } from '@sitecore-content-sdk/nuxt';
+import { Text, RichText, Image } from '@iodigital-com/sitecore-content-sdk-nuxt';
 
 const props = defineProps<{
   fields?: {
@@ -373,8 +359,9 @@ const props = defineProps<{
 
 ```vue title="components/ProductCard.vue"
 <script setup lang="ts">
-import { Text, Image } from '@sitecore-content-sdk/nuxt';
-import { useDatasourceCheck } from '@sitecore-content-sdk/nuxt/composables';
+import { toRef } from 'vue';
+import { Text, Image } from '@iodigital-com/sitecore-content-sdk-nuxt';
+import { useDatasourceCheck } from '@iodigital-com/sitecore-content-sdk-vue';
 import type { ComponentRendering } from '@sitecore-content-sdk/content/layout';
 
 const props = defineProps<{
@@ -386,7 +373,7 @@ const props = defineProps<{
   };
 }>();
 
-const { renderState } = useDatasourceCheck(props.rendering);
+const { renderState } = useDatasourceCheck(toRef(props, 'rendering'));
 </script>
 
 <template>

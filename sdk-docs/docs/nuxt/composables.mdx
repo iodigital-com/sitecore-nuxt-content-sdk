@@ -14,7 +14,7 @@ Access the current Sitecore page context and component map from anywhere in your
 
 ```vue
 <script setup lang="ts">
-import { useSitecoreContext } from '@sitecore-content-sdk/vue';
+import { useSitecoreContext } from '@iodigital-com/sitecore-content-sdk-vue';
 
 const { page, componentMap } = useSitecoreContext();
 
@@ -35,7 +35,7 @@ Returns the full `SitecoreProviderState` object:
 - **`loadImportMap`** (`() => Promise<ImportMapImport>`) - Dynamic import for Design Library variant generation
 
 :::info
-`useSitecoreContext()` lives in `@sitecore-content-sdk/vue` and is re-exported by the nuxt package. You can import from either.
+`useSitecoreContext()` lives in `@iodigital-com/sitecore-content-sdk-vue` and is re-exported by the nuxt package. You can import from either.
 :::
 
 ### When to Use
@@ -51,7 +51,7 @@ Use `useSitecoreContext()` when you need to:
 
 ```vue
 <script setup lang="ts">
-import { useSitecoreContext } from '@sitecore-content-sdk/vue';
+import { useSitecoreContext } from '@iodigital-com/sitecore-content-sdk-vue';
 import { computed } from 'vue';
 
 const { page } = useSitecoreContext();
@@ -75,7 +75,7 @@ Fetch Sitecore page data asynchronously. This is typically used in the main page
 
 ```vue
 <script setup lang="ts">
-import { useSitecorePage } from '@sitecore-content-sdk/nuxt/composables';
+import { useSitecorePage } from '@iodigital-com/sitecore-content-sdk-nuxt/composables';
 
 const { page, error } = await useSitecorePage();
 
@@ -110,13 +110,14 @@ Ensures a component has a valid data source before rendering. Used in components
 
 ```vue
 <script setup lang="ts">
-import { useDatasourceCheck } from '@sitecore-content-sdk/vue';
+import { toRef } from 'vue';
+import { useDatasourceCheck } from '@iodigital-com/sitecore-content-sdk-vue';
 
 const props = defineProps<{
   rendering: ComponentRendering;
 }>();
 
-const { renderState } = useDatasourceCheck(props.rendering);
+const { renderState } = useDatasourceCheck(toRef(props, 'rendering'));
 
 // renderState can be: 'component' | 'error' | 'null'
 </script>
@@ -149,14 +150,14 @@ Use this composable when:
 Triggers a chrome refresh in the Sitecore Experience Editor after component mount. Call it in any component that needs editing chrome support.
 
 :::info
-This composable lives in `@sitecore-content-sdk/vue` and is re-exported by the nuxt package.
+This composable lives in `@iodigital-com/sitecore-content-sdk-vue` and is re-exported by the nuxt package.
 :::
 
 ### Usage
 
 ```vue
 <script setup lang="ts">
-import { useEditorChromes } from '@sitecore-content-sdk/vue';
+import { useEditorChromes } from '@iodigital-com/sitecore-content-sdk-vue';
 
 useEditorChromes();
 </script>
@@ -196,7 +197,7 @@ const { page } = useSitecoreContext(); const route = page.value?.layout?.sitecor
 // pages/[...slug].vue const { page, error } = await useSitecorePage();
 ```
 
-❌ **DON'T:** Call `useSitecorePage()` in child components (use `useSitecoreContext()` from `@sitecore-content-sdk/vue` instead)
+❌ **DON'T:** Call `useSitecorePage()` in child components (use `useSitecoreContext()` from `@iodigital-com/sitecore-content-sdk-vue` instead)
 
 ### Error Handling
 
@@ -212,4 +213,4 @@ message: 'Page not found' }); }
 
 - [Components](./components) - SDK Vue components for rendering Sitecore fields
 - [Middleware](./middleware) - Server middleware for multi-site, personalization
-- [API Reference](https://github.com/Sitecore/content-sdk/tree/main/ref-docs/nuxt) - Complete API documentation
+- [API Reference](https://github.com/iodigital-com/sitecore-nuxt-content-sdk) - Source for the Vue and Nuxt packages

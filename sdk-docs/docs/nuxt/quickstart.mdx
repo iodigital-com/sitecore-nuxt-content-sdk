@@ -4,11 +4,11 @@ sidebar_position: 1
 
 # Quickstart
 
-Get started with the Sitecore Content SDK for Nuxt 3 in minutes.
+Get started with the Sitecore Content SDK for Nuxt 4 in minutes.
 
 ## What is the Nuxt SDK?
 
-The Sitecore Content SDK for Nuxt provides a complete toolkit for building headless SitecoreAI applications with Nuxt 3. It includes:
+The Sitecore Content SDK for Nuxt provides a complete toolkit for building headless SitecoreAI applications with Nuxt 4. It includes:
 
 - **Automatic page rendering** with Sitecore layout data
 - **Multi-site support** with automatic site resolution
@@ -23,14 +23,16 @@ The Sitecore Content SDK for Nuxt provides a complete toolkit for building headl
 Install the Nuxt and Vue SDK packages:
 
 ```bash
-yarn add @sitecore-content-sdk/nuxt @sitecore-content-sdk/vue
+yarn add @iodigital-com/sitecore-content-sdk-nuxt@^2.1.0 @iodigital-com/sitecore-content-sdk-vue@^2.1.0 @sitecore-content-sdk/analytics-core @sitecore-content-sdk/personalize
 ```
 
 Or with npm:
 
 ```bash
-npm install @sitecore-content-sdk/nuxt @sitecore-content-sdk/vue
+npm install @iodigital-com/sitecore-content-sdk-nuxt@^2.1.0 @iodigital-com/sitecore-content-sdk-vue@^2.1.0 @sitecore-content-sdk/analytics-core @sitecore-content-sdk/personalize
 ```
+
+The Nuxt package depends on the Vue package. `@sitecore-content-sdk/analytics-core` and `@sitecore-content-sdk/personalize` are peer dependencies. A generated app also installs `@sitecore-content-sdk/events` and `@sitecore-content-sdk/cli`.
 
 ## Configuration
 
@@ -39,7 +41,7 @@ npm install @sitecore-content-sdk/nuxt @sitecore-content-sdk/vue
 Create or update your `sitecore.config.ts` in the root of your Nuxt project:
 
 ```ts title="sitecore.config.ts"
-import { defineConfig } from '@sitecore-content-sdk/nuxt/config';
+import { defineConfig } from '@iodigital-com/sitecore-content-sdk-nuxt/config';
 
 export default defineConfig({
   defaultSite: 'mysite',
@@ -76,10 +78,18 @@ Configure runtime config to expose your environment variables:
 export default defineNuxtConfig({
   runtimeConfig: {
     public: {
-      SITECORE_EDGE_CONTEXT_ID: process.env.NUXT_PUBLIC_SITECORE_EDGE_CONTEXT_ID,
-      SITECORE_EDGE_PLATFORM_HOSTNAME: process.env.NUXT_PUBLIC_SITECORE_EDGE_PLATFORM_HOSTNAME,
-      DEFAULT_SITE_NAME: process.env.NUXT_PUBLIC_DEFAULT_SITE_NAME,
+      sitecoreEdgeContextId: process.env.NUXT_PUBLIC_SITECORE_EDGE_CONTEXT_ID || '',
+      sitecoreEdgeUrl:
+        process.env.NUXT_PUBLIC_SITECORE_EDGE_PLATFORM_HOSTNAME ||
+        'https://edge-platform.sitecorecloud.io',
+      sitecoreDefaultSite: process.env.NUXT_PUBLIC_DEFAULT_SITE_NAME || '',
     },
+  },
+  build: {
+    transpile: [
+      '@iodigital-com/sitecore-content-sdk-nuxt',
+      '@iodigital-com/sitecore-content-sdk-vue',
+    ],
   },
 });
 ```
@@ -89,15 +99,12 @@ export default defineNuxtConfig({
 Create a component map to tell the SDK which Vue components to use for each Sitecore rendering:
 
 ```ts title="app/components/componentMap.ts"
-import type { ComponentMap } from '@sitecore-content-sdk/nuxt';
-
-// Import your components
-import Hero from './Hero.vue';
-import ContentBlock from './ContentBlock.vue';
+import type { ComponentMap } from '@iodigital-com/sitecore-content-sdk-nuxt';
+import { defineSitecoreComponent } from '@iodigital-com/sitecore-content-sdk-nuxt';
 
 const componentMap: ComponentMap = new Map([
-  ['Hero', Hero],
-  ['ContentBlock', ContentBlock],
+  ['Hero', defineSitecoreComponent(() => import('./Hero.vue'), 'universal')],
+  ['ContentBlock', defineSitecoreComponent(() => import('./ContentBlock.vue'), 'universal')],
 ]);
 
 export default componentMap;
@@ -111,11 +118,12 @@ Create a dynamic route that handles all Sitecore pages:
 <script setup lang="ts">
 import { computed } from 'vue';
 import { createError } from 'nuxt/app';
-import { SitecoreProvider, Placeholder } from '@sitecore-content-sdk/vue';
-import { useSitecorePage } from '@sitecore-content-sdk/nuxt/composables';
+import { SitecoreProvider, Placeholder } from '@iodigital-com/sitecore-content-sdk-nuxt';
+import { useSitecorePage } from '@iodigital-com/sitecore-content-sdk-nuxt/composables';
 import componentMap from '../components/componentMap';
 
 const { page, error } = await useSitecorePage();
+const { $sitecoreConfig } = useNuxtApp();
 
 if (error.value) {
   throw createError({ statusCode: 500, message: error.value.message });
@@ -129,7 +137,7 @@ const route = computed(() => page.value?.layout?.sitecore?.route);
 </script>
 
 <template>
-  <SitecoreProvider :page="page" :componentMap="componentMap">
+  <SitecoreProvider :page="page" :api="$sitecoreConfig.api" :componentMap="componentMap">
     <Placeholder name="headless-header" :rendering="route" />
     <Placeholder name="headless-main" :rendering="route" />
     <Placeholder name="headless-footer" :rendering="route" />
@@ -143,7 +151,7 @@ Create a simple component that uses Sitecore fields:
 
 ```vue title="app/components/Hero.vue"
 <script setup lang="ts">
-import { Text, RichText, Image } from '@sitecore-content-sdk/vue';
+import { Text, RichText, Image } from '@iodigital-com/sitecore-content-sdk-vue';
 
 // Props are automatically passed by the SDK
 const props = defineProps<{
@@ -196,7 +204,7 @@ Use the `useSitecoreContext()` composable to access page data anywhere:
 
 ```vue
 <script setup lang="ts">
-import { useSitecoreContext } from '@sitecore-content-sdk/vue';
+import { useSitecoreContext } from '@iodigital-com/sitecore-content-sdk-vue';
 
 const { page, componentMap } = useSitecoreContext();
 

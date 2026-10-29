@@ -13,7 +13,7 @@ The `SitecoreClient` is the primary interface for communicating with Sitecore's 
 ### Creating a Client
 
 ```ts
-import { useSitecoreClient } from '@sitecore-content-sdk/nuxt';
+import { useSitecoreClient } from '@iodigital-com/sitecore-content-sdk-nuxt/composables';
 
 const client = useSitecoreClient();
 ```
@@ -56,7 +56,7 @@ The primary composable for fetching page data in page-level components:
 
 ```vue title="app/pages/[...slug].vue"
 <script setup lang="ts">
-import { useSitecorePage } from '@sitecore-content-sdk/nuxt/composables';
+import { useSitecorePage } from '@iodigital-com/sitecore-content-sdk-nuxt/composables';
 
 const { page, error } = await useSitecorePage();
 </script>
@@ -109,7 +109,7 @@ const { data: products } = await useAsyncData(`products-${props.fields?.Category
 Fetch translated labels and phrases from Sitecore:
 
 ```ts
-import { DictionaryService } from '@sitecore-content-sdk/nuxt';
+import { DictionaryService } from '@iodigital-com/sitecore-content-sdk-nuxt';
 
 const dictionaryService = new DictionaryService({
   clientFactory: getClientFactory(),
@@ -124,7 +124,7 @@ const phrases = await dictionaryService.fetchDictionaryData('mysite', 'en');
 For custom queries, use the GraphQL client directly:
 
 ```ts
-import { GraphQLRequestClient } from '@sitecore-content-sdk/nuxt';
+import { GraphQLRequestClient } from '@iodigital-com/sitecore-content-sdk-nuxt';
 
 const client = new GraphQLRequestClient(edgeUrl, {
   apiKey: contextId,
@@ -152,7 +152,7 @@ const result = await client.request({
 ```vue
 <script setup lang="ts">
 import { createError } from 'nuxt/app';
-import { useSitecorePage } from '@sitecore-content-sdk/nuxt/composables';
+import { useSitecorePage } from '@iodigital-com/sitecore-content-sdk-nuxt/composables';
 
 const { page, error } = await useSitecorePage();
 
@@ -177,7 +177,7 @@ if (!page.value?.layout?.sitecore?.route) {
 The SDK's `NativeDataFetcher` handles retries and timeouts. Configure via:
 
 ```ts
-import { DefaultRetryStrategy } from '@sitecore-content-sdk/nuxt';
+import { DefaultRetryStrategy } from '@iodigital-com/sitecore-content-sdk-nuxt';
 
 // Custom retry strategy
 const retryStrategy = new DefaultRetryStrategy({

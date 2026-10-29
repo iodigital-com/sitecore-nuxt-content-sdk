@@ -18,12 +18,15 @@ Serves a dynamic `robots.txt` file fetched from Sitecore, resolved per site.
 
 ```ts title="server/routes/robots.txt.ts"
 import { defineEventHandler } from 'h3';
-import { createRobotsRoute } from '@sitecore-content-sdk/nuxt/routes';
-import { useSitecoreClient } from '@sitecore-content-sdk/nuxt';
+import { createRobotsRoute } from '@iodigital-com/sitecore-content-sdk-nuxt/routes';
+import { SitecoreClient } from '@iodigital-com/sitecore-content-sdk-nuxt/client';
+import scConfig from '../../sitecore.config';
 import sites from '../../.sitecore/sites.json';
 
-const client = useSitecoreClient();
-const { handle } = createRobotsRoute({ client, sites });
+const { handle } = createRobotsRoute({
+  client: new SitecoreClient(scConfig),
+  sites,
+});
 
 export default defineEventHandler(handle);
 ```
@@ -62,12 +65,15 @@ Serves XML sitemaps from Sitecore.
 
 ```ts title="server/routes/sitemap.xml.ts"
 import { defineEventHandler } from 'h3';
-import { createSitemapRoute } from '@sitecore-content-sdk/nuxt/routes';
-import { useSitecoreClient } from '@sitecore-content-sdk/nuxt';
+import { createSitemapRoute } from '@iodigital-com/sitecore-content-sdk-nuxt/routes';
+import { SitecoreClient } from '@iodigital-com/sitecore-content-sdk-nuxt/client';
+import scConfig from '../../sitecore.config';
 import sites from '../../.sitecore/sites.json';
 
-const client = useSitecoreClient();
-const { handle } = createSitemapRoute({ client, sites });
+const { handle } = createSitemapRoute({
+  client: new SitecoreClient(scConfig),
+  sites,
+});
 
 export default defineEventHandler(handle);
 ```
@@ -102,9 +108,9 @@ Simple health check endpoint for monitoring and deployment verification.
 
 ### Setup
 
-```ts title="server/routes/healthz.ts"
+```ts title="server/api/healthcheck.get.ts"
 import { defineEventHandler } from 'h3';
-import { createHealthcheckRoute } from '@sitecore-content-sdk/nuxt/monitoring';
+import { createHealthcheckRoute } from '@iodigital-com/sitecore-content-sdk-nuxt/monitoring';
 
 const { handle } = createHealthcheckRoute();
 
@@ -125,7 +131,8 @@ See [Editing Integration](./editing) for detailed documentation on the editing r
 server/api/editing/
 ├── config.get.ts      → createEditingConfigRoute().handle
 ├── config.options.ts  → createEditingConfigRoute().handleOptions
-└── render.get.ts      → createEditingRenderRoute().handleGet
+├── render.get.ts      → createEditingRenderRoute().handleGet
+└── render.options.ts  → createEditingRenderRoute().handleOptions
 ```
 
 ## Creating Custom Route Handlers
